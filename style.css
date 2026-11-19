@@ -52,3 +52,15 @@
 .lab-step>span{flex:0 0 24px;height:24px;display:grid;place-items:center;border-radius:50%;background:#34456a;color:#c8d4ff;font-size:11px;font-weight:700}
 .lab-step p{margin:2px 0;color:#b9c7dc;font-size:12px;line-height:1.6}
 @media(max-width:760px){.lab-learning-steps{grid-template-columns:1fr}.lab-learning{padding:16px}}
+
+/* Corrections détaillées : fond vert et contraste renforcé */
+.solution-box{background:linear-gradient(145deg,#123c32,#164b3c)!important;border:1px solid #34785e!important;color:#e5fff1!important}
+.solution-box .solution-heading{color:#d9ffea}
+.solution-box .solution-content{color:#e5fff1;line-height:1.9}
+.solution-box .solution-content p{margin:12px 0}
+.solution-box mjx-container{color:#f2fff7!important;max-width:100%;overflow-x:auto;overflow-y:hidden}
+.question-box mjx-container,.hint-box mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+#labCanvas{display:block;width:100%;height:auto;min-height:300px;max-height:560px}
+.lab-canvas-wrap{min-width:0}
+.lab-legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 16px;color:#b9cbe0;font-size:11px}
+.lab-formula mjx-container,.lab-caption mjx-container,.lab-learning mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
