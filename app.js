@@ -138,12 +138,25 @@ const LABS={
  eigen:{label:"Valeur propre λ",min:-2,max:4,step:0.1,value:2,caption:"Une direction propre reste stable par l'application : le vecteur est simplement multiplié par λ.",formula:"\\\\(Av=\\lambda v,\\quad v\\ne0\\\\)"}
 };
 let labType="derivative";
+function renderLabGuide(){
+ const value=Number($("#labSlider").value);
+ const guides={
+  sequence:{title:"Voir une suite converger",text:"Chaque point représente un terme. Quand n augmente, le terme se rapproche de 1 : la distance verticale à la droite y = 1 diminue.",question:"Peux-tu trouver un rang N à partir duquel tous les termes sont à moins de 0,1 de 1 ?",steps:["1 · Lis la hauteur du point : c'est uₙ.","2 · Compare sa distance à la droite y = 1.","3 · Relie la distance observée à |uₙ − 1| = 1/n."]},
+  derivative:{title:"De la sécante à la tangente",text:"La droite verte relie deux points : c'est une sécante. La droite dorée est la tangente au point a. Quand le second point se rapproche de a, la sécante prend la direction de la tangente.",question:"Que devient le coefficient directeur de la sécante lorsque h tend vers 0 ?",steps:["1 · La courbe bleue donne f(x) = x².","2 · La sécante mesure un taux de variation moyen.","3 · À la limite, sa pente vaut f′(a) = 2a."]},
+  integral:{title:"L'intégrale comme accumulation d'aire",text:"La zone colorée représente l'aire sous la courbe y = x² entre 0 et b. En déplaçant b, tu ajoutes ou retires une tranche d'aire.",question:"Si tu doubles b, par combien l'aire est-elle multipliée ?",steps:["1 · Repère les bornes 0 et b.","2 · Observe la zone colorée sous la courbe.","3 · La primitive x³/3 donne l'aire : b³/3."]},
+  schmidt:{title:"Construire une direction orthogonale",text:"Le vecteur doré est décomposé en une projection sur l'axe du premier vecteur et une composante perpendiculaire. Cette seconde composante est celle que Gram–Schmidt conserve.",question:"Quand l'angle change, quelle composante reste perpendiculaire au premier vecteur ?",steps:["1 · Le vecteur bleu fixe la première direction.","2 · La projection retire la composante parallèle.","3 · Le vecteur vert restant est orthogonal au bleu."]}
+ };
+ const g=guides[labType]||{title:"Observer puis expliquer",text:$("#labCaption").textContent,question:"Quel phénomène mathématique le dessin illustre-t-il ?",steps:["1 · Modifie le paramètre.","2 · Décris ce qui change.","3 · Formule la propriété correspondante."]};
+ $("#labLearningTitle").textContent=g.title;$("#labLearningText").textContent=g.text;$("#labQuestion").textContent=g.question;
+ $("#labSteps").innerHTML=g.steps.map((step,i)=>'<div class="lab-step"><span>'+(i+1)+'</span><p>'+step.replace(/^\d+ · /,"")+'</p></div>').join("");
+ typeset($("#labLearning"));
+}
 function labSetup(){
  const cfg=LABS[labType],slider=$("#labSlider");
  $("#labSliderLabel").textContent=cfg.label;slider.min=cfg.min;slider.max=cfg.max;slider.step=cfg.step;slider.value=cfg.value;
  $("#labCaption").textContent=cfg.caption;$("#labFormula").innerHTML=cfg.formula;
  $("#labValue").textContent=Number(cfg.value).toLocaleString("fr-FR",{maximumFractionDigits:2});
- typeset($("#labFormula"));typeset($("#labCaption"));typeset($("#labSliderLabel"));drawLab();
+ typeset($("#labFormula"));typeset($("#labCaption"));typeset($("#labSliderLabel"));renderLabGuide();drawLab();
 }
 function drawLab(){
  const canvas=$("#labCanvas");if(!canvas)return;
@@ -170,7 +183,7 @@ function drawLab(){
  else if(labType==="fourier"){const n=Math.round(value);line(x=>{let sum=0;for(let k=1;k<=n;k+=2)sum+=Math.sin(k*x)/k;return 4/Math.PI*sum},-Math.PI,Math.PI,"#85b8f4",3);line(x=>x<0?-1:1,-Math.PI,Math.PI,"#e0b86d",1.6)}
  else if(labType==="trig"){ctx.strokeStyle="#85b8f4";ctx.lineWidth=2;ctx.beginPath();ctx.arc(ox,oy,scale*1.9,0,Math.PI*2);ctx.stroke();const a=value*Math.PI/180,x=1.9*Math.cos(a),y=1.9*Math.sin(a);ctx.strokeStyle="#e0b86d";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(x),Y(y));ctx.stroke();ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(X(x),Y(0));ctx.lineTo(X(x),Y(y));ctx.moveTo(X(0),Y(y));ctx.lineTo(X(x),Y(y));ctx.stroke();ctx.setLineDash([]);dot(x,y,"#e0b86d",6)}
  else if(labType==="eigen"){line(x=>.55*x,-3,3,"#85b8f4",2);const l=value;ctx.strokeStyle="#e0b86d";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(X(-1.5),Y(-1.5*l));ctx.lineTo(X(1.5),Y(1.5*l));ctx.stroke();dot(1,l,"#e0b86d",6)}
- $("#labValue").textContent=value.toLocaleString("fr-FR",{maximumFractionDigits:2});
+ $("#labValue").textContent=value.toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
 }
 function drawVisuals(){if($("#labType"))labSetup()}
 function renderProgressOnHome(){renderDashboard()}
