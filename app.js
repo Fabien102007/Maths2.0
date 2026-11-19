@@ -7,7 +7,31 @@ let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||
 let activeTopic=null,activeExercise=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 const save=()=>{localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const typeset=el=>{if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([el]).catch(()=>{});};
+const mathMap={"ℝ":"\\\\mathbb{R}","ℕ":"\\\\mathbb{N}","ℤ":"\\\\mathbb{Z}","ℚ":"\\\\mathbb{Q}","ℂ":"\\\\mathbb{C}","∈":"\\\\in","∉":"\\\\notin","∀":"\\\\forall","∃":"\\\\exists","⇒":"\\\\Rightarrow","⇔":"\\\\Leftrightarrow","→":"\\\\to","←":"\\\\leftarrow","≤":"\\\\leq","≥":"\\\\geq","≠":"\\\\neq","≈":"\\\\approx","∞":"\\\\infty","∑":"\\\\sum","∏":"\\\\prod","∫":"\\\\int","√":"\\\\sqrt{}","∂":"\\\\partial","∇":"\\\\nabla","λ":"\\\\lambda","μ":"\\\\mu","ε":"\\\\varepsilon","π":"\\\\pi","θ":"\\\\theta","α":"\\\\alpha","β":"\\\\beta","γ":"\\\\gamma","Δ":"\\\\Delta","ℓ":"\\\\ell","×":"\\\\times","·":"\\\\cdot","÷":"\\\\div","±":"\\\\pm","‖":"\\\\Vert","∥":"\\\\parallel","∩":"\\\\cap","∪":"\\\\cup","⊂":"\\\\subset","⊆":"\\\\subseteq","∅":"\\\\varnothing"};
+const subMap={"₀":"0","₁":"1","₂":"2","₃":"3","₄":"4","₅":"5","₆":"6","₇":"7","₈":"8","₉":"9","ₐ":"a","ₑ":"e","ₕ":"h","ᵢ":"i","ⱼ":"j","ₖ":"k","ₗ":"l","ₘ":"m","ₙ":"n","ₒ":"o","ₚ":"p","ᵣ":"r","ₛ":"s","ₜ":"t"};
+const supMap={"⁰":"0","¹":"1","²":"2","³":"3","⁴":"4","⁵":"5","⁶":"6","⁷":"7","⁸":"8","⁹":"9","⁺":"+","⁻":"-","⁼":"="};
+function mathifySegment(value){
+ const token=/[A-Za-z0-9₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]+(?:[=+\\-*\\/^_()[\\]{}.,:<>|]+[A-Za-z0-9₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]+)*/gu;
+ return value.replace(token,part=>{
+  if(!/[₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]/u.test(part))return part;
+  let t=part.replace(/([A-Za-z])([₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ]+)/gu,(_,v,sub)=>v+"_{"+[...sub].map(c=>subMap[c]||c).join("")+"}");
+  t=t.replace(/([A-Za-z0-9])([⁰-⁹⁺⁻⁼]+)/gu,(_,v,sup)=>v+"^{"+[...sup].map(c=>supMap[c]||c).join("")+"}");
+  t=[...t].map(c=>mathMap[c]||c).join("");
+  return "\\\\("+t+"\\\\)";
+ });
+}
+function mathifyTextNodes(root){
+ if(!root||!document.createTreeWalker)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ const nodes=[];while(walker.nextNode()){const n=walker.currentNode,p=n.parentElement;if(!p||p.closest("mjx-container,script,style,textarea,pre,code,input,option"))continue;nodes.push(n);}
+ for(const n of nodes){
+  const raw=n.nodeValue;if(!/[₀-₉ₐ-ₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]/u.test(raw))continue;
+  const parts=raw.split(/(\\\\\([^]*?\\\\\)|\\\\\[[^]*?\\\\\]|\\$[^$]*\\$)/g);
+  n.nodeValue=parts.map((part,i)=>i%2?part:mathifySegment(part)).join("");
+ }
+}
+const typeset=el=>{if(!el)return;mathifyTextNodes(el);if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([el]).catch(()=>{});};
+const richText=value=>esc(value).replace(/\\*\\*(.+?)\\*\\*/gs,"<strong>$1</strong>").replace(/\\n\\n/g,"</p><p>").replace(/\\n/g,"<br>");
 const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
 const mastered=id=>state.attempts[id]?.independent>=2 && state.attempts[id]?.lastScore>=0.8;
@@ -55,10 +79,10 @@ function renderExercises(){
 function openExercise(id){activeExercise=id;renderExercises()}
 function renderExercise(id){
  const e=EXERCISES.find(x=>x.id===id);if(!e)return;
- $("#exerciseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${e.question}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…"></textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
- let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${hints[h++]}</p>`;typeset($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
- $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<b>Correction détaillée</b><p>${e.answer}</p>${(e.solutionSteps||[]).map((s,i)=>`<p><b>Étape ${i+1}.</b> ${s}</p>`).join("")}<p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typeset($("#solutionBox"))};
- $$(".rating-btn").forEach(b=>b.onclick=()=>recordAttempt(e,+b.dataset.score));
+ $("#exerciseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${richText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…"></textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
+ let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${richText(hints[h++])}</p>`;typeset($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
+ $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content"><p>${richText(e.answer)}</p>${(e.solutionSteps||[]).map((s,i)=>`<p><b>Étape ${i+1}.</b> ${richText(s)}</p>`).join("")}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typeset($("#solutionBox"))};
+ $(".rating-btn").forEach(b=>b.onclick=()=>recordAttempt(e,+b.dataset.score));
  typeset($("#exerciseDetail"));
 }
 function recordAttempt(e,score){
@@ -96,33 +120,69 @@ async function sendChat(){
  finally{$("#sendChat").disabled=false}
 }
 function resizeImage(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{const scale=Math.min(1,1500/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);resolve(c.toDataURL("image/jpeg",.8))};img.onerror=reject;img.src=url})}
-function drawDerivative(){
- const c=$("#derivativeCanvas");if(!c)return;const ctx=c.getContext("2d"),w=c.width,h=c.height,a=0.7,step=+$("#hSlider").value;ctx.clearRect(0,0,w,h);ctx.strokeStyle="#263653";ctx.lineWidth=1;
- for(let x=0;x<w;x+=45){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=45){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
- const X=x=>w/2+x*100,Y=y=>h*.72-y*75;ctx.strokeStyle="#72829d";ctx.beginPath();ctx.moveTo(0,Y(0));ctx.lineTo(w,Y(0));ctx.moveTo(X(0),0);ctx.lineTo(X(0),h);ctx.stroke();
- const f=x=>x*x*.45+0.4;ctx.strokeStyle="#8e83ff";ctx.lineWidth=4;ctx.beginPath();for(let px=0;px<=w;px++){let x=(px-w/2)/100;let py=Y(f(x));px?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.stroke();
- const x1=a+step,y1=f(x1),slope=(y1-f(a))/step;ctx.strokeStyle="#43c9e7";ctx.lineWidth=2.5;ctx.setLineDash([8,7]);ctx.beginPath();ctx.moveTo(X(-1.5),Y(f(a)+slope*(-1.5-a)));ctx.lineTo(X(2.7),Y(f(a)+slope*(2.7-a)));ctx.stroke();ctx.setLineDash([]);
- ctx.fillStyle="#43c9e7";ctx.beginPath();ctx.arc(X(x1),Y(y1),7,0,Math.PI*2);ctx.fill();ctx.fillStyle="#f7f8ff";ctx.beginPath();ctx.arc(X(a),Y(f(a)),7,0,Math.PI*2);ctx.fill();
- $("#hValue").textContent=step.toFixed(2).replace(".",",");$("#derivativeFormula").innerHTML=`Taux d'accroissement : \\(\\frac{f(a+h)-f(a)}h\\). Lorsque \\(h\\to0\\), il tend vers \\(f'(a)\\).`;typeset($("#derivativeFormula"));
+const LABS={
+ sequence:{label:"Nombre de termes",min:3,max:40,step:1,value:12,caption:"Les termes de uₙ=1+1/n se rapprochent de 1 sans jamais l'atteindre.",formula:"\\\\(u_n=1+\\\\frac1n\\\\),\\quad \\lim_{n\\to+\\infty}u_n=1"},
+ limit:{label:"Distance à a = 1",min:0.08,max:2.5,step:0.02,value:1.2,caption:"Le point x se rapproche de 1. Observe la valeur f(x) et son rapprochement de 2.",formula:"\\\\(f(x)=x+1,\\quad \\lim_{x\\to1}f(x)=2\\\\)"},
+ continuity:{label:"Position x",min:-3,max:3,step:0.05,value:1,caption:"La courbe varie continûment : une petite variation de x produit une petite variation de f(x).",formula:"\\\\(f(x)=\\sin(x)+0.2x\\\\)"},
+ derivative:{label:"Point a",min:-1.8,max:1.8,step:0.05,value:0.7,caption:"La droite sécante devient la tangente lorsque le point mobile se rapproche du point fixe.",formula:"\\\\(f(x)=x^2,\\quad f'(a)=2a\\\\)"},
+ integral:{label:"Borne supérieure b",min:0.3,max:2.8,step:0.05,value:1.8,caption:"La zone colorée représente l'intégrale de x² entre 0 et b.",formula:"\\\\(\\int_0^b x^2\\,dx=\\frac{b^3}{3}\\\\)"},
+ taylor:{label:"Ordre du développement",min:0,max:8,step:1,value:4,caption:"Compare exp(x) à son polynôme de Taylor. L'approximation s'améliore près de 0 quand l'ordre augmente.",formula:"\\\\(e^x=\\sum_{k=0}^{n}\\frac{x^k}{k!}+o(x^n)\\\\)"},
+ injectivity:{label:"Valeur x",min:0.25,max:2.5,step:0.05,value:1.4,caption:"Pour x² sur ℝ, x et −x ont la même image : la fonction n'est pas injective.",formula:"\\\\(f(x)=x^2=f(-x),\\quad x\\ne0\\\\)"},
+ determinant:{label:"Angle entre les vecteurs",min:10,max:170,step:1,value:55,caption:"L'aire du parallélogramme est la valeur absolue du déterminant des deux vecteurs.",formula:"\\\\(\\det(u,v)=\\|u\\|\\,\\|v\\|\\sin(\\theta)\\\\)"},
+ schmidt:{label:"Angle entre v₁ et v₂",min:10,max:170,step:1,value:55,caption:"La projection de v₂ sur v₁ est retirée : le résidu obtenu est orthogonal à v₁.",formula:"\\\\(w_2=v_2-\\frac{\\langle v_2,v_1\\rangle}{\\|v_1\\|^2}v_1,\\quad \\langle w_2,v_1\\rangle=0\\\\)"},
+ fourier:{label:"Nombre d'harmoniques",min:1,max:21,step:2,value:5,caption:"La somme des harmoniques impaires approche une onde carrée. Observe les oscillations près des discontinuités.",formula:"\\\\(S_n(x)=\\frac4\\pi\\sum_{k=0}^{n}\\frac{\\sin((2k+1)x)}{2k+1}\\\\)"},
+ trig:{label:"Angle θ (degrés)",min:0,max:360,step:1,value:45,caption:"Le point mobile parcourt le cercle unité. Ses coordonnées sont le cosinus et le sinus de l'angle.",formula:"\\\\((\\cos\\theta,\\sin\\theta),\\quad \\cos^2\\theta+\\sin^2\\theta=1\\\\)"},
+ eigen:{label:"Valeur propre λ",min:-2,max:4,step:0.1,value:2,caption:"Une direction propre reste stable par l'application : le vecteur est simplement multiplié par λ.",formula:"\\\\(Av=\\lambda v,\\quad v\\ne0\\\\)"}
+};
+let labType="derivative";
+function labSetup(){
+ const cfg=LABS[labType],slider=$("#labSlider");
+ $("#labSliderLabel").textContent=cfg.label;slider.min=cfg.min;slider.max=cfg.max;slider.step=cfg.step;slider.value=cfg.value;
+ $("#labCaption").textContent=cfg.caption;$("#labFormula").innerHTML=cfg.formula;
+ $("#labValue").textContent=Number(cfg.value).toLocaleString("fr-FR",{maximumFractionDigits:2});
+ typeset($("#labFormula"));drawLab();
 }
-function drawSequence(){
- const c=$("#sequenceCanvas");if(!c)return;const ctx=c.getContext("2d"),w=c.width,h=c.height,n=+$("#nSlider").value;ctx.clearRect(0,0,w,h);ctx.strokeStyle="#263653";for(let x=0;x<w;x+=45){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=45){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
- const base=h-45;ctx.strokeStyle="#71819d";ctx.beginPath();ctx.moveTo(35,base);ctx.lineTo(w-15,base);ctx.stroke();ctx.fillStyle="#8d82ff";for(let k=1;k<=n;k++){const x=45+(k-1)*(w-90)/Math.max(1,n-1),y=base-(1/k)*(h-80);ctx.beginPath();ctx.arc(x,y,6,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#8d82ff";ctx.beginPath();ctx.moveTo(x,base);ctx.lineTo(x,y);ctx.stroke()}$("#nValue").textContent=n;
+function drawLab(){
+ const canvas=$("#labCanvas");if(!canvas)return;
+ const rect=canvas.getBoundingClientRect(),cssW=Math.max(320,rect.width||900),cssH=Math.max(260,Math.min(520,cssW*.51));
+ const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(cssW*dpr);canvas.height=Math.round(cssH*dpr);canvas.style.height=cssH+"px";
+ const ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);const w=cssW,h=cssH;
+ ctx.clearRect(0,0,w,h);ctx.fillStyle="#0d1928";ctx.fillRect(0,0,w,h);
+ const ox=w/2,oy=h*.56,scale=Math.min(w/7.4,h/5.1),X=x=>ox+x*scale,Y=y=>oy-y*scale;
+ ctx.strokeStyle="#263b52";ctx.lineWidth=1;
+ for(let x=-4;x<=4;x++){ctx.beginPath();ctx.moveTo(X(x),0);ctx.lineTo(X(x),h);ctx.stroke()}
+ for(let y=-3;y<=3;y++){ctx.beginPath();ctx.moveTo(0,Y(y));ctx.lineTo(w,Y(y));ctx.stroke()}
+ ctx.strokeStyle="#8aa0b8";ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(0,Y(0));ctx.lineTo(w,Y(0));ctx.moveTo(X(0),0);ctx.lineTo(X(0),h);ctx.stroke();
+ const dot=(x,y,color="#f2c879",r=5)=>{ctx.fillStyle=color;ctx.beginPath();ctx.arc(X(x),Y(y),r,0,Math.PI*2);ctx.fill()};
+ const line=(fn,a=-3,b=3,color="#85b8f4",width=3)=>{ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();let started=false;for(let i=0;i<=600;i++){const x=a+(b-a)*i/600,y=fn(x);if(!Number.isFinite(y)||Math.abs(y)>30){started=false;continue}if(!started){ctx.moveTo(X(x),Y(y));started=true}else ctx.lineTo(X(x),Y(y))}ctx.stroke()};
+ const value=+$("#labSlider").value;
+ if(labType==="sequence"){const n=Math.round(value);ctx.strokeStyle="#e0b86d";ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(0,Y(1));ctx.lineTo(w,Y(1));ctx.stroke();ctx.setLineDash([]);for(let k=1;k<=n;k++){const x=-3+6*(k-1)/Math.max(1,n-1),y=1+1/k;ctx.strokeStyle="#85b8f488";ctx.beginPath();ctx.moveTo(X(x),Y(1));ctx.lineTo(X(x),Y(y));ctx.stroke();dot(x,y,"#85b8f4",4)}}
+ else if(labType==="limit"){line(x=>x+1,-2.8,2.8);const x=1+(value/2.5);dot(x,x+1);dot(1,2,"#e0b86d",6);ctx.setLineDash([5,5]);ctx.strokeStyle="#e0b86d";ctx.beginPath();ctx.moveTo(X(x),Y(0));ctx.lineTo(X(x),Y(x+1));ctx.lineTo(X(1),Y(x+1));ctx.stroke();ctx.setLineDash([])}
+ else if(labType==="continuity"){line(x=>Math.sin(x)+.2*x);dot(value,Math.sin(value)+.2*value)}
+ else if(labType==="derivative"){const a=value,eps=.55,fa=a*a,fp=2*a;line(x=>x*x,-2.5,2.5);line(x=>fa+fp*(x-a),-2.5,2.5,"#e0b86d",2.5);const b=a+eps;line(x=>fa+((b*b-fa)/eps)*(x-a),Math.min(-2.5,a-.7),Math.max(2.5,a+1.3),"#54cbb2",1.8);dot(a,fa,"#e0b86d",6);dot(b,b*b,"#54cbb2",6)}
+ else if(labType==="integral"){const b=value;ctx.fillStyle="#4779c455";ctx.beginPath();ctx.moveTo(X(0),Y(0));for(let i=0;i<=220;i++){const x=b*i/220;ctx.lineTo(X(x),Y(x*x))}ctx.lineTo(X(b),Y(0));ctx.closePath();ctx.fill();line(x=>x*x,0,Math.max(2.8,b))}
+ else if(labType==="taylor"){const n=Math.round(value);line(x=>Math.exp(x),-2.1,2.1,"#85b8f4",3);line(x=>{let sum=0,p=1,f=1;for(let k=0;k<=n;k++){if(k){p*=x;f*=k}sum+=p/f}return sum},-1.8,1.8,"#e0b86d",2.6)}
+ else if(labType==="injectivity"){line(x=>x*x,-2.5,2.5);dot(value,value*value);dot(-value,value*value,"#e0b86d");ctx.setLineDash([5,5]);ctx.strokeStyle="#e0b86d";ctx.beginPath();ctx.moveTo(X(value),Y(0));ctx.lineTo(X(value),Y(value*value));ctx.moveTo(X(-value),Y(0));ctx.lineTo(X(-value),Y(value*value));ctx.stroke();ctx.setLineDash([])}
+ else if(labType==="determinant"||labType==="schmidt"){const angle=value*Math.PI/180,u=[2.1,0],v=[2.1*Math.cos(angle),2.1*Math.sin(angle)];if(labType==="determinant"){ctx.fillStyle="#4779c455";ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(u[0]),Y(u[1]));ctx.lineTo(X(u[0]+v[0]),Y(u[1]+v[1]));ctx.lineTo(X(v[0]),Y(v[1]));ctx.closePath();ctx.fill();ctx.strokeStyle="#85b8f4";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(u[0]),Y(u[1]));ctx.stroke();ctx.strokeStyle="#e0b86d";ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(v[0]),Y(v[1]));ctx.stroke()}else{const proj=2.1*Math.cos(angle),res=[v[0]-proj,v[1]];ctx.strokeStyle="#85b8f4";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(u[0]),Y(u[1]));ctx.stroke();ctx.strokeStyle="#e0b86d";ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(v[0]),Y(v[1]));ctx.stroke();ctx.strokeStyle="#54cbb2";ctx.beginPath();ctx.moveTo(X(proj),Y(0));ctx.lineTo(X(v[0]),Y(v[1]));ctx.stroke();ctx.setLineDash([5,4]);ctx.strokeStyle="#54cbb2";ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(res[0]),Y(res[1]));ctx.stroke();ctx.setLineDash([]);dot(res[0],res[1],"#54cbb2",5)}}
+ else if(labType==="fourier"){const n=Math.round(value);line(x=>{let sum=0;for(let k=1;k<=n;k+=2)sum+=Math.sin(k*x)/k;return 4/Math.PI*sum},-Math.PI,Math.PI,"#85b8f4",3);line(x=>x<0?-1:1,-Math.PI,Math.PI,"#e0b86d",1.6)}
+ else if(labType==="trig"){ctx.strokeStyle="#85b8f4";ctx.lineWidth=2;ctx.beginPath();ctx.arc(ox,oy,scale*1.9,0,Math.PI*2);ctx.stroke();const a=value*Math.PI/180,x=1.9*Math.cos(a),y=1.9*Math.sin(a);ctx.strokeStyle="#e0b86d";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(x),Y(y));ctx.stroke();ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(X(x),Y(0));ctx.lineTo(X(x),Y(y));ctx.moveTo(X(0),Y(y));ctx.lineTo(X(x),Y(y));ctx.stroke();ctx.setLineDash([]);dot(x,y,"#e0b86d",6)}
+ else if(labType==="eigen"){line(x=>.55*x,-3,3,"#85b8f4",2);const l=value;ctx.strokeStyle="#e0b86d";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(X(-1.5),Y(-1.5*l));ctx.lineTo(X(1.5),Y(1.5*l));ctx.stroke();dot(1,l,"#e0b86d",6)}
+ $("#labValue").textContent=value.toLocaleString("fr-FR",{maximumFractionDigits:2});
 }
-function drawVisuals(){drawDerivative();drawSequence()}
+function drawVisuals(){if($("#labType"))labSetup()}
 function renderProgressOnHome(){renderDashboard()}
 function init(){
  $$("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));$$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
  $("#mobileMenu").onclick=()=>$("#sidebar").classList.toggle("open");
- $("#resetData").onclick=()=>{if(confirm("Effacer toute la progression locale de Maths4 ?")){state=blank();save();go("home");toast("Progression réinitialisée.")}};
+ $("#resetData").onclick=()=>{if(confirm("Effacer toute la progression locale de Maths2.0 ?")){state=blank();save();go("home");toast("Progression réinitialisée.")}};
  ["courseSearch","courseCategory","courseLevel"].forEach(id=>$("#"+id).addEventListener("input",renderCourses));["exerciseSearch","exerciseCategory","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
  $("#clearChat").onclick=()=>{chatHistory=[];$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};
  $("#tutorImage").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>8*1024*1024){toast("Image limitée à 8 Mo.");return}try{chatImage=await resizeImage(f);$("#uploadName").textContent=f.name+" · prête"}catch{toast("Lecture de l'image impossible.")}};
- $("#hSlider").oninput=drawDerivative;$("#nSlider").oninput=drawSequence;
+ $("#labType").onchange=()=>{labType=$("#labType").value;labSetup()};$("#labSlider").oninput=drawLab;window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
  if(state.lastDay!==new Date().toDateString()){const yesterday=new Date(Date.now()-86400000).toDateString();state.streak=state.lastDay===yesterday?state.streak+1:1;state.lastDay=new Date().toDateString();save()}
- renderDashboard();renderPath();renderCourses();renderExercises();renderProgress();
+ renderDashboard();renderPath();renderCourses();renderExercises();renderProgress();typeset(document.body);
  if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
 }
 document.addEventListener("DOMContentLoaded",init);
