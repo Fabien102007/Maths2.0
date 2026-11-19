@@ -34,7 +34,7 @@ function mathifyTextNodes(root){
  }
 }
 const typeset=el=>{if(!el)return;mathifyTextNodes(el);if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([el]).catch(()=>{});};
-const richText=value=>esc(value).replace(/\\*\\*(.+?)\\*\\*/gs,"<strong>$1</strong>").replace(/\\n\\n/g,"</p><p>").replace(/\\n/g,"<br>");
+const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br>");
 const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
 const mastered=id=>state.attempts[id]?.independent>=2 && state.attempts[id]?.lastScore>=0.8;
@@ -108,8 +108,8 @@ function renderReviewCard(){
  $("#flipCard").onclick=()=>{reviewFlipped=!reviewFlipped;renderReviewCard();typeset($("#reviewCard"))};
  $$("#reviewCard [data-quality]").forEach(b=>b.onclick=()=>{scheduleReview(id,+b.dataset.quality,false);state.reviewCount++;reviewIndex++;reviewFlipped=false;save();if(reviewIndex>=reviewQueue.length){state.sessions++;save();renderReviewStart();toast("Session de révision terminée.")}else renderReviewCard()});typeset($("#reviewCard"));
 }
-function renderTutorMessage(text,role){const div=document.createElement("div");div.className="chat-message "+role;const b=document.createElement("b");b.textContent=role==="user"?"TOI":"MATHS2.0";const p=document.createElement("div");p.innerHTML=richText(text);div.append(b,p);typeset(div);return div}
-function addChat(role,text){chatHistory.push({role,text});const host=$("#chat");if(host.querySelector(".chat-welcome"))host.innerHTML="";host.append(renderTutorMessage(text,role));host.scrollTop=host.scrollHeight}
+function renderTutorMessage(text,role){const div=document.createElement("div");div.className="chat-message "+role;const b=document.createElement("b");b.textContent=role==="user"?"TOI":"MATHS2.0";const p=document.createElement("div");p.innerHTML=richText(text);div.append(b,p);return div}
+function addChat(role,text){chatHistory.push({role,text});const host=$("#chat");if(host.querySelector(".chat-welcome"))host.innerHTML="";host.append(renderTutorMessage(text,role));typeset(host.lastElementChild);host.scrollTop=host.scrollHeight}
 async function sendChat(){
  const text=$("#chatInput").value.trim();if(!text&&!chatImage){toast("Écris une question ou joins une photo.");return}
  const endpoint=window.MATHS4_AI_ENDPOINT;if(!endpoint){$("#tutorStatus").textContent="Endpoint du Worker non configuré.";return}
@@ -143,7 +143,7 @@ function labSetup(){
  $("#labSliderLabel").textContent=cfg.label;slider.min=cfg.min;slider.max=cfg.max;slider.step=cfg.step;slider.value=cfg.value;
  $("#labCaption").textContent=cfg.caption;$("#labFormula").innerHTML=cfg.formula;
  $("#labValue").textContent=Number(cfg.value).toLocaleString("fr-FR",{maximumFractionDigits:2});
- typeset($("#labFormula"));drawLab();
+ typeset($("#labFormula"));typeset($("#labCaption"));typeset($("#labSliderLabel"));drawLab();
 }
 function drawLab(){
  const canvas=$("#labCanvas");if(!canvas)return;
