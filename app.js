@@ -26,21 +26,39 @@ function mathifySegment(value){
 function mathifyTextNodes(root){
  if(!root||!document.createTreeWalker)return;
  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
- const nodes=[];while(walker.nextNode()){const n=walker.currentNode,p=n.parentElement;if(!p||p.closest("mjx-container,script,style,textarea,pre,code,input,option"))continue;nodes.push(n);}
- const delimiters=/(\$\$[\s\S]*?\$\$|\$[^$\n]*\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g;
+ const nodes=[];
+ while(walker.nextNode()){
+  const n=walker.currentNode,p=n.parentElement;
+  if(!p||p.closest("mjx-container,script,style,textarea,pre,code,input,option"))continue;
+  nodes.push(n);
+ }
+ const delimiters=/(\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g;
+ const looksLikeProse=value=>/[A-Za-zÀ-ÿ]{3,}\s+[A-Za-zÀ-ÿ]{3,}/u.test(value);
  for(const n of nodes){
-  const raw=n.nodeValue;
-  if(!mathSpecial.test(raw)&&!/(?:\$\$|\$|\\\(|\\\[)/.test(raw))continue;
+  const raw=n.nodeValue||"";
+  mathSpecial.lastIndex=0;
+  const hasMathSymbol=mathSpecial.test(raw);
+  if(!hasMathSymbol&&!/(?:\$\$|\$[^$\n]+\$|\\\(|\\\[)/.test(raw))continue;
   const parts=raw.split(delimiters);
-  n.nodeValue=parts.map((part,i)=>i%2?part.replace(/\\\\/g,"\\"):mathifySegment(part)).join("");
+  n.nodeValue=parts.map((part,i)=>{
+   if(i%2===0)return mathifySegment(part);
+   let formula=part.replace(/\\\\/g,"\\");
+   let display=false;
+   if(formula.startsWith("$$")&&formula.endsWith("$$")){display=true;formula=formula.slice(2,-2);}
+   else if(formula.startsWith("$")&&formula.endsWith("$"))formula=formula.slice(1,-1);
+   else if(formula.startsWith("\\[")&&formula.endsWith("\\]")){display=true;formula=formula.slice(2,-2);}
+   else if(formula.startsWith("\\(")&&formula.endsWith("\\)"))formula=formula.slice(2,-2);
+   if(looksLikeProse(formula))return mathifySegment(formula);
+   return display?"\\["+formula+"\\]":"\\("+formula+"\\)";
+  }).join("");
  }
 }
 const typeset=el=>{
  if(!el)return Promise.resolve();
- mathifyTextNodes(el);
  const ready=window.__mathJaxReady||Promise.resolve(window.MathJax||null);
  return ready.then(mj=>{
-  if(!mj?.typesetPromise)return;
+  mathifyTextNodes(el);
+  if(!mj?.typesetPromise){console.error("MathJax n'est pas disponible : les formules ne peuvent pas être rendues.");return;}
   try{mj.typesetClear?.([el]);}catch(e){}
   return mj.typesetPromise([el]);
  }).catch(error=>console.error("Erreur de rendu LaTeX :",error));
