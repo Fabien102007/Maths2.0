@@ -1,0 +1,2 @@
+// URL du Worker Cloudflare sécurisé. Le site ne contient aucune clé secrète.
+window.MATHS4_AI_ENDPOINT = window.MATHS4_AI_ENDPOINT || "https://shiny-credit-68ac.freitasaguiarfabien.workers.dev/api/tutor";
