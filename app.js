@@ -37,24 +37,8 @@ function mathifyTextNodes(root){
 }
 const typeset=el=>{if(!el)return;mathifyTextNodes(el);if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([el]).catch(()=>{});};
 const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br>");
-/* Conversion explicite des chaînes de l'onglet Exercices.
-   Les données historiques contiennent souvent des formules en Unicode brut,
-   pas des délimiteurs LaTeX : on les normalise avant insertion dans le DOM. */
-const exerciseMathText=value=>{
- let s=String(value??"");
- const map={"ℝ":"\\mathbb{R}","ℕ":"\\mathbb{N}","ℤ":"\\mathbb{Z}","ℚ":"\\mathbb{Q}","ℂ":"\\mathbb{C}","∞":"\\infty","√":"\\sqrt{}","≤":"\\leq","≥":"\\geq","≠":"\\neq","→":"\\to","↦":"\\mapsto","ε":"\\varepsilon","δ":"\\delta","ℓ":"\\ell","π":"\\pi","∈":"\\in","∉":"\\notin","∪":"\\cup","∩":"\\cap","×":"\\times","−":"-","·":"\\cdot","∑":"\\sum","∏":"\\prod","∫":"\\int","∂":"\\partial"};
- const already=s.includes("$")||s.includes("\\(")||s.includes("\\[");
- if(already)return s;
- // Convert common Unicode sub/superscripts before adding delimiters.
- s=s.replace(/([A-Za-z])([₀-₉ₐ-ₜ]+)/gu,(_,x,sub)=>x+"_{"+[...sub].map(ch=>subMap[ch]||ch).join("")+"}");
- s=s.replace(/([A-Za-z0-9)])([⁰¹²³⁴⁵⁶⁷⁸⁹]+)/gu,(_,x,sup)=>x+"^{"+[...sup].map(ch=>supMap[ch]||ch).join("")+"}");
- s=[...s].map(ch=>map[ch]||ch).join("");
- // If the text contains mathematical structure, typeset the whole expression.
- if(/[=<>]|\\\\frac|\\\\sqrt|\\\\to|\\\\mapsto|\\\\mathbb|[_^{}]|[+*/]/.test(s) && !/[A-Za-zÀ-ÿ]{4,}\\s+[A-Za-zÀ-ÿ]{4,}/.test(s))
-   return "\\\\("+s+"\\\\)";
- return s;
-};
-const exerciseRichText=value=>richText(exerciseMathText(value));
+// Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
+const exerciseRichText=value=>richText(value);
 
 const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
