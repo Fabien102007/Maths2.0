@@ -161,30 +161,50 @@ function labSetup(){
 }
 function drawLab(){
  const canvas=$("#labCanvas");if(!canvas)return;
- const rect=canvas.getBoundingClientRect(),cssW=Math.max(320,rect.width||900),cssH=Math.max(260,Math.min(520,cssW*.51));
- const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(cssW*dpr);canvas.height=Math.round(cssH*dpr);canvas.style.height=cssH+"px";
- const ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);const w=cssW,h=cssH;
- ctx.clearRect(0,0,w,h);ctx.fillStyle="#0d1928";ctx.fillRect(0,0,w,h);
- const ox=w/2,oy=h*.56,scale=Math.min(w/7.4,h/5.1),X=x=>ox+x*scale,Y=y=>oy-y*scale;
- ctx.strokeStyle="#263b52";ctx.lineWidth=1;
- for(let x=-4;x<=4;x++){ctx.beginPath();ctx.moveTo(X(x),0);ctx.lineTo(X(x),h);ctx.stroke()}
- for(let y=-3;y<=3;y++){ctx.beginPath();ctx.moveTo(0,Y(y));ctx.lineTo(w,Y(y));ctx.stroke()}
- ctx.strokeStyle="#8aa0b8";ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(0,Y(0));ctx.lineTo(w,Y(0));ctx.moveTo(X(0),0);ctx.lineTo(X(0),h);ctx.stroke();
- const dot=(x,y,color="#f2c879",r=5)=>{ctx.fillStyle=color;ctx.beginPath();ctx.arc(X(x),Y(y),r,0,Math.PI*2);ctx.fill()};
- const line=(fn,a=-3,b=3,color="#85b8f4",width=3)=>{ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();let started=false;for(let i=0;i<=600;i++){const x=a+(b-a)*i/600,y=fn(x);if(!Number.isFinite(y)||Math.abs(y)>30){started=false;continue}if(!started){ctx.moveTo(X(x),Y(y));started=true}else ctx.lineTo(X(x),Y(y))}ctx.stroke()};
- const value=+$("#labSlider").value;
- if(labType==="sequence"){const n=Math.round(value);ctx.strokeStyle="#e0b86d";ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(0,Y(1));ctx.lineTo(w,Y(1));ctx.stroke();ctx.setLineDash([]);for(let k=1;k<=n;k++){const x=-3+6*(k-1)/Math.max(1,n-1),y=1+1/k;ctx.strokeStyle="#85b8f488";ctx.beginPath();ctx.moveTo(X(x),Y(1));ctx.lineTo(X(x),Y(y));ctx.stroke();dot(x,y,"#85b8f4",4)}}
- else if(labType==="limit"){line(x=>x+1,-2.8,2.8);const x=1+(value/2.5);dot(x,x+1);dot(1,2,"#e0b86d",6);ctx.setLineDash([5,5]);ctx.strokeStyle="#e0b86d";ctx.beginPath();ctx.moveTo(X(x),Y(0));ctx.lineTo(X(x),Y(x+1));ctx.lineTo(X(1),Y(x+1));ctx.stroke();ctx.setLineDash([])}
- else if(labType==="continuity"){line(x=>Math.sin(x)+.2*x);dot(value,Math.sin(value)+.2*value)}
- else if(labType==="derivative"){const a=value,eps=.55,fa=a*a,fp=2*a;line(x=>x*x,-2.5,2.5);line(x=>fa+fp*(x-a),-2.5,2.5,"#e0b86d",2.5);const b=a+eps;line(x=>fa+((b*b-fa)/eps)*(x-a),Math.min(-2.5,a-.7),Math.max(2.5,a+1.3),"#54cbb2",1.8);dot(a,fa,"#e0b86d",6);dot(b,b*b,"#54cbb2",6)}
- else if(labType==="integral"){const b=value;ctx.fillStyle="#4779c455";ctx.beginPath();ctx.moveTo(X(0),Y(0));for(let i=0;i<=220;i++){const x=b*i/220;ctx.lineTo(X(x),Y(x*x))}ctx.lineTo(X(b),Y(0));ctx.closePath();ctx.fill();line(x=>x*x,0,Math.max(2.8,b))}
- else if(labType==="taylor"){const n=Math.round(value);line(x=>Math.exp(x),-2.1,2.1,"#85b8f4",3);line(x=>{let sum=0,p=1,f=1;for(let k=0;k<=n;k++){if(k){p*=x;f*=k}sum+=p/f}return sum},-1.8,1.8,"#e0b86d",2.6)}
- else if(labType==="injectivity"){line(x=>x*x,-2.5,2.5);dot(value,value*value);dot(-value,value*value,"#e0b86d");ctx.setLineDash([5,5]);ctx.strokeStyle="#e0b86d";ctx.beginPath();ctx.moveTo(X(value),Y(0));ctx.lineTo(X(value),Y(value*value));ctx.moveTo(X(-value),Y(0));ctx.lineTo(X(-value),Y(value*value));ctx.stroke();ctx.setLineDash([])}
- else if(labType==="determinant"||labType==="schmidt"){const angle=value*Math.PI/180,u=[2.1,0],v=[2.1*Math.cos(angle),2.1*Math.sin(angle)];if(labType==="determinant"){ctx.fillStyle="#4779c455";ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(u[0]),Y(u[1]));ctx.lineTo(X(u[0]+v[0]),Y(u[1]+v[1]));ctx.lineTo(X(v[0]),Y(v[1]));ctx.closePath();ctx.fill();ctx.strokeStyle="#85b8f4";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(u[0]),Y(u[1]));ctx.stroke();ctx.strokeStyle="#e0b86d";ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(v[0]),Y(v[1]));ctx.stroke()}else{const proj=2.1*Math.cos(angle),res=[v[0]-proj,v[1]];ctx.strokeStyle="#85b8f4";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(u[0]),Y(u[1]));ctx.stroke();ctx.strokeStyle="#e0b86d";ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(v[0]),Y(v[1]));ctx.stroke();ctx.strokeStyle="#54cbb2";ctx.beginPath();ctx.moveTo(X(proj),Y(0));ctx.lineTo(X(v[0]),Y(v[1]));ctx.stroke();ctx.setLineDash([5,4]);ctx.strokeStyle="#54cbb2";ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(res[0]),Y(res[1]));ctx.stroke();ctx.setLineDash([]);dot(res[0],res[1],"#54cbb2",5)}}
- else if(labType==="fourier"){const n=Math.round(value);line(x=>{let sum=0;for(let k=1;k<=n;k+=2)sum+=Math.sin(k*x)/k;return 4/Math.PI*sum},-Math.PI,Math.PI,"#85b8f4",3);line(x=>x<0?-1:1,-Math.PI,Math.PI,"#e0b86d",1.6)}
- else if(labType==="trig"){ctx.strokeStyle="#85b8f4";ctx.lineWidth=2;ctx.beginPath();ctx.arc(ox,oy,scale*1.9,0,Math.PI*2);ctx.stroke();const a=value*Math.PI/180,x=1.9*Math.cos(a),y=1.9*Math.sin(a);ctx.strokeStyle="#e0b86d";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(x),Y(y));ctx.stroke();ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(X(x),Y(0));ctx.lineTo(X(x),Y(y));ctx.moveTo(X(0),Y(y));ctx.lineTo(X(x),Y(y));ctx.stroke();ctx.setLineDash([]);dot(x,y,"#e0b86d",6)}
- else if(labType==="eigen"){line(x=>.55*x,-3,3,"#85b8f4",2);const l=value;ctx.strokeStyle="#e0b86d";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(X(-1.5),Y(-1.5*l));ctx.lineTo(X(1.5),Y(1.5*l));ctx.stroke();dot(1,l,"#e0b86d",6)}
- $("#labValue").textContent=value.toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
+ const rect=canvas.getBoundingClientRect(),W=Math.max(320,rect.width||900),H=Math.max(300,Math.min(560,W*.52));
+ const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);canvas.style.height=H+"px";
+ const ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);ctx.fillStyle="#0d1928";ctx.fillRect(0,0,W,H);
+ const m={l:58,r:24,t:24,b:48},pw=W-m.l-m.r,ph=H-m.t-m.b;
+ let xmin,xmax,ymin,ymax;
+ if(labType==="sequence"){xmin=0;xmax=Math.round(+$("#labSlider").value)+1;ymin=.75;ymax=2.15}
+ else if(labType==="derivative"){xmin=-2.5;xmax=2.5;ymin=-1;ymax=6.5}
+ else{xmin=-3;xmax=3;ymin=-3;ymax=3}
+ const X=x=>m.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>m.t+(ymax-y)/(ymax-ymin)*ph;
+ const grid="#263b52",axis="#91a8c0",txt="#9eb2c9";ctx.font="11px system-ui";ctx.lineWidth=1;ctx.strokeStyle=grid;ctx.fillStyle=txt;
+ const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:[-2,-1,0,1,2];
+ xt.forEach(v=>{const x=X(v);ctx.beginPath();ctx.moveTo(x,m.t);ctx.lineTo(x,m.t+ph);ctx.stroke();ctx.textAlign="center";ctx.fillText(String(v),x,H-17)});
+ yt.forEach(v=>{const y=Y(v);ctx.beginPath();ctx.moveTo(m.l,y);ctx.lineTo(m.l+pw,y);ctx.stroke();ctx.textAlign="right";ctx.fillText(String(v),m.l-9,y+4)});
+ ctx.strokeStyle=axis;ctx.lineWidth=1.5;ctx.beginPath();if(ymin<=0&&ymax>=0){ctx.moveTo(m.l,Y(0));ctx.lineTo(m.l+pw,Y(0))}if(xmin<=0&&xmax>=0){ctx.moveTo(X(0),m.t);ctx.lineTo(X(0),m.t+ph)}ctx.stroke();
+ const point=(x,y,color,r=5)=>{ctx.fillStyle=color;ctx.beginPath();ctx.arc(X(x),Y(y),r,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#081321";ctx.lineWidth=1.5;ctx.stroke()};
+ const segment=(x1,y1,x2,y2,color,width=2,dash=[])=>{ctx.beginPath();ctx.setLineDash(dash);ctx.moveTo(X(x1),Y(y1));ctx.lineTo(X(x2),Y(y2));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();ctx.setLineDash([])};
+ const curve=(fn,a,b,color,width=3)=>{ctx.beginPath();let open=false;for(let k=0;k<=800;k++){const x=a+(b-a)*k/800,y=fn(x);if(!Number.isFinite(y)||y<ymin-1||y>ymax+1){open=false;continue}if(!open){ctx.moveTo(X(x),Y(y));open=true}else ctx.lineTo(X(x),Y(y))}ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap="round";ctx.stroke()};
+ if(labType==="sequence"){
+  const N=Math.max(3,Math.round(+$("#labSlider").value));segment(0,1,N+1,1,"#e0b86d",2,[7,5]);curve(n=>1+1/n,1,N,"#80b8f4",2.5);
+  for(let n=1;n<=N;n++){segment(n,1,n,1+1/n,"#80b8f466",1,[3,4]);point(n,1+1/n,"#80b8f4",4)}
+  ctx.fillStyle="#e0b86d";ctx.textAlign="left";ctx.fillText("limite L = 1",X(Math.max(1,N*.65)),Y(1)-9);
+  $("#labLegend").innerHTML='<span><b style="color:#80b8f4">● uₙ = 1 + 1/n</b> : termes de la suite</span><span><b style="color:#e0b86d">┄ L = 1</b> : limite</span>';
+ }else if(labType==="derivative"){
+  const a=.5,h=+$("#labSlider").value,b=a+h,fa=a*a,fb=b*b;
+  curve(x=>x*x,xmin,xmax,"#80b8f4",3);curve(x=>fa+2*a*(x-a),xmin,xmax,"#e0b86d",2.5);
+  if(Math.abs(h)>.015)segment(a,fa,b,fb,"#54cbb2",2.8);
+  point(a,fa,"#e0b86d",6);point(b,fb,"#54cbb2",6);
+  ctx.fillStyle="#e0b86d";ctx.textAlign="left";ctx.fillText("A : point fixe",X(a)+9,Y(fa)-10);
+  ctx.fillStyle="#54cbb2";ctx.fillText("B : point mobile",X(b)+8,Y(fb)+17);
+  $("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe f(x)=x²</span><span style="color:#e0b86d">━ Tangente en A</span><span style="color:#54cbb2">━ Sécante AB</span>';
+ }else{
+  const v=+$("#labSlider").value;
+  if(labType==="integral"){ctx.beginPath();ctx.moveTo(X(0),Y(0));for(let k=0;k<=300;k++){const x=v*k/300;ctx.lineTo(X(x),Y(x*x))}ctx.lineTo(X(v),Y(0));ctx.closePath();ctx.fillStyle="#4779c455";ctx.fill();curve(x=>x*x,0,Math.max(2.8,v),"#80b8f4",3)}
+  else if(labType==="taylor"){const n=Math.round(v);curve(Math.exp,xmin,xmax,"#80b8f4",3);curve(x=>{let s=0,p=1,f=1;for(let k=0;k<=n;k++){if(k){p*=x;f*=k}s+=p/f}return s},xmin,xmax,"#e0b86d",2.5)}
+  else if(labType==="injectivity"){curve(x=>x*x,-2.5,2.5,"#80b8f4",3);point(v,v*v,"#80b8f4");point(-v,v*v,"#e0b86d")}
+  else if(labType==="continuity"){curve(x=>Math.sin(x)+.2*x,xmin,xmax,"#80b8f4",3);point(v,Math.sin(v)+.2*v,"#e0b86d")}
+  else if(labType==="limit"){curve(x=>x+1,xmin,xmax,"#80b8f4",3);point(1+v/2.5,2+v/2.5,"#e0b86d")}
+  else if(labType==="fourier"){curve(x=>{let s=0;for(let k=1;k<=Math.round(v);k+=2)s+=Math.sin(k*x)/k;return 4/Math.PI*s},-Math.PI,Math.PI,"#80b8f4",3)}
+  else if(labType==="eigen"){curve(x=>.55*x,xmin,xmax,"#80b8f4",2);curve(x=>v*x,xmin,xmax,"#e0b86d",3)}
+  else if(labType==="determinant"||labType==="schmidt"){const t=v*Math.PI/180;segment(0,0,2.1,0,"#80b8f4",3);segment(0,0,2.1*Math.cos(t),2.1*Math.sin(t),"#e0b86d",3)}
+  else curve(x=>x,xmin,xmax,"#80b8f4",3);
+  $("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
+ }
+ $("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
 }
 function drawVisuals(){if($("#labType"))labSetup()}
 function renderProgressOnHome(){renderDashboard()}
