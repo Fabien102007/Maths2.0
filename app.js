@@ -186,7 +186,7 @@ function init(){
  $("#labType").onchange=()=>{labType=$("#labType").value;labSetup()};$("#labSlider").oninput=drawLab;window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
  if(state.lastDay!==new Date().toDateString()){const yesterday=new Date(Date.now()-86400000).toDateString();state.streak=state.lastDay===yesterday?state.streak+1:1;state.lastDay=new Date().toDateString();save()}
  renderDashboard();renderPath();renderCourses();renderExercises();renderProgress();typeset(document.body);
- if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+ if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>reg.update()).catch(()=>{});}
 }
 document.addEventListener("DOMContentLoaded",init);
 })();
