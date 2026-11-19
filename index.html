@@ -12,8 +12,10 @@
   <script>window.MATHS4_AI_ENDPOINT="https://shiny-credit-68ac.freitasaguiarfabien.workers.dev/api/tutor";</script>
   <script>
 window.MathJax = {
- tex: { inlineMath: [['\\\\(','\\\\)'],['
-  <script defer src="data.js?v=20261119-lab"></script>
+ tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']], processEscapes: true },
+ options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
   <script defer src="app.js?v=20261119-lab"></script>
 </head>
 <body>
