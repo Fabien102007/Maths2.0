@@ -43,7 +43,7 @@ const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>"
 const exerciseMathText=value=>{
  let s=String(value??"");
  const map={"ℝ":"\\mathbb{R}","ℕ":"\\mathbb{N}","ℤ":"\\mathbb{Z}","ℚ":"\\mathbb{Q}","ℂ":"\\mathbb{C}","∞":"\\infty","√":"\\sqrt{}","≤":"\\leq","≥":"\\geq","≠":"\\neq","→":"\\to","↦":"\\mapsto","ε":"\\varepsilon","δ":"\\delta","ℓ":"\\ell","π":"\\pi","∈":"\\in","∉":"\\notin","∪":"\\cup","∩":"\\cap","×":"\\times","−":"-","·":"\\cdot","∑":"\\sum","∏":"\\prod","∫":"\\int","∂":"\\partial"};
- const already=/\\$|\\\\\\(|\\\\\\[/.test(s);
+ const already=s.includes("$")||s.includes("\\(")||s.includes("\\[");
  if(already)return s;
  // Convert common Unicode sub/superscripts before adding delimiters.
  s=s.replace(/([A-Za-z])([₀-₉ₐ-ₜ]+)/gu,(_,x,sub)=>x+"_{"+[...sub].map(ch=>subMap[ch]||ch).join("")+"}");
