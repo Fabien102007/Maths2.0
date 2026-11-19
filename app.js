@@ -63,7 +63,7 @@ const typeset=el=>{
   return mj.typesetPromise([el]);
  }).catch(error=>console.error("Erreur de rendu LaTeX :",error));
 };
-const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br>");
+const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
 // Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
 const exerciseRichText=value=>richText(value);
 
