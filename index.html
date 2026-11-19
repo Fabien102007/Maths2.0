@@ -16,8 +16,25 @@ window.MathJax = {
  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
 };
 </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-  <script defer src="app.js?v=20261119-redeploy2"></script>
+  <script>
+window.__mathJaxReady = new Promise(resolve => {
+  const sources = [
+    "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"
+  ];
+  let index = 0;
+  const loadNext = () => {
+    if (index >= sources.length) { console.error("MathJax indisponible sur les deux CDN."); resolve(null); return; }
+    const script = document.createElement("script");
+    script.src = sources[index++];
+    script.onload = () => Promise.resolve(window.MathJax?.startup?.promise).then(() => resolve(window.MathJax)).catch(() => resolve(null));
+    script.onerror = loadNext;
+    document.head.appendChild(script);
+  };
+  loadNext();
+});
+</script>
+  <script defer src="app.js?v=20261119-mathjax-loader1"></script>
 </head>
 <body>
 <div class="app-shell">
