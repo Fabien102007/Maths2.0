@@ -48,7 +48,7 @@ window.EXERCISES = [
     "title": "Limites et convergence — Avancé · Exercice 03",
     "question": "Soit $(u_n)$ définie par $u_0=0$ et $u_{n+1}=\\sqrt{2+u_n}$. Montrer que $(u_n)$ converge et calculer sa limite.",
     "hints": [
-      "Partir de √uₙ<ε, équivalent à uₙ<ε²."
+      "Utiliser l'encadrement 0≤uₙ≤2, puis montrer que la suite est croissante."
     ],
     "answer": "**1. Invariance d'un intervalle.** On montre par récurrence que $0\\leq u_n\\leq 2$. C'est vrai pour $n=0$. Si $0\\leq u_n\\leq2$, alors $2\\leq2+u_n\\leq4$, donc $0\\leq u_{n+1}=\\sqrt{2+u_n}\\leq2$. La propriété est établie pour tout $n$.\n\n**2. Monotonie.** Pour $x\\in[0,2]$, les deux membres étant positifs, $\\sqrt{2+x}\\geq x$ équivaut à $2+x\\geq x^2$, soit $(2-x)(x+1)\\geq0$. Ainsi $u_{n+1}\\geq u_n$. La suite est croissante et majorée par $2$ ; le théorème de convergence monotone assure l'existence de $\\ell\\in[0,2]$ tel que $u_n\\to\\ell$.\n\n**3. Détermination de la limite.** La fonction racine carrée est continue sur $[0,+\\infty[$. En passant à la limite dans la relation de récurrence, $\\ell=\\sqrt{2+\\ell}$. En élevant au carré, $\\ell^2-\\ell-2=0$, donc $(\\ell-2)(\\ell+1)=0$. Comme $\\ell\\geq0$, on obtient $\\boxed{\\ell=2}$.",
     "solutionSteps": [],
@@ -610,7 +610,7 @@ window.EXERCISES = [
     "hints": [
       "Utiliser uₙvₙ−ℓm=uₙ(vₙ−m)+m(uₙ−ℓ)."
     ],
-    "answer": "Comme $(u_n)$ converge, elle est bornée : il existe $C>0$ et $N_0$ tels que $|u_n|\\leq C$ pour $n\\geq N_0$.\n\nPour tout $n\\geq N_0$, on écrit\n\\[\nu_nv_n-\\ell m=u_n(v_n-m)+m(u_n-\\ell).\n\\]\nD'où\n\\[\n|u_nv_n-\\ell m|\\leq C|v_n-m|+|m|,|u_n-\\ell|.\n\\]\nSoit $\\varepsilon>0$. Puisque $v_n\\to m$, il existe $N_1$ tel que $n\\geq N_1$ implique $|v_n-m|<\\varepsilon/(2(C+1))$. Puisque $u_n\\to\\ell$, il existe $N_2$ tel que $n\\geq N_2$ implique $|u_n-\\ell|<\\varepsilon/(2(|m|+1))$.\n\nPour $n\\geq N=\\max(N_0,N_1,N_2)$, on obtient $|u_nv_n-\\ell m|<\\varepsilon/2+\\varepsilon/2=\\varepsilon$. Donc\n\\[\n\\boxed{u_nv_n\\longrightarrow\\ell m}.\n\\]",
+    "answer": "Comme $(u_n)$ converge, elle est bornée : il existe $C>0$ et $N_0$ tels que $|u_n|\\leq C$ pour $n\\geq N_0$.\n\nPour tout $n\\geq N_0$, on écrit\n\\[\nu_nv_n-\\ell m=u_n(v_n-m)+m(u_n-\\ell).\n\\]\nD'où\n\\[\n|u_nv_n-\\ell m|\\leq C|v_n-m|+|m|\\,|u_n-\\ell|.\n\\]\nSoit $\\varepsilon>0$. Puisque $v_n\\to m$, il existe $N_1$ tel que $n\\geq N_1$ implique $|v_n-m|<\\varepsilon/(2(C+1))$. Puisque $u_n\\to\\ell$, il existe $N_2$ tel que $n\\geq N_2$ implique $|u_n-\\ell|<\\varepsilon/(2(|m|+1))$.\n\nPour $n\\geq N=\\max(N_0,N_1,N_2)$, on obtient $|u_nv_n-\\ell m|<\\varepsilon/2+\\varepsilon/2=\\varepsilon$. Donc\n\\[\n\\boxed{u_nv_n\\longrightarrow\\ell m}.\n\\]",
     "solutionSteps": [],
     "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
   },
@@ -802,11 +802,11 @@ window.EXERCISES = [
     "category": "Analyse",
     "difficulty": "Avancé",
     "title": "Dérivation — Avancé · Exercice 57",
-    "question": "Soit $f:[a,b]\\to\\mathbb R$ continue sur $[a,b]$, dérivable sur $]a,b[$, et telle que $f(a)=f(b)=0$. Montrer qu'il existe $c\\in]a,b[$ tel que $f'(c)=0, puis préciser pourquoi l'hypothèse $f(a)=f(b)$ est essentielle.",
+    "question": "Soit $f:[a,b]\\to\\mathbb R$ continue sur $[a,b]$, dérivable sur $]a,b[$, et telle que $f(a)=f(b)=0$. Montrer qu'il existe $c\\in]a,b[$ tel que $f'(c)=0$, puis préciser pourquoi l'hypothèse $f(a)=f(b)$ est essentielle.",
     "hints": [
       "Appliquer Rolle et construire un contre-exemple lorsque les valeurs aux bornes sont différentes."
     ],
-    "answer": "**Existence.** Les hypothèses du théorème de Rolle sont exactement réunies : continuité sur le segment, dérivabilité à l'intérieur et égalité des valeurs aux extrémités. Il existe donc $c\\in]a,b[$ tel que $f'(c)=0.\n\n**Rôle de l'égalité aux bornes.** Elle ne peut être supprimée : sur $[0,1]$, la fonction $f(x)=x$ est continue et dérivable, mais $f'(x)=1$ pour tout $x$. Il n'existe donc aucun $c$ tel que $f'(c)=0$. ",
+    "answer": "**Existence.** Les hypothèses du théorème de Rolle sont exactement réunies : continuité sur le segment, dérivabilité à l'intérieur et égalité des valeurs aux extrémités. Il existe donc $c\\in]a,b[$ tel que $f'(c)=0$.\n\n**Rôle de l'égalité aux bornes.** Elle ne peut être supprimée : sur $[0,1]$, la fonction $f(x)=x$ est continue et dérivable, mais $f'(x)=1$ pour tout $x$. Il n'existe donc aucun $c$ tel que $f'(c)=0$. ",
     "solutionSteps": [],
     "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
   },
