@@ -27,10 +27,11 @@ function mathifyTextNodes(root){
  if(!root||!document.createTreeWalker)return;
  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
  const nodes=[];while(walker.nextNode()){const n=walker.currentNode,p=n.parentElement;if(!p||p.closest("mjx-container,script,style,textarea,pre,code,input,option"))continue;nodes.push(n);}
+ const delimiters=/(\$\$[\s\S]*?\$\$|\$[^$\n]*\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g;
  for(const n of nodes){
-  const raw=n.nodeValue;if(!mathSpecial.test(raw))continue;mathSpecial.lastIndex=0;
-  const parts=raw.split(/(\$\$[\\s\\S]*?\\$\\$|\\$[^$]*\\$|\\\\\\([\\s\\S]*?\\\\\\)|\\\\\\[[\\s\\S]*?\\\\\\])/g);
-  n.nodeValue=parts.map((part,i)=>i%2?part:mathifySegment(part)).join("");
+  const raw=n.nodeValue;if(!mathSpecial.test(raw))continue;
+  const parts=raw.split(delimiters);
+  n.nodeValue=parts.map((part,i)=>i%2?part.replace(/\\\\{2,}/g,"\\"):mathifySegment(part)).join("");
  }
 }
 const typeset=el=>{if(!el)return;mathifyTextNodes(el);if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([el]).catch(()=>{});};
