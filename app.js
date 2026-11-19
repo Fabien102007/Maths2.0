@@ -37,6 +37,25 @@ function mathifyTextNodes(root){
 }
 const typeset=el=>{if(!el)return;mathifyTextNodes(el);if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([el]).catch(()=>{});};
 const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br>");
+/* Conversion explicite des chaînes de l'onglet Exercices.
+   Les données historiques contiennent souvent des formules en Unicode brut,
+   pas des délimiteurs LaTeX : on les normalise avant insertion dans le DOM. */
+const exerciseMathText=value=>{
+ let s=String(value??"");
+ const map={"ℝ":"\\mathbb{R}","ℕ":"\\mathbb{N}","ℤ":"\\mathbb{Z}","ℚ":"\\mathbb{Q}","ℂ":"\\mathbb{C}","∞":"\\infty","√":"\\sqrt{}","≤":"\\leq","≥":"\\geq","≠":"\\neq","→":"\\to","↦":"\\mapsto","ε":"\\varepsilon","δ":"\\delta","ℓ":"\\ell","π":"\\pi","∈":"\\in","∉":"\\notin","∪":"\\cup","∩":"\\cap","×":"\\times","−":"-","·":"\\cdot","∑":"\\sum","∏":"\\prod","∫":"\\int","∂":"\\partial"};
+ const already=/\\$|\\\\\\(|\\\\\\[/.test(s);
+ if(already)return s;
+ // Convert common Unicode sub/superscripts before adding delimiters.
+ s=s.replace(/([A-Za-z])([₀-₉ₐ-ₜ]+)/gu,(_,x,sub)=>x+"_{"+[...sub].map(ch=>subMap[ch]||ch).join("")+"}");
+ s=s.replace(/([A-Za-z0-9)])([⁰¹²³⁴⁵⁶⁷⁸⁹]+)/gu,(_,x,sup)=>x+"^{"+[...sup].map(ch=>supMap[ch]||ch).join("")+"}");
+ s=[...s].map(ch=>map[ch]||ch).join("");
+ // If the text contains mathematical structure, typeset the whole expression.
+ if(/[=<>]|\\\\frac|\\\\sqrt|\\\\to|\\\\mapsto|\\\\mathbb|[_^{}]|[+*/]/.test(s) && !/[A-Za-zÀ-ÿ]{4,}\\s+[A-Za-zÀ-ÿ]{4,}/.test(s))
+   return "\\\\("+s+"\\\\)";
+ return s;
+};
+const exerciseRichText=value=>richText(exerciseMathText(value));
+
 const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
 const mastered=id=>state.attempts[id]?.independent>=2 && state.attempts[id]?.lastScore>=0.8;
@@ -84,9 +103,9 @@ function renderExercises(){
 function openExercise(id){activeExercise=id;renderExercises()}
 function renderExercise(id){
  const e=EXERCISES.find(x=>x.id===id);if(!e)return;
- $("#exerciseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${richText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…"></textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
- let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${richText(hints[h++])}</p>`;typeset($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
- $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content"><p>${richText(e.answer)}</p>${(e.solutionSteps||[]).map((s,i)=>`<p><b>Étape ${i+1}.</b> ${richText(s)}</p>`).join("")}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typeset($("#solutionBox"))};
+ $("#exerciseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${exerciseRichText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…"></textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
+ let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${exerciseRichText(hints[h++])}</p>`;typeset($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
+ $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content"><p>${exerciseRichText(e.answer)}</p>${(e.solutionSteps||[]).map((s,i)=>`<p><b>Étape ${i+1}.</b> ${exerciseRichText(s)}</p>`).join("")}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typeset($("#solutionBox"))};
  $(".rating-btn").forEach(b=>b.onclick=()=>recordAttempt(e,+b.dataset.score));
  typeset($("#exerciseDetail"));
 }
