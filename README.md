@@ -1,10 +1,10 @@
-# Maths4 — Learning Studio
+# Maths2.0 — Learning Studio
 
-Nouvelle version de Maths4, application web progressive (PWA) en français, sans compilation.
+Nouvelle version de Maths2.0, application web progressive (PWA) en français, sans compilation.
 
 ## Déploiement GitHub Pages
 1. Décompresser l'archive.
-2. Importer **tout le contenu** du dossier `Maths4_Nouvelle_Version` à la racine du dépôt GitHub Pages.
+2. Importer **tout le contenu** du dossier `Maths2.0` à la racine du dépôt GitHub Pages.
 3. Vérifier dans Settings → Pages que la publication utilise la branche `main` et le dossier `/ (root)`.
 4. Ouvrir le site et effectuer un rechargement forcé (Ctrl+F5).
 
@@ -12,11 +12,11 @@ Nouvelle version de Maths4, application web progressive (PWA) en français, sans
 - Tableau de bord avec indicateurs de progression.
 - Diagnostic de départ et recommandation de prochaine notion.
 - Cours filtrables en analyse et algèbre.
-- Exercices filtrables par thème et difficulté, indices progressifs, corrections et auto-évaluation.
+- 61 exercices repris de Maths4, filtrables par thème et difficulté, avec indices progressifs, corrections détaillées sur fond vert et auto-évaluation.
 - Progression locale par notion et validation de maîtrise après plusieurs réussites autonomes.
 - Révisions espacées avec trois niveaux de rappel.
 - Tuteur IA avec quatre modes et envoi de photos manuscrites.
-- Laboratoire visuel interactif : sécante/tangente et convergence de la suite 1/n.
+- Laboratoire visuel interactif : 12 expériences en analyse, algèbre et géométrie (limites, dérivation, intégrales, Taylor, injectivité, déterminants, Gram-Schmidt, Fourier, trigonométrie, valeurs propres).
 - Installation PWA et cache hors ligne des fichiers essentiels.
 
 ## Tuteur IA
