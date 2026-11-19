@@ -1,4 +1,4 @@
-const CACHE = "maths2-runtime-v10";
+const CACHE = "maths2-runtime-v11";
 const CORE = ["./", "./index.html", "./style.css", "./app.js", "./data.js", "./manifest.webmanifest", "./assets/icon.svg"];
 
 self.addEventListener("install", event => {
