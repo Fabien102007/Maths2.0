@@ -7,17 +7,17 @@ let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||
 let activeTopic=null,activeExercise=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 const save=()=>{localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const mathMap={"ℝ":"\\\\mathbb{R}","ℕ":"\\\\mathbb{N}","ℤ":"\\\\mathbb{Z}","ℚ":"\\\\mathbb{Q}","ℂ":"\\\\mathbb{C}","∈":"\\\\in","∉":"\\\\notin","∀":"\\\\forall","∃":"\\\\exists","⇒":"\\\\Rightarrow","⇔":"\\\\Leftrightarrow","→":"\\\\to","←":"\\\\leftarrow","≤":"\\\\leq","≥":"\\\\geq","≠":"\\\\neq","≈":"\\\\approx","∞":"\\\\infty","∑":"\\\\sum","∏":"\\\\prod","∫":"\\\\int","√":"\\\\sqrt{}","∂":"\\\\partial","∇":"\\\\nabla","λ":"\\\\lambda","μ":"\\\\mu","ε":"\\\\varepsilon","π":"\\\\pi","θ":"\\\\theta","α":"\\\\alpha","β":"\\\\beta","γ":"\\\\gamma","Δ":"\\\\Delta","ℓ":"\\\\ell","×":"\\\\times","·":"\\\\cdot","÷":"\\\\div","±":"\\\\pm","‖":"\\\\Vert","∥":"\\\\parallel","∩":"\\\\cap","∪":"\\\\cup","⊂":"\\\\subset","⊆":"\\\\subseteq","∅":"\\\\varnothing"};
+const mathMap={"ℝ":"\\mathbb{R}","ℕ":"\\mathbb{N}","ℤ":"\\mathbb{Z}","ℚ":"\\mathbb{Q}","ℂ":"\\mathbb{C}","∈":"\\in","∉":"\\notin","∀":"\\forall","∃":"\\exists","⇒":"\\Rightarrow","⇔":"\\Leftrightarrow","→":"\\to","←":"\\leftarrow","≤":"\\leq","≥":"\\geq","≠":"\\neq","≈":"\\approx","∞":"\\infty","∑":"\\sum","∏":"\\prod","∫":"\\int","√":"\\sqrt{}","∂":"\\partial","∇":"\\nabla","λ":"\\lambda","μ":"\\mu","ε":"\\varepsilon","π":"\\pi","θ":"\\theta","α":"\\alpha","β":"\\beta","γ":"\\gamma","Δ":"\\Delta","ℓ":"\\ell","×":"\\times","·":"\\cdot","÷":"\\div","±":"\\pm","‖":"\\Vert","∥":"\\parallel","∩":"\\cap","∪":"\\cup","⊂":"\\subset","⊆":"\\subseteq","∅":"\\varnothing"};
 const subMap={"₀":"0","₁":"1","₂":"2","₃":"3","₄":"4","₅":"5","₆":"6","₇":"7","₈":"8","₉":"9","ₐ":"a","ₑ":"e","ₕ":"h","ᵢ":"i","ⱼ":"j","ₖ":"k","ₗ":"l","ₘ":"m","ₙ":"n","ₒ":"o","ₚ":"p","ᵣ":"r","ₛ":"s","ₜ":"t"};
 const supMap={"⁰":"0","¹":"1","²":"2","³":"3","⁴":"4","⁵":"5","⁶":"6","⁷":"7","⁸":"8","⁹":"9","⁺":"+","⁻":"-","⁼":"="};
 function mathifySegment(value){
- const token=/[A-Za-z0-9₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]+(?:[=+\\-*\\/^_()[\\]{}.,:<>|]+[A-Za-z0-9₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]+)*/gu;
+ const token=/[A-Za-z0-9₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]+(?:[=+*\/^_.,:<>|(){}-]+[A-Za-z0-9₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]+)*/gu;
  return value.replace(token,part=>{
   if(!/[₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]/u.test(part))return part;
   let t=part.replace(/([A-Za-z])([₀-₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜ]+)/gu,(_,v,sub)=>v+"_{"+[...sub].map(c=>subMap[c]||c).join("")+"}");
   t=t.replace(/([A-Za-z0-9])([⁰-⁹⁺⁻⁼]+)/gu,(_,v,sup)=>v+"^{"+[...sup].map(c=>supMap[c]||c).join("")+"}");
   t=[...t].map(c=>mathMap[c]||c).join("");
-  return "\\\\("+t+"\\\\)";
+  return "\\("+t+"\\)";
  });
 }
 function mathifyTextNodes(root){
@@ -26,12 +26,12 @@ function mathifyTextNodes(root){
  const nodes=[];while(walker.nextNode()){const n=walker.currentNode,p=n.parentElement;if(!p||p.closest("mjx-container,script,style,textarea,pre,code,input,option"))continue;nodes.push(n);}
  for(const n of nodes){
   const raw=n.nodeValue;if(!/[₀-₉ₐ-ₜ⁰-⁹⁺⁻⁼ℝℕℤℚℂ∈∉∀∃⇒⇔→←≤≥≠≈∞∑∏∫√∂∇λμεπθαβγΔℓ×·÷±‖∥∩∪⊂⊆∅]/u.test(raw))continue;
-  const parts=raw.split(/(\\\\\([^]*?\\\\\)|\\\\\[[^]*?\\\\\]|\\$[^$]*\\$)/g);
+  const parts=raw.split(/(\\\([^]*?\\\)|\\\[[^]*?\\\]|\$[^$]*\$)/g);
   n.nodeValue=parts.map((part,i)=>i%2?part:mathifySegment(part)).join("");
  }
 }
 const typeset=el=>{if(!el)return;mathifyTextNodes(el);if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([el]).catch(()=>{});};
-const richText=value=>esc(value).replace(/\\*\\*(.+?)\\*\\*/gs,"<strong>$1</strong>").replace(/\\n\\n/g,"</p><p>").replace(/\\n/g,"<br>");
+const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br>");
 const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
 const mastered=id=>state.attempts[id]?.independent>=2 && state.attempts[id]?.lastScore>=0.8;
