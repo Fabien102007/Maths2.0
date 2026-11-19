@@ -204,7 +204,7 @@ function drawLab(){
   else curve(x=>x,xmin,xmax,"#80b8f4",3);
   $("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
  }
- $("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
+ typeset($("#labLegend"));$("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
 }
 function drawVisuals(){if($("#labType"))labSetup()}
 function renderProgressOnHome(){renderDashboard()}
