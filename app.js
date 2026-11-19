@@ -35,7 +35,16 @@ function mathifyTextNodes(root){
   n.nodeValue=parts.map((part,i)=>i%2?part.replace(/\\\\/g,"\\"):mathifySegment(part)).join("");
  }
 }
-const typeset=el=>{if(!el)return;mathifyTextNodes(el);if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([el]).catch(()=>{});};
+const typeset=el=>{
+ if(!el)return Promise.resolve();
+ mathifyTextNodes(el);
+ const ready=window.__mathJaxReady||Promise.resolve(window.MathJax||null);
+ return ready.then(mj=>{
+  if(!mj?.typesetPromise)return;
+  try{mj.typesetClear?.([el]);}catch(e){}
+  return mj.typesetPromise([el]);
+ }).catch(error=>console.error("Erreur de rendu LaTeX :",error));
+};
 const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br>");
 // Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
 const exerciseRichText=value=>richText(value);
