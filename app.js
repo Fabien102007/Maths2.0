@@ -35,19 +35,21 @@ function mathifyTextNodes(root){
  const delimiters=/(\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g;
  const looksLikeProse=value=>/[A-Za-zÀ-ÿ]{3,}\s+[A-Za-zÀ-ÿ]{3,}/u.test(value);
  for(const n of nodes){
-  const raw=n.nodeValue||"";
+  // Normalise les délimiteurs LaTeX doublés sans modifier les \\ de mise en page.
+  const raw=(n.nodeValue||"").replace(/(?:\\){2,}(?=[()]|\[|\])/g,"\\");
   mathSpecial.lastIndex=0;
   const hasMathSymbol=mathSpecial.test(raw);
   if(!hasMathSymbol&&!/(?:\$\$|\$[^$\n]+\$|\\\(|\\\[)/.test(raw))continue;
   const parts=raw.split(delimiters);
   n.nodeValue=parts.map((part,i)=>{
    if(i%2===0)return mathifySegment(part);
-   let formula=part.replace(/\\\\/g,"\\");
+   let formula=part;
    let display=false;
    if(formula.startsWith("$$")&&formula.endsWith("$$")){display=true;formula=formula.slice(2,-2);}
    else if(formula.startsWith("$")&&formula.endsWith("$"))formula=formula.slice(1,-1);
    else if(formula.startsWith("\\[")&&formula.endsWith("\\]")){display=true;formula=formula.slice(2,-2);}
    else if(formula.startsWith("\\(")&&formula.endsWith("\\)"))formula=formula.slice(2,-2);
+   // Un énoncé entier reste du texte ; seuls les fragments mathématiques sont convertis.
    if(looksLikeProse(formula))return mathifySegment(formula);
    return display?"\\["+formula+"\\]":"\\("+formula+"\\)";
   }).join("");
@@ -240,6 +242,8 @@ function drawLab(){
 function drawVisuals(){if($("#labType"))labSetup()}
 function renderProgressOnHome(){renderDashboard()}
 function init(){
+  if(window.__maths20InitDone)return;
+  window.__maths20InitDone=true;
  $$("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));$$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
  $("#mobileMenu").onclick=()=>$("#sidebar").classList.toggle("open");
  $("#resetData").onclick=()=>{if(confirm("Effacer toute la progression locale de Maths2.0 ?")){state=blank();save();go("home");toast("Progression réinitialisée.")}};
