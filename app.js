@@ -154,7 +154,7 @@ function renderLabGuide(){
 function labSetup(){
  const cfg=LABS[labType],slider=$("#labSlider");
  $("#labSliderLabel").textContent=cfg.label;slider.min=cfg.min;slider.max=cfg.max;slider.step=cfg.step;slider.value=cfg.value;
- $("#labCaption").textContent=cfg.caption;$("#labFormula").innerHTML=cfg.formula;
+ $("#labCaption").textContent=cfg.caption;$("#labFormula").innerHTML=cfg.formula.replace(/\\\\/g,"\\");
  $("#labValue").textContent=Number(cfg.value).toLocaleString("fr-FR",{maximumFractionDigits:2});
  typeset($("#labFormula"));typeset($("#labCaption"));typeset($("#labSliderLabel"));renderLabGuide();drawLab();
 }
@@ -196,7 +196,7 @@ function init(){
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
  $("#clearChat").onclick=()=>{chatHistory=[];$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};
  $("#tutorImage").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>8*1024*1024){toast("Image limitée à 8 Mo.");return}try{chatImage=await resizeImage(f);$("#uploadName").textContent=f.name+" · prête"}catch{toast("Lecture de l'image impossible.")}};
- $("#labType").onchange=()=>{labType=$("#labType").value;labSetup()};$("#labSlider").oninput=drawLab;window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
+ const labSelect=$("#labType");if(labSelect){const seen=new Set();[...labSelect.options].forEach(option=>{if(seen.has(option.value))option.remove();else seen.add(option.value)});labType=labSelect.value||"derivative";}labSelect.onchange=()=>{labType=labSelect.value;labSetup()};$("#labSlider").oninput=drawLab;window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
  if(state.lastDay!==new Date().toDateString()){const yesterday=new Date(Date.now()-86400000).toDateString();state.streak=state.lastDay===yesterday?state.streak+1:1;state.lastDay=new Date().toDateString();save()}
  renderDashboard();renderPath();renderCourses();renderExercises();renderProgress();typeset(document.body);
  if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>reg.update()).catch(()=>{});}
