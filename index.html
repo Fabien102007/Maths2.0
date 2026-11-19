@@ -91,11 +91,11 @@ window.MathJax = {
     </section>
 
     <section class="view" id="view-visuals">
-      <div class="page-intro"><div class="eyebrow">MATHÉMATIQUES EN MOUVEMENT</div><h1>Laboratoire visuel</h1><p>Douze expériences interactives pour voir les objets mathématiques évoluer. Change les paramètres, observe les phénomènes et relie l'image aux formules.</p></div>
+      <div class="page-intro"><div class="eyebrow">MATHÉMATIQUES EN MOUVEMENT</div><h1>Laboratoire visuel</h1><p>Des expériences interactives guidées pour comprendre les objets mathématiques, étape par étape. Change les paramètres, observe les phénomènes et relie l'image aux formules.</p></div>
       <div class="lab-shell panel">
         <div class="lab-toolbar">
           <label for="labType">Expérience mathématique</label>
-          <select id="labType"><optgroup label="Comprendre les idées fondamentales"><option value="sequence">Convergence : les termes se rapprochent-ils ?</option><option value="derivative" selected>Dérivée : de la sécante à la tangente</option><option value="integral">Intégrale : accumuler une aire</option><option value="schmidt">Gram–Schmidt : fabriquer un vecteur orthogonal</option></optgroup></select>
+          <select id="labType"><optgroup label="Comprendre les idées fondamentales"><option value="sequence" selected>Convergence : les termes se rapprochent-ils ?</option><option value="derivative">Dérivée : de la sécante à la tangente</option><option value="integral">Intégrale : accumuler une aire</option><option value="schmidt">Gram–Schmidt : fabriquer un vecteur orthogonal</option></optgroup></select>
         </div>
         <div class="lab-canvas-wrap"><canvas id="labCanvas" width="1100" height="560" aria-label="Visualisation mathématique interactive"></canvas><div class="lab-legend" id="labLegend"></div></div>
         <div class="lab-controls"><div class="lab-control-label"><label id="labSliderLabel" for="labSlider">Paramètre</label><strong id="labValue">0,70</strong></div><input type="range" id="labSlider" min="-2" max="2" step="0.05" value="0.7"><p id="labCaption" class="lab-caption"></p></div>
