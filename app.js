@@ -250,6 +250,7 @@ function drawLab(){
     curve(x=>x*x,0,3.02,"#80b8f4",3.5);segment(b,0,b,b*b,"#e0b86d",2,[6,4]);point(b,b*b,"#e0b86d",6);point(b,0,"#e0b86d",4);
     ctx.fillStyle="#e8edf5";ctx.font="bold 14px system-ui";ctx.textAlign="left";ctx.fillText("A(b) = b³/3 ≈ "+area.toFixed(2).replace(".",","),m.l+12,m.t+19);
     ctx.fillStyle="#f0c77c";ctx.font="bold 12px system-ui";ctx.fillText("b = "+b.toFixed(2).replace(".",","),X(b)+8,Y(0)+18);
+    $("#labLegend").innerHTML='<span style="color:#80b8f4">● f(x)=x² et aire exacte</span><span style="color:#e0b86d">▧ Rectangles : somme de Riemann</span><span style="color:#e0b86d">┆ Borne b</span>';
    }
   else if(labType==="taylor"){const n=Math.round(v);curve(Math.exp,xmin,xmax,"#80b8f4",3);curve(x=>{let s=0,p=1,f=1;for(let k=0;k<=n;k++){if(k){p*=x;f*=k}s+=p/f}return s},xmin,xmax,"#e0b86d",2.5)}
   else if(labType==="injectivity"){curve(x=>x*x,-2.5,2.5,"#80b8f4",3);point(v,v*v,"#80b8f4");point(-v,v*v,"#e0b86d")}
@@ -266,9 +267,10 @@ function drawLab(){
     point(0,0,"#e8edf5",4);point(v1[0],v1[1],"#80b8f4",5);point(v2[0],v2[1],"#f2a45b",5);
     ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillStyle="#80b8f4";ctx.fillText("v₁",X(v1[0])+7,Y(v1[1])-7);ctx.fillStyle="#f2a45b";ctx.fillText("v₂",X(v2[0])+7,Y(v2[1])-7);ctx.fillStyle="#e0b86d";ctx.fillText("projection",X(p[0])+7,Y(p[1])-8);ctx.fillStyle="#54c99b";ctx.fillText("w₂",X((p[0]+v2[0])/2)+7,Y((p[1]+v2[1])/2)-8);
     ctx.fillStyle="#e8edf5";ctx.font="12px system-ui";ctx.fillText("v₂ = projᵥ₁(v₂) + w₂",m.l+8,m.t+16);ctx.fillText("⟨v₁,w₂⟩ = 0",m.l+8,m.t+32);
+    $("#labLegend").innerHTML='<span style="color:#80b8f4">→ v₁ : direction initiale</span><span style="color:#f2a45b">→ v₂ : vecteur à décomposer</span><span style="color:#e0b86d">→ projection parallèle</span><span style="color:#54c99b">→ w₂ : composante orthogonale</span>';
    }
   else curve(x=>x,xmin,xmax,"#80b8f4",3);
-  $("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
+  if(labType!=="integral"&&labType!=="schmidt")$("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
  }
  typeset($("#labLegend"));$("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
 }
