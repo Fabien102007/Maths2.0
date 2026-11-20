@@ -2,7 +2,7 @@
 "use strict";
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const KEY="maths4_studio_v1";
-const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},sessions:0,reviewCount:0,lastDay:"",streak:0,diagnostic:null});
+const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,diagnostic:null});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
 let activeTopic=null,activeExercise=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 const save=()=>{localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();};
@@ -104,13 +104,40 @@ function renderDashboard(){
  $("#todayLabel").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
  const next=chooseNextTopic();$("#dailyTitle").textContent=next?"Travailler : "+next.title:"Entretenir tes acquis";$("#dailyDescription").textContent=next?next.summary:"Toutes les notions ont été travaillées. Profite de cette séance pour consolider les notions déjà vues.";$("#bigProgress").textContent=pct+"%";$("#bigProgressBar").style.width=pct+"%";
 }
-function chooseNextTopic(){const due=dueTopics()[0];if(due)return due;return TOPICS.find(t=>!mastered(t.id))||TOPICS[0]}
+function chooseNextTopic(){
+ const due=dueTopics().sort((a,b)=>(state.reviews[a.id]?.due||0)-(state.reviews[b.id]?.due||0))[0];
+ if(due)return due;
+ const remaining=TOPICS.filter(t=>!mastered(t.id));
+ if(!remaining.length)return TOPICS[0];
+ const diagnostic=state.diagnostic?.topics||{};
+ const priority=t=>{
+  let score=0;
+  if(diagnostic[t.id]===false)score-=5;
+  const a=state.attempts[t.id];
+  if(a)score+=(a.lastScore??0)*3-Math.log1p(a.total||0);
+  const prerequisites=t.prerequisites||[];
+  score+=prerequisites.filter(p=>!mastered(p)).length*2;
+  return score;
+ };
+ return remaining.sort((a,b)=>priority(a)-priority(b))[0];
+}
 function renderPath(){
  const host=$("#diagnosticArea"),rec=$("#pathRecommendation");rec.innerHTML="";
  if(!state.diagnostic){$("#pathTitle").textContent="Diagnostic de départ";$("#pathText").textContent="Réponds à quelques questions pour identifier tes points d'appui. Ce diagnostic ne note pas ton niveau : il oriente simplement ton parcours.";
- const qs=[{q:"Si uₙ=1/n, quelle est sa limite lorsque n tend vers +∞ ?",a:["0","1","+∞"],correct:0,topic:"limits"},{q:"Une fonction dérivable en a est nécessairement…",a:["continue en a","bornée sur R","strictement croissante"],correct:0,topic:"derivative"},{q:"Une famille libre de n vecteurs dans un espace de dimension n est…",a:["une base","toujours orthogonale","vide"],correct:0,topic:"basis"},{q:"Une matrice carrée est inversible lorsque…",a:["son déterminant est non nul","tous ses coefficients sont positifs","sa trace vaut 1"],correct:0,topic:"matrices"}];
+ const qs=[
+ {q:"Si uₙ=1/n, quelle est sa limite lorsque n tend vers +∞ ?",a:["0","1","+∞"],correct:0,topic:"limits"},
+ {q:"Une fonction dérivable en a est nécessairement…",a:["continue en a","bornée sur R","strictement croissante"],correct:0,topic:"derivative"},
+ {q:"Une famille libre de n vecteurs dans un espace de dimension n est…",a:["une base","toujours orthogonale","vide"],correct:0,topic:"basis"},
+ {q:"Une matrice carrée est inversible lorsque…",a:["son déterminant est non nul","tous ses coefficients sont positifs","sa trace vaut 1"],correct:0,topic:"matrices"},
+ {q:"La période fondamentale de cos(2x) est…",a:["π","2π","π/2"],correct:0,topic:"trigonometry"},
+ {q:"Le module de 3−4i vaut…",a:["5","7","1"],correct:0,topic:"complex"},
+ {q:"Pour un dé équilibré, la probabilité d'obtenir 6 vaut…",a:["1/6","1/2","1/3"],correct:0,topic:"probability"},
+ {q:"Si deux vecteurs ont un produit scalaire nul, ils sont…",a:["orthogonaux","colinéaires","égaux"],correct:0,topic:"vector-spaces"},
+ {q:"La série géométrique Σqⁿ converge lorsque…",a:["|q|<1","q>1","q=1"],correct:0,topic:"series"},
+ {q:"Le développement de eˣ à l'ordre 1 en 0 commence par…",a:["1+x","x²","1−x"],correct:0,topic:"taylor"}
+ ];;
  host.innerHTML='<div class="diagnostic-questions">'+qs.map((q,i)=>`<div class="diagnostic-q"><b>${i+1}. ${q.q}</b><div>${q.a.map((a,j)=>`<label><input type="radio" name="dq${i}" value="${j}"> ${a}</label>`).join("")}</div></div>`).join("")+'</div><button class="btn primary" id="submitDiagnostic">Analyser mes réponses →</button>';
- typeset(host);$("#submitDiagnostic").onclick=()=>{let score=0,by={};qs.forEach((q,i)=>{const v=$(`input[name="dq${i}"]:checked`);if(v&&+v.value===q.correct){score++;by[q.topic]=true}});state.diagnostic={score,total:qs.length,at:Date.now(),topics:by};save();renderPath();toast("Diagnostic enregistré.")};return;
+ typeset(host);$("#submitDiagnostic").onclick=()=>{let score=0,by={};qs.forEach((q,i)=>{const v=$(`input[name="dq${i}"]:checked`),ok=!!v&&+v.value===q.correct;if(ok)score++;by[q.topic]=ok});state.diagnostic={score,total:qs.length,at:Date.now(),topics:by};save();renderPath();toast("Diagnostic enregistré.")};return;
  }
  const d=state.diagnostic;$("#pathTitle").textContent="Ton parcours est initialisé";$("#pathText").textContent=`Diagnostic : ${d.score}/${d.total}. Ce résultat est un point de départ, pas une étiquette.`;
  const next=chooseNextTopic();host.innerHTML=`<div class="diagnostic-result"><div class="result-score">${Math.round(100*d.score/d.total)}<small>%</small></div><div><b>Une première photographie de tes acquis</b><p>Les résultats servent à choisir les notions à travailler, puis seront affinés par tes exercices.</p></div></div>`;
@@ -119,7 +146,7 @@ function renderPath(){
 }
 function renderCourses(){
  const q=$("#courseSearch").value.toLowerCase(),cat=$("#courseCategory").value,lev=$("#courseLevel").value;
- const list=TOPICS.filter(t=>(!q||(t.title+" "+t.summary).toLowerCase().includes(q))&&(cat==="all"||t.category===cat)&&(lev==="all"||t.level===lev));
+ const list=TOPICS.filter(t=>(!q||(t.title+" "+t.summary+" "+(t.chapter||"")).toLowerCase().includes(q))&&(cat==="all"||t.category===cat)&&(lev==="all"||t.level===lev));
  $("#courseList").innerHTML=list.map(t=>`<button class="course-item ${activeTopic===t.id?"selected":""}" data-topic="${t.id}"><span class="course-symbol">${t.category==="Analyse"?"∫":"∑"}</span><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${esc(t.level)}</small></span><i>${mastered(t.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucune notion trouvée.</p>';
  $$("#courseList [data-topic]").forEach(b=>b.onclick=()=>openTopic(b.dataset.topic));
  if(activeTopic&&topic(activeTopic))renderTopic(activeTopic);
@@ -127,7 +154,7 @@ function renderCourses(){
 function openTopic(id){activeTopic=id;renderCourses()}
 function renderTopic(id){
  const t=topic(id);if(!t)return;const ex=EXERCISES.find(e=>e.id===t.exerciseId);
- $("#courseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(t.category)} · ${esc(t.level)}</span>${mastered(id)?'<span class="mastered-label">✓ Maîtrisée</span>':''}</div><h2>${esc(t.title)}</h2><p class="lead">${esc(t.summary)}</p><h3>Définitions essentielles</h3>${t.definitions.map(d=>`<div class="definition"><b>${d[0]}</b><p>${d[1]}</p></div>`).join("")}<h3>Propriétés à connaître</h3><ul class="property-list">${t.properties.map(p=>`<li>${p}</li>`).join("")}</ul><h3>Exemple détaillé</h3><div class="example-box">${t.example}</div><div class="detail-actions"><button class="btn primary" id="topicExercise">S'entraîner sur cette notion →</button><button class="btn ghost" id="topicReview">Ajouter aux révisions</button></div>`;
+ $("#courseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(t.category)} · ${esc(t.level)}</span>${mastered(id)?'<span class="mastered-label">✓ Maîtrisée</span>':''}</div><h2>${esc(t.title)}</h2><p class="lead">${esc(t.summary)}</p><p class="course-meta">${esc(t.chapter||t.category)} · ${esc(t.level)} · ${EXERCISES.filter(e=>e.topic===id).length} exercice(s)</p><h3>Définitions essentielles</h3>${t.definitions.map(d=>`<div class="definition"><b>${d[0]}</b><p>${d[1]}</p></div>`).join("")}<h3>Propriétés à connaître</h3><ul class="property-list">${t.properties.map(p=>`<li>${p}</li>`).join("")}</ul><h3>Exemple détaillé</h3><div class="example-box">${t.example}</div><div class="detail-actions"><button class="btn primary" id="topicExercise">S'entraîner sur cette notion →</button><button class="btn ghost" id="topicReview">Ajouter aux révisions</button></div>`;
  $("#topicExercise").onclick=()=>{go("exercises");openExercise(t.exerciseId)};$("#topicReview").onclick=()=>scheduleReview(id,1);typeset($("#courseDetail"));
 }
 function renderExercises(){
@@ -141,8 +168,9 @@ function renderExercises(){
 function openExercise(id){activeExercise=id;renderExercises()}
 function renderExercise(id){
  const e=EXERCISES.find(x=>x.id===id);if(!e)return;
- $("#exerciseDetail").innerHTML=`<button class="exercise-back" id="exerciseBack" type="button">← Tous les exercices</button><div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${exerciseRichText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…"></textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
+ $("#exerciseDetail").innerHTML=`<button class="exercise-back" id="exerciseBack" type="button">← Tous les exercices</button><div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${exerciseRichText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…">${esc(state.drafts?.[id]||"")}</textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
  $("#exerciseBack").onclick=()=>{activeExercise=null;renderExercises()};
+ $("#selfAnswer").addEventListener("input",()=>{state.drafts=state.drafts||{};state.drafts[id]=$("#selfAnswer").value;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){console.warn("Sauvegarde locale indisponible",e)}});
   let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${exerciseRichText(hints[h++])}</p>`;typesetExercise($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
  $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content"><p>${exerciseRichText(e.answer)}</p>${(e.solutionSteps||[]).map((s,i)=>`<p><b>Étape ${i+1}.</b> ${exerciseRichText(s)}</p>`).join("")}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typesetExercise($("#solutionBox"))};
  $$(".rating-btn").forEach(b=>b.onclick=()=>recordAttempt(e,+b.dataset.score));
@@ -153,11 +181,20 @@ function renderExercise(id){
  });
 }
 function recordAttempt(e,score){
- const a=state.attempts[e.topic]||{independent:0,total:0,lastScore:0};a.total++;a.lastScore=score/2;if(score===2)a.independent++;else if(score===0)a.independent=0;state.attempts[e.topic]=a;
+ const a=state.attempts[e.topic]||{independent:0,total:0,lastScore:0};a.total++;a.lastScore=score/2;if(score===2)a.independent++;else a.independent=0;state.attempts[e.topic]=a;
  if(score===2&&!state.solved.includes(e.id))state.solved.push(e.id);
- scheduleReview(e.topic,score===2?3:1,false);save();toast(score===2?"Réussite enregistrée. Continue à consolider !":"Tentative enregistrée : la notion reviendra dans ton parcours.");
+ scheduleReview(e.topic,score===2?3:score===1?2:1,false);save();toast(score===2?"Réussite enregistrée. Continue à consolider !":"Tentative enregistrée : la notion reviendra dans ton parcours.");
 }
-function scheduleReview(id,quality=1,notify=true){const days=quality>=3?7:quality===2?3:1;state.reviews[id]={due:Date.now()+days*86400000,interval:days};save();if(notify)toast("Notion ajoutée aux révisions.");}
+function scheduleReview(id,quality=1,notify=true){
+ const previous=state.reviews[id]||{interval:0,repetitions:0};
+ let days;
+ if(quality<=1)days=1;
+ else if(quality===2)days=Math.max(3,Math.round((previous.interval||1)*1.5));
+ else days=Math.max(7,Math.round((previous.interval||3)*2.2));
+ const repetitions=quality<=1?0:(previous.repetitions||0)+1;
+ state.reviews[id]={due:Date.now()+days*86400000,interval:days,repetitions,lastQuality:quality};
+ save();if(notify)toast("Révision reprogrammée dans "+days+" jour(s).");
+}
 function renderProgress(){
  const pct=Math.round(100*TOPICS.filter(t=>mastered(t.id)).length/TOPICS.length);$("#bigProgress").textContent=pct+"%";$("#bigProgressBar").style.width=pct+"%";$("#pSolved").textContent=state.solved.length;$("#pSessions").textContent=state.sessions;$("#pReviews").textContent=state.reviewCount;
  $("#masteryList").innerHTML=TOPICS.map(t=>{const a=state.attempts[t.id]||{};const score=Math.round((a.lastScore||0)*100);return `<div class="mastery-row"><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${a.total||0} tentative(s)</small></span><div class="mini-track"><i style="width:${score}%"></i></div><strong>${mastered(t.id)?"Maîtrisée":score+"%"}</strong></div>`}).join("");
