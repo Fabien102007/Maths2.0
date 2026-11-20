@@ -12,7 +12,7 @@
  const open=document.getElementById("accountOpen");
  const close=document.getElementById("accountClose");
  if(!modal||!open)return;
- let client=null,session=null;
+ let client=null,session=null,syncTimer=null;
  const ready=()=>!!(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase?.createClient);
  const message=t=>{if(status)status.textContent=t};
  const show=()=>{modal.hidden=false;document.getElementById("accountEmail")?.focus()};
@@ -104,5 +104,5 @@
    try{const data=await callWorker("/api/portal");if(data.url)location.href=data.url;}
    catch(e){message(e.message);}
  });
- window.Maths2Account={sync:syncProgress,checkout:async()=>callWorker("/api/checkout")};
+ window.Maths2Account={sync:syncProgress,scheduleSync:()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncProgress(),1800)},checkout:async()=>callWorker("/api/checkout")};
 })();
