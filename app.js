@@ -87,7 +87,7 @@ const exerciseRichText=value=>{
    else if(formula.startsWith("$")&&formula.endsWith("$"))formula=formula.slice(1,-1);
    else if(formula.startsWith("\\[")&&formula.endsWith("\\]")){display=true;formula=formula.slice(2,-2);}
    else if(formula.startsWith("\\(")&&formula.endsWith("\\)"))formula=formula.slice(2,-2);
-   return display?"$$"+formula+"$$":"$"+formula+"$";
+   return display?"\\\\["+formula+"\\\\]":"\\\\("+formula+"\\\\)";
   }
   return mathifySegment(esc(part));
  }).join("").replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
