@@ -74,7 +74,7 @@ const exerciseRichText=value=>{
  return parts.map((part,i)=>{
   if(i%2===1){
    let formula=part,display=false;
-   if(formula.startsWith("$")&&formula.endsWith("$")){display=true;formula=formula.slice(2,-2);}
+   if(formula.startsWith("$$")&&formula.endsWith("$$")){display=true;formula=formula.slice(2,-2);}
    else if(formula.startsWith("$")&&formula.endsWith("$"))formula=formula.slice(1,-1);
    else if(formula.startsWith("\\[")&&formula.endsWith("\\]")){display=true;formula=formula.slice(2,-2);}
    else if(formula.startsWith("\\(")&&formula.endsWith("\\)"))formula=formula.slice(2,-2);
