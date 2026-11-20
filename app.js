@@ -229,8 +229,8 @@ function labSetup(){
 }
 
 const SURFACE_FUNCTIONS={
- paraboloid:{label:"Paraboloïde",formula:"\\\\(f(x,y)=x^2+y^2\\\\)",caption:"Un minimum au point (0,0). La hauteur augmente dans toutes les directions à mesure que l'on s'éloigne de l'origine.",fn:(x,y)=>.34*(x*x+y*y)-1.1},
- saddle:{label:"Selle",formula:"\\\\(f(x,y)=x^2-y^2\\\\)",caption:"Une selle : la fonction augmente dans la direction x et diminue dans la direction y. L'origine est un point selle, pas un extremum local.",fn:(x,y)=>.34*(x*x-y*y)},
+ paraboloid:{label:"Paraboloïde",formula:"\\\\(f(x,y)=0.34(x^2+y^2)\\\\)",caption:"Un minimum au point (0,0). La hauteur augmente dans toutes les directions à mesure que l'on s'éloigne de l'origine.",fn:(x,y)=>.34*(x*x+y*y)},
+ saddle:{label:"Selle",formula:"\\\\(f(x,y)=0.34(x^2-y^2)\\\\)",caption:"Une selle : la fonction augmente dans la direction x et diminue dans la direction y. L'origine est un point selle, pas un extremum local.",fn:(x,y)=>.34*(x*x-y*y)},
  wave:{label:"Surface ondulée",formula:"\\\\(f(x,y)=1.2\\sin(x)\\cos(y)\\\\)",caption:"Une surface périodique avec alternance de bosses et de creux. Observe les lignes de niveau et les symétries.",fn:(x,y)=>1.2*Math.sin(x)*Math.cos(y)},
  gaussian:{label:"Gaussienne",formula:"\\\\(f(x,y)=2e^{-0.7(x^2+y^2)}\\\\)",caption:"Une bosse centrée à l'origine qui décroît rapidement vers 0 lorsqu'on s'éloigne du centre.",fn:(x,y)=>2*Math.exp(-.7*(x*x+y*y))}
 };
