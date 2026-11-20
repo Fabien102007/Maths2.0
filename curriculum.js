@@ -98,4 +98,68 @@ const fixes={
 "m4-55":"||x||≤||x−y||+||y|| donne ||x||−||y||≤||x−y||. En échangeant x et y, on obtient l'inégalité opposée ; donc |||x||−||y|||≤||x−y||."
 };
 for(const [id,answer] of Object.entries(fixes)) if(byId[id]) byId[id].answer=answer;
+
+/* Compléter les corrections de démonstration et rendre les indices réellement progressifs. */
+const expandedAnswers={
+"m4-11":"La fonction exp est continue sur [a,b] et dérivable sur ]a,b[. Par le théorème des accroissements finis, il existe c∈]a,b[ tel que eᵇ−eᵃ=eᶜ(b−a). Comme a≤c≤b et que exp est croissante, eᶜ≤eᵇ. Puisque b−a≥0, on obtient 0≤eᵇ−eᵃ≤eᵇ(b−a), ce qui donne l'inégalité demandée.",
+"m4-31":"La fonction cos est de période fondamentale 2π. Pour cos(4x), une période T vérifie cos(4(x+T))=cos(4x), donc 4T doit être un multiple de 2π. La plus petite période strictement positive est donc T=2π/4=π/2.",
+"m4-32":"La fonction exponentielle est de classe C∞ et ses dérivées successives sont toutes égales à exp. En 0, f(0)=f'(0)=f''(0)=1. La formule de Taylor-Young à l'ordre 2 donne eˣ=1+x+x²/2+o(x²) lorsque x tend vers 0.",
+"m4-35":"Dans R, le théorème de Heine-Borel affirme qu'une partie est compacte si et seulement si elle est fermée et bornée. Le segment [0,1] est borné et fermé (il contient ses deux extrémités). Il est donc compact.",
+"m4-36":"La ligne de niveau de valeur 1 est l'ensemble des couples (x,y) tels que f(x,y)=1. Ici cela équivaut à x²+y²=1, équation du cercle de centre (0,0) et de rayon 1.",
+"m4-37":"Considérons φ(x,y,z)=x−y+2z. C'est une forme linéaire non nulle, donc son rang vaut 1. L'ensemble H est son noyau. Par le théorème du rang, dim(H)=dim(R³)−rg(φ)=3−1=2.",
+"m4-42":"On calcule uₙ−5/2=(5n−2)/(2n+3)−5/2=−19/[2(2n+3)]. Ainsi |uₙ−5/2|=19/[2(2n+3)]≤19/(4n). Soit ε>0. Choisissons N entier tel que N>19/(4ε). Pour tout n≥N, |uₙ−5/2|≤19/(4n)≤19/(4N)<ε. La définition de la convergence est vérifiée : uₙ→5/2.",
+"m4-47":"Posons φ(x,y,z)=x+y+z. Cette forme linéaire est telle que F=ker(φ), donc F est un sous-espace. L'équation x+y+z=0 donne z=−x−y, d'où (x,y,z)=x(1,0,−1)+y(0,1,−1). La famille proposée engendre F. Elle est libre car λ(1,0,−1)+μ(0,1,−1)=0 impose λ=μ=0. C'est donc une base de F.",
+"m4-50":"On normalise d'abord v₁=(1,1) : e₁=(1/√2,1/√2). La projection de v₂=(1,0) sur e₁ vaut ⟨v₂,e₁⟩e₁=(1/2,1/2). Le résidu est w₂=(1/2,−1/2), de norme 1/√2. Après normalisation, e₂=(1/√2,−1/√2). La famille (e₁,e₂) est orthonormée.",
+"m4-52":"La matrice est triangulaire supérieure, donc ses valeurs propres sont 2 et 3. Pour λ=2, résoudre (A−2I)(x,y)=0 donne y=0 : E₂=Vect((1,0)). Pour λ=3, on obtient y=x : E₃=Vect((1,1)). Les deux vecteurs propres sont indépendants, donc forment une base. A est diagonalisable."
+};
+for(const [id,answer] of Object.entries(expandedAnswers)){const e=window.EXERCISES.find(x=>x.id===id);if(e)e.answer=answer;}
+const secondHint={
+limits:"Écris |uₙ−ℓ|, puis cherche un rang N qui rende cette quantité inférieure à ε.",
+continuity:"Calcule la limite de f(x) quand x tend vers a, puis compare-la à f(a).",
+derivative:"Identifie la règle de dérivation ou le théorème qui relie la dérivée à la propriété demandée.",
+integrals:"Trouve une primitive sur l'intervalle, puis applique F(b)−F(a).",
+series:"Commence par tester le terme général, puis choisis un critère adapté à la série.",
+"vector-spaces":"Vérifie que le vecteur nul appartient à l'ensemble, puis teste la stabilité par combinaison linéaire.",
+basis:"Traduis la liberté par une combinaison linéaire nulle et la génération par une décomposition quelconque.",
+"linear-maps":"Applique la définition à deux vecteurs quelconques et deux scalaires arbitraires.",
+matrices:"Écris la matrice ou le déterminant explicitement avant d'effectuer les calculs.",
+eigenvalues:"Commence par résoudre det(A−λI)=0, puis calcule chaque sous-espace propre.",
+trigonometry:"Place les angles sur le cercle trigonométrique et utilise les symétries et périodicités.",
+taylor:"Écris le DL connu avec un ordre suffisant et conserve le premier terme non nul.",
+compactness:"Vérifie séparément les propriétés de fermeture et de bornitude, ou applique le théorème adapté.",
+multivariable:"Écris l'équation f(x,y)=c ou calcule les dérivées partielles en maintenant l'autre variable fixe.",
+complex:"Sépare partie réelle et partie imaginaire, et remplace systématiquement i² par −1.",
+polynomials:"Teste les valeurs candidates et utilise le théorème du facteur ou du reste.",
+"linear-systems":"Choisis une inconnue à éliminer et effectue la même opération sur les deux membres.",
+probability:"Définis précisément les événements et vérifie si la situation est équiprobable, conditionnelle ou indépendante.",
+"differential-equations":"Reconnais la forme de l'équation, écris la solution générale, puis applique les conditions initiales.",
+euclidean:"Calcule d'abord les produits scalaires et les normes ; vérifie ensuite l'orthogonalité."
+};
+const checkByTopic={
+limits:"Vérifie que le rang choisi dépend bien de ε et que l'inégalité est vraie pour tout n≥N.",
+continuity:"Vérifie que la limite existe et qu'elle est égale à la valeur de la fonction au point.",
+derivative:"Vérifie le domaine de dérivabilité et justifie le théorème ou la règle utilisée.",
+integrals:"Vérifie que la primitive est correcte et respecte l'ordre des bornes.",
+series:"Ne confonds pas la condition nécessaire uₙ→0 avec un critère suffisant de convergence.",
+"vector-spaces":"Vérifie le vecteur nul et la stabilité par combinaison linéaire.",
+basis:"Vérifie séparément la liberté et le caractère générateur.",
+"linear-maps":"Les deux scalaires et les deux vecteurs doivent être arbitraires.",
+matrices:"Contrôle les signes et l'ordre des coefficients dans le déterminant.",
+eigenvalues:"Vérifie que chaque vecteur propre est non nul et appartient bien au noyau A−λI.",
+trigonometry:"Vérifie les solutions sur l'intervalle demandé et n'oublie pas la périodicité.",
+taylor:"Vérifie que le reste est bien un petit o de l'ordre demandé.",
+compactness:"Cite précisément le critère de compacité ou le théorème utilisé.",
+multivariable:"Distingue bien les variables fixées et les variables qui varient.",
+complex:"Vérifie séparément les parties réelle et imaginaire.",
+polynomials:"Contrôle le degré, la multiplicité et le reste de division.",
+"linear-systems":"Réinjecte la solution dans toutes les équations du système.",
+probability:"Vérifie que les probabilités sont comprises entre 0 et 1 et que le conditionnement est défini.",
+"differential-equations":"Dérive la solution obtenue et vérifie les conditions initiales.",
+euclidean:"Vérifie le produit scalaire, la norme et l'orthogonalité utilisés."
+};
+for(const e of window.EXERCISES){
+ const h2=secondHint[e.topic];
+ if(h2&&(!Array.isArray(e.hints)||e.hints.length<2))e.hints=[...(e.hints||[]),h2];
+ if(checkByTopic[e.topic])e.check=checkByTopic[e.topic];
+}
 })();
