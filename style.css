@@ -83,3 +83,57 @@ body{background:radial-gradient(ellipse at 78% -18%,rgba(65,88,160,.24),transpar
 .lab-animate{min-height:42px}.lab-animate[hidden],#surfaceFunctionWrap[hidden]{display:none}
 .lab-canvas-wrap canvas{touch-action:pan-y;cursor:grab}.lab-canvas-wrap canvas:active{cursor:grabbing}
 @media(max-width:760px){.lab-toolbar{align-items:stretch}.lab-select-group{min-width:100%}.lab-animate{width:100%}}
+
+
+/* === Compact exercise workspace === */
+#view-exercises{padding-top:18px}
+#view-exercises .page-intro{margin:0 0 15px}
+#view-exercises .page-intro h1{font-size:31px;margin:5px 0}
+#view-exercises .page-intro p{margin:0;font-size:12px}
+#view-exercises .filters{position:sticky;top:8px;z-index:5;margin:0 0 12px;padding:9px;background:rgba(8,14,27,.94);border:1px solid rgba(120,145,190,.13);border-radius:14px;backdrop-filter:blur(14px)}
+#view-exercises .exercise-layout{grid-template-columns:minmax(235px,.72fr) minmax(0,1.65fr);gap:13px;align-items:start}
+#view-exercises .exercise-list{max-height:calc(100vh - 205px);overflow:auto;overscroll-behavior:contain;padding:2px 5px 2px 0;scrollbar-width:thin;scrollbar-color:#3a4c70 transparent}
+#view-exercises .exercise-item{padding:10px 12px;border-radius:11px;gap:4px 8px}
+#view-exercises .exercise-item b{font-size:11px;line-height:1.4}
+#view-exercises .exercise-item small{font-size:9px}
+#view-exercises .exercise-detail{position:sticky;top:8px;max-height:calc(100vh - 105px);min-height:0;overflow:auto;overscroll-behavior:contain;padding:19px 22px;scrollbar-width:thin;scrollbar-color:#3a4c70 transparent}
+#view-exercises .exercise-detail h2{font-size:21px;margin:0 0 10px}
+#view-exercises .detail-top{margin-bottom:10px}
+#view-exercises .question-box{margin:8px 0 12px;padding:15px 17px;font-size:13px;line-height:1.65}
+.question-label{font-size:9px;font-weight:800;letter-spacing:1.4px;color:#9fafff;margin-bottom:7px}
+#view-exercises .answer-area label{margin:10px 0 6px}
+#view-exercises .answer-area label span{color:var(--muted);font-weight:400}
+#view-exercises .answer-area textarea{min-height:66px;max-height:130px;resize:vertical;padding:10px}
+#view-exercises .exercise-actions{margin:8px 0;flex-wrap:wrap}
+#view-exercises .self-check{margin-top:12px;padding:12px}
+#view-exercises .self-check p{margin:4px 0 9px}
+.exercise-back{display:none}
+#view-exercises .exercise-detail::-webkit-scrollbar,#view-exercises .exercise-list::-webkit-scrollbar{width:6px}
+#view-exercises .exercise-detail::-webkit-scrollbar-thumb,#view-exercises .exercise-list::-webkit-scrollbar-thumb{background:#354767;border-radius:9px}
+
+/* === Smooth, genuine 3D flashcard flip === */
+#reviewCard{perspective:1200px}
+.flashcard{position:relative;display:block;min-height:250px;border:0;background:transparent;padding:0;perspective:1200px;transform:none;transition:none;overflow:visible}
+.flashcard:hover{transform:none;filter:none}
+.flashcard-inner{position:relative;display:block;width:100%;min-height:250px;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.72,.22,1);will-change:transform}
+.flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+.flashcard-face{position:absolute;inset:0;min-height:250px;padding:30px 25px;border:1px solid #55518c;border-radius:20px;background:radial-gradient(circle at 82% 0,rgba(100,87,190,.35),transparent 43%),linear-gradient(145deg,#192844,#101a30 78%);color:#f4f6ff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 18px 45px rgba(0,0,0,.2)}
+.flashcard-back{transform:rotateY(180deg);background:radial-gradient(circle at 15% 0,rgba(57,164,177,.2),transparent 45%),linear-gradient(145deg,#142b3b,#101a30 78%);border-color:#397b83}
+.flashcard-face strong{font:700 clamp(17px,2vw,22px)/1.55 Manrope;max-width:650px}
+.flashcard-face small{font-size:9px;letter-spacing:1.6px;color:#aaa1ff}
+.flashcard-back small{color:#75d6d2}
+.flashcard-face>span{font-size:10px;color:#8fa0bd;letter-spacing:0}
+.flashcard-prompt{margin:2px 0 14px}
+.review-rating{animation:ratingIn .25s ease both}
+.review-rating[hidden]{display:none}
+@keyframes ratingIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@media(max-width:800px){
+ #view-exercises .exercise-layout{grid-template-columns:1fr}
+ #view-exercises .exercise-list{max-height:calc(100vh - 255px)}
+ #view-exercises .exercise-detail{display:none;position:relative;top:auto;max-height:none;overflow:visible}
+ #view-exercises .exercise-layout.exercise-open .exercise-list{display:none}
+ #view-exercises .exercise-layout.exercise-open .exercise-detail{display:block}
+ .exercise-back{display:inline-flex;align-items:center;border:0;background:transparent;color:#a99fff;padding:0 0 14px;font-size:11px;font-weight:700}
+ .flashcard,.flashcard-inner,.flashcard-face{min-height:225px}
+}
+@media(prefers-reduced-motion:reduce){.flashcard-inner,.review-rating{transition:none;animation:none}}
