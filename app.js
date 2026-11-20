@@ -135,7 +135,7 @@ function renderExercises(){
  const list=EXERCISES.filter(e=>(!q||(e.title+" "+e.question).toLowerCase().includes(q))&&(cat==="all"||e.category===cat)&&(diff==="all"||e.difficulty===diff));
  $("#exerciseList").innerHTML=list.map(e=>`<button class="exercise-item ${activeExercise===e.id?"selected":""}" data-ex="${e.id}"><span class="difficulty ${e.difficulty.toLowerCase()}">${e.difficulty}</span><b>${esc(e.title)}</b><small>${esc(topic(e.topic)?.title||"")}</small><i>${state.solved.includes(e.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucun exercice correspondant.</p>';
  $(".exercise-layout").classList.toggle("exercise-open",!!activeExercise);
-  $("#exerciseList [data-ex]").forEach(b=>b.onclick=()=>openExercise(b.dataset.ex));
+  $$("#exerciseList [data-ex]").forEach(b=>b.onclick=()=>openExercise(b.dataset.ex));
  if(activeExercise&&EXERCISES.some(e=>e.id===activeExercise))renderExercise(activeExercise);
 }
 function openExercise(id){activeExercise=id;renderExercises()}
