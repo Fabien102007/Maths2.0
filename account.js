@@ -30,16 +30,20 @@
      const local=JSON.parse(localStorage.getItem("maths4_studio_v1")||"{}");
      const {data,error}=await client.from("user_progress").select("state,updated_at").eq("user_id",session.user.id).maybeSingle();
      if(error)throw error;
-     if(data?.state){
-       const localDate=local.updatedAt||"1970-01-01";
-       const cloudDate=data.updated_at||"1970-01-01";
-       if(new Date(cloudDate)>new Date(localDate)){
-         const merged={...data.state,...local};
-         localStorage.setItem("maths4_studio_v1",JSON.stringify(merged));
-       }
+     const localDate=local.updatedAt||"1970-01-01";
+     const cloudDate=data?.updated_at||"1970-01-01";
+     if(data?.state&&new Date(cloudDate)>new Date(localDate)){
+       localStorage.setItem("maths4_studio_v1",JSON.stringify(data.state));
+       message("Une progression cloud plus récente a été restaurée. Recharge l'application pour l'afficher.");
+     }else{
+       const now=new Date().toISOString();
+       const {error:upsertError}=await client.from("user_progress").upsert({user_id:session.user.id,state:{...local,updatedAt:now},updated_at:now},{onConflict:"user_id"});
+       if(upsertError)throw upsertError;
+       message("Connecté : progression synchronisée avec ton compte.");
      }
-     await client.from("user_progress").upsert({user_id:session.user.id,state:{...local,updatedAt:new Date().toISOString()},updated_at:new Date().toISOString()},{onConflict:"user_id"});
-     message("Connecté : progression synchronisée avec ton compte.");
+     const sub=await callWorker("/api/subscription");
+     const plan=document.getElementById("accountPlanStatus");
+     if(plan)plan.textContent=sub.active?"Maths2.0 Premium · abonnement "+sub.status:"Offre gratuite";
    }catch(e){message("Compte connecté, mais synchronisation non terminée : "+e.message);}
  };
  const refresh=async(s)=>{
@@ -79,6 +83,19 @@
    if(error){message(error.message);return;}
    message(data.session?"Compte créé.":"Compte créé : vérifie ton e-mail pour confirmer l'inscription.");
    if(data.session)await refresh(data.session);
+ });
+ document.getElementById("accountUpgrade")?.addEventListener("click",async()=>{
+   try{const data=await callWorker("/api/checkout");if(data.url)location.href=data.url;}
+   catch(e){message(e.message);}
+ });
+ document.getElementById("feedbackSend")?.addEventListener("click",async()=>{
+   const messageText=document.getElementById("feedbackMessage").value.trim();
+   if(messageText.length<5){message("Écris un retour d'au moins 5 caractères.");return;}
+   try{
+     await callWorker("/api/feedback",{category:document.getElementById("feedbackCategory").value,rating:Number(document.getElementById("feedbackRating").value),message:messageText});
+     document.getElementById("feedbackMessage").value="";
+     message("Merci ! Ton retour a bien été transmis à l'équipe Maths2.0.");
+   }catch(e){message(e.message);}
  });
  document.getElementById("accountSignOut")?.addEventListener("click",async()=>{await client?.auth.signOut();await refresh(null)});
  document.getElementById("accountManagePlan")?.addEventListener("click",async()=>{
