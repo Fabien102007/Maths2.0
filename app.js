@@ -197,7 +197,9 @@ const LABS={
  schmidt:{label:"Angle entre v₁ et v₂",min:10,max:170,step:1,value:55,caption:"La projection de v₂ sur v₁ est retirée : le résidu obtenu est orthogonal à v₁.",formula:"\\\\(w_2=v_2-\\frac{\\langle v_2,v_1\\rangle}{\\|v_1\\|^2}v_1,\\quad \\langle w_2,v_1\\rangle=0\\\\)"},
  fourier:{label:"Nombre d'harmoniques",min:1,max:21,step:2,value:5,caption:"La somme des harmoniques impaires approche une onde carrée. Observe les oscillations près des discontinuités.",formula:"\\\\(S_n(x)=\\frac4\\pi\\sum_{k=0}^{n}\\frac{\\sin((2k+1)x)}{2k+1}\\\\)"},
  trig:{label:"Angle θ (degrés)",min:0,max:360,step:1,value:45,caption:"Le point mobile parcourt le cercle unité. Ses coordonnées sont le cosinus et le sinus de l'angle.",formula:"\\\\((\\cos\\theta,\\sin\\theta),\\quad \\cos^2\\theta+\\sin^2\\theta=1\\\\)"},
- eigen:{label:"Valeur propre λ",min:-2,max:4,step:0.1,value:2,caption:"Une direction propre reste stable par l'application : le vecteur est simplement multiplié par λ.",formula:"\\\\(Av=\\lambda v,\\quad v\\ne0\\\\)"}
+ eigen:{label:"Valeur propre λ",min:-2,max:4,step:0.1,value:2,caption:"Une direction propre reste stable par l'application : le vecteur est simplement multiplié par λ.",formula:"\\\\(Av=\\lambda v,\\quad v\\ne0\\\\)"},
+ surface3d:{label:"Angle de vue",min:-180,max:180,step:1,value:-38,caption:"Explore une surface z=f(x,y). Fais glisser le curseur ou déplace directement la vue à la souris pour observer les reliefs.",formula:"\\\\(z=f(x,y)\\\\)"},
+ complex3d:{label:"Vitesse angulaire ω",min:0.5,max:2.5,step:0.1,value:1,caption:"L'exponentielle complexe décrit une rotation uniforme dans le plan complexe. En ajoutant le temps comme troisième axe, la trajectoire devient une hélice.",formula:"\\\\(e^{i\\omega t}=\\cos(\\omega t)+i\\sin(\\omega t)\\\\)"}
 };
 let labType="derivative";
 function renderLabGuide(){
@@ -206,7 +208,9 @@ function renderLabGuide(){
   sequence:{title:"Voir une suite converger",text:"Chaque point représente un terme. Quand n augmente, le terme se rapproche de 1 : la distance verticale à la droite y = 1 diminue.",question:"Peux-tu trouver un rang N à partir duquel tous les termes sont à moins de 0,1 de 1 ?",steps:["1 · Lis la hauteur du point : c'est uₙ.","2 · Compare sa distance à la droite y = 1.","3 · Relie la distance observée à |uₙ − 1| = 1/n."]},
   derivative:{title:"De la sécante à la tangente",text:"La droite verte relie deux points : c'est une sécante. La droite dorée est la tangente au point a. Quand le second point se rapproche de a, la sécante prend la direction de la tangente.",question:"Que devient le coefficient directeur de la sécante lorsque h tend vers 0 ?",steps:["1 · La courbe bleue donne f(x) = x².","2 · La sécante mesure un taux de variation moyen.","3 · À la limite, sa pente vaut f′(a) = 2a."]},
   integral:{title:"L'intégrale : aire exacte et sommes de rectangles",text:"La courbe bleue est f(x)=x². La surface bleutée est l'aire exacte entre 0 et b ; les rectangles dorés donnent une approximation par sommes de Riemann. Quand leur largeur diminue, leur aire totale se rapproche de l'intégrale.",question:"Pourquoi la somme des rectangles devient-elle une meilleure approximation lorsque leur largeur diminue ?",steps:["1 · Déplace b : la borne supérieure et l'aire changent.","2 · Compare les rectangles à la surface sous la courbe.","3 · L'aire exacte vaut b³/3 ; si b double, elle est multipliée par 8."]},
-  schmidt:{title:"Gram–Schmidt : décomposer puis orthogonaliser",text:"Le vecteur orange v₂ se décompose en deux morceaux : sa projection dorée sur la direction de v₁, et le résidu vert w₂. Ce résidu est perpendiculaire à v₁. L'algorithme conserve ensuite w₂, puis le normalise si l'on veut une base orthonormée.",question:"Quand l'angle entre v₁ et v₂ varie, comment évoluent la projection et le résidu orthogonal ?",steps:["1 · Le vecteur bleu v₁ fixe la première direction.","2 · La flèche dorée est projᵥ₁(v₂), la composante parallèle.","3 · La flèche verte w₂=v₂−projᵥ₁(v₂) est orthogonale à v₁ : ⟨v₁,w₂⟩=0."]}
+  schmidt:{title:"Gram–Schmidt : décomposer puis orthogonaliser",text:"Le vecteur orange v₂ se décompose en deux morceaux : sa projection dorée sur la direction de v₁, et le résidu vert w₂. Ce résidu est perpendiculaire à v₁. L'algorithme conserve ensuite w₂, puis le normalise si l'on veut une base orthonormée.",question:"Quand l'angle entre v₁ et v₂ varie, comment évoluent la projection et le résidu orthogonal ?",steps:["1 · Le vecteur bleu v₁ fixe la première direction.","2 · La flèche dorée est projᵥ₁(v₂), la composante parallèle.","3 · La flèche verte w₂=v₂−projᵥ₁(v₂) est orthogonale à v₁ : ⟨v₁,w₂⟩=0."]},
+  surface3d:{title:"Lire une fonction de deux variables",text:"La hauteur de chaque point représente f(x,y). La couleur et la perspective rendent visibles les zones de minimum, de maximum et les directions de variation. Fais tourner la surface pour ne pas confondre relief et projection.",question:"Comment la valeur de f(x,y) évolue-t-elle lorsque tu changes x ou y séparément ?",steps:["1 · x et y déterminent la position dans le plan de base.","2 · La hauteur z=f(x,y) donne la valeur de la fonction.","3 · Compare le paraboloïde, la selle et les surfaces ondulées."]},
+  complex3d:{title:"De la rotation à l'hélice",text:"Dans le plan complexe, le point e^(iωt) tourne sur le cercle unité. En représentant aussi le temps t sur un troisième axe, la trajectoire devient une hélice. La norme reste égale à 1 : seule l'argument évolue.",question:"Pourquoi le rayon de la trajectoire reste-t-il constant alors que le point tourne ?",steps:["1 · La partie réelle vaut cos(ωt).","2 · La partie imaginaire vaut sin(ωt).","3 · cos²(ωt)+sin²(ωt)=1 : le point reste sur le cercle unité."]},
  };
  const g=guides[labType]||{title:"Observer puis expliquer",text:$("#labCaption").textContent,question:"Quel phénomène mathématique le dessin illustre-t-il ?",steps:["1 · Modifie le paramètre.","2 · Décris ce qui change.","3 · Formule la propriété correspondante."]};
  $("#labLearningTitle").textContent=g.title;$("#labLearningText").textContent=g.text;$("#labQuestion").textContent=g.question;
@@ -215,16 +219,56 @@ function renderLabGuide(){
 }
 function labSetup(){
  const cfg=LABS[labType],slider=$("#labSlider");
+ $("#surfaceFunctionWrap").hidden=labType!=="surface3d";$("#labAnimate").hidden=labType!=="complex3d";
+ if(labType!=="complex3d")stopComplexAnimation();
  $("#labSliderLabel").textContent=cfg.label;slider.min=cfg.min;slider.max=cfg.max;slider.step=cfg.step;slider.value=cfg.value;
- $("#labCaption").textContent=cfg.caption;$("#labFormula").innerHTML=cfg.formula.replace(/\\\\/g,"\\");
+ if(labType==="surface3d"){labRotationY=Number(cfg.value)*Math.PI/180;updateSurfaceMeta()}
+ else{$("#labCaption").textContent=cfg.caption;$("#labFormula").innerHTML=cfg.formula.replace(/\\\\/g,"\\");}
  $("#labValue").textContent=Number(cfg.value).toLocaleString("fr-FR",{maximumFractionDigits:2});
  typeset($("#labFormula"));typeset($("#labCaption"));typeset($("#labSliderLabel"));renderLabGuide();drawLab();
 }
+
+const SURFACE_FUNCTIONS={
+ paraboloid:{label:"Paraboloïde",formula:"\\\\(f(x,y)=x^2+y^2\\\\)",caption:"Un minimum au point (0,0). La hauteur augmente dans toutes les directions à mesure que l'on s'éloigne de l'origine.",fn:(x,y)=>.34*(x*x+y*y)-1.1},
+ saddle:{label:"Selle",formula:"\\\\(f(x,y)=x^2-y^2\\\\)",caption:"Une selle : la fonction augmente dans la direction x et diminue dans la direction y. L'origine est un point selle, pas un extremum local.",fn:(x,y)=>.34*(x*x-y*y)},
+ wave:{label:"Surface ondulée",formula:"\\\\(f(x,y)=1.2\\sin(x)\\cos(y)\\\\)",caption:"Une surface périodique avec alternance de bosses et de creux. Observe les lignes de niveau et les symétries.",fn:(x,y)=>1.2*Math.sin(x)*Math.cos(y)},
+ gaussian:{label:"Gaussienne",formula:"\\\\(f(x,y)=2e^{-0.7(x^2+y^2)}\\\\)",caption:"Une bosse centrée à l'origine qui décroît rapidement vers 0 lorsqu'on s'éloigne du centre.",fn:(x,y)=>2*Math.exp(-.7*(x*x+y*y))}
+};
+let labRotationY=-.66,labRotationX=.88,labDragging=null,complexRunning=false,complexPhase=0,complexLastFrame=0,complexAnimationFrame=0;
+function updateSurfaceMeta(){const s=SURFACE_FUNCTIONS[$("#surfaceFunction").value]||SURFACE_FUNCTIONS.paraboloid;$("#labCaption").textContent=s.caption;$("#labFormula").innerHTML=s.formula;}
+function project3D(x,y,z,W,H,scale=1){
+ const cy=Math.cos(labRotationY),sy=Math.sin(labRotationY),cx=Math.cos(labRotationX),sx=Math.sin(labRotationX),xr=x*cy-z*sy,zr=x*sy+z*cy,yr=y*cx-zr*sx,depth=y*sx+zr*cx,k=Math.min(W/9,H/6.2)*scale;
+ return {x:W*.5+xr*k,y:H*.53-yr*k,depth};
+}
+function drawAxes3D(ctx,W,H,scale=1){
+ const O=project3D(0,0,0,W,H,scale),X=project3D(2.55,0,0,W,H,scale),Y=project3D(0,2.55,0,W,H,scale),Z=project3D(0,0,2.25,W,H,scale);
+ ctx.lineWidth=1.5;ctx.strokeStyle="#536985";ctx.beginPath();ctx.moveTo(O.x,O.y);ctx.lineTo(X.x,X.y);ctx.moveTo(O.x,O.y);ctx.lineTo(Y.x,Y.y);ctx.moveTo(O.x,O.y);ctx.lineTo(Z.x,Z.y);ctx.stroke();ctx.font="12px system-ui";ctx.fillStyle="#aebfda";ctx.fillText("x",X.x+5,X.y);ctx.fillText("y",Y.x+5,Y.y);ctx.fillText("z",Z.x+5,Z.y);
+}
+function drawSurface3D(ctx,W,H){
+ const cfg=SURFACE_FUNCTIONS[$("#surfaceFunction").value]||SURFACE_FUNCTIONS.paraboloid,n=28,step=4/n,cells=[];
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++){const x0=-2+i*step,x1=x0+step,y0=-2+j*step,y1=y0+step,pts=[[x0,y0],[x1,y0],[x1,y1],[x0,y1]].map(([x,y])=>project3D(x,y,cfg.fn(x,y),W,H,.93));cells.push({pts,depth:pts.reduce((s,p)=>s+p.depth,0)/4,z:(cfg.fn(x0,y0)+cfg.fn(x1,y0)+cfg.fn(x1,y1)+cfg.fn(x0,y1))/4})}
+ cells.sort((a,b)=>a.depth-b.depth);const maxZ=Math.max(.2,...cells.map(c=>Math.abs(c.z)));
+ for(const c of cells){const q=Math.max(-1,Math.min(1,c.z/maxZ)),h=215-((q+1)/2)*105;ctx.beginPath();ctx.moveTo(c.pts[0].x,c.pts[0].y);for(let k=1;k<4;k++)ctx.lineTo(c.pts[k].x,c.pts[k].y);ctx.closePath();ctx.fillStyle="hsla("+h+",78%,"+(42+Math.abs(q)*9)+"%,.88)";ctx.fill();ctx.strokeStyle="rgba(190,218,255,.22)";ctx.lineWidth=.65;ctx.stroke()}
+ drawAxes3D(ctx,W,H,.93);ctx.fillStyle="#e8f0ff";ctx.font="600 13px system-ui";ctx.fillText(cfg.label+" · z = f(x,y)",22,28);ctx.fillStyle="#9aabc5";ctx.font="11px system-ui";ctx.fillText("Glisse sur la surface pour changer le point de vue",22,H-17);
+}
+function drawComplex3D(ctx,W,H){
+ const omega=Number($("#labSlider").value)||1,segments=420,end=4*Math.PI,pts=[];
+ for(let i=0;i<=segments;i++){const t=end*i/segments;pts.push(project3D(t-end/2,Math.cos(omega*t),Math.sin(omega*t),W,H,.72))}
+ drawAxes3D(ctx,W,H,.72);ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle="#57d9ee";ctx.lineWidth=3.2;ctx.shadowColor="#42cde8";ctx.shadowBlur=13;ctx.stroke();ctx.shadowBlur=0;
+ const tNow=complexPhase%end,index=Math.min(segments,Math.max(0,Math.floor(tNow/end*segments))),p=pts[index];ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fillStyle="#fff";ctx.shadowColor="#54d9ef";ctx.shadowBlur=18;ctx.fill();ctx.shadowBlur=0;
+ const ring=[];for(let k=0;k<=100;k++){const a=2*Math.PI*k/100;ring.push(project3D(tNow-end/2,Math.cos(a),Math.sin(a),W,H,.72))}ctx.beginPath();ring.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.strokeStyle="rgba(245,190,105,.72)";ctx.lineWidth=1.5;ctx.setLineDash([4,5]);ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle="#e8f0ff";ctx.font="600 13px system-ui";ctx.fillText("Hélice : t ↦ (t, cos(ωt), sin(ωt))",22,28);ctx.fillStyle="#9aabc5";ctx.font="11px system-ui";ctx.fillText("Le rayon dans le plan complexe reste égal à 1",22,H-17);
+}
+function stopComplexAnimation(){complexRunning=false;complexLastFrame=0;if(complexAnimationFrame)cancelAnimationFrame(complexAnimationFrame);complexAnimationFrame=0;const b=$("#labAnimate");if(b)b.textContent="▶ Animer"}
+function animateComplexFrame(now){if(!complexRunning||labType!=="complex3d")return;if(complexLastFrame)complexPhase+=(now-complexLastFrame)/1000*(Number($("#labSlider").value)||1);complexLastFrame=now;drawLab();complexAnimationFrame=requestAnimationFrame(animateComplexFrame)}
+function toggleComplexAnimation(){if(complexRunning){stopComplexAnimation();return}complexRunning=true;complexLastFrame=0;$("#labAnimate").textContent="Ⅱ Pause";complexAnimationFrame=requestAnimationFrame(animateComplexFrame)}
 function drawLab(){
  const canvas=$("#labCanvas");if(!canvas)return;
  const rect=canvas.getBoundingClientRect(),W=Math.max(320,rect.width||900),H=Math.max(300,Math.min(560,W*.52));
  const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);canvas.style.height=H+"px";
- const ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);ctx.fillStyle="#0d1928";ctx.fillRect(0,0,W,H);
+ const ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);ctx.fillStyle="#081321";ctx.fillRect(0,0,W,H);
+ if(labType==="surface3d"){labRotationY=Number($("#labSlider").value)*Math.PI/180;drawSurface3D(ctx,W,H);$("#labValue").textContent=Number($("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:0})+"°";return}
+ if(labType==="complex3d"){drawComplex3D(ctx,W,H);$("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:1});return}
  const m={l:58,r:24,t:24,b:48},pw=W-m.l-m.r,ph=H-m.t-m.b;
  let xmin,xmax,ymin,ymax;
  if(labType==="sequence"){xmin=0;xmax=Math.round(+$("#labSlider").value)+1;ymin=.75;ymax=2.15}
@@ -300,7 +344,9 @@ function init(){
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
  $("#clearChat").onclick=()=>{chatHistory=[];$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};
  $("#tutorImage").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>8*1024*1024){toast("Image limitée à 8 Mo.");return}try{chatImage=await resizeImage(f);$("#uploadName").textContent=f.name+" · prête"}catch{toast("Lecture de l'image impossible.")}};
- const labSelect=$("#labType");if(labSelect){const seen=new Set();[...labSelect.options].forEach(option=>{if(seen.has(option.value))option.remove();else seen.add(option.value)});labType=labSelect.value||"derivative";}labSelect.onchange=()=>{labType=labSelect.value;labSetup()};$("#labSlider").oninput=drawLab;window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
+ const labSelect=$("#labType");if(labSelect){const seen=new Set();[...labSelect.options].forEach(option=>{if(seen.has(option.value))option.remove();else seen.add(option.value)});labType=labSelect.value||"derivative";}labSelect.onchange=()=>{labType=labSelect.value;labSetup()};$("#labSlider").oninput=()=>{if(labType==="surface3d")labRotationY=Number($("#labSlider").value)*Math.PI/180;drawLab()};$("#surfaceFunction").onchange=()=>{updateSurfaceMeta();typeset($("#labFormula"));renderLabGuide();drawLab()};$("#labAnimate").onclick=toggleComplexAnimation;
+ const labCanvas=$("#labCanvas");labCanvas.addEventListener("pointerdown",e=>{if(labType!=="surface3d"&&labType!=="complex3d")return;labDragging={x:e.clientX,y:e.clientY};labCanvas.setPointerCapture(e.pointerId)});labCanvas.addEventListener("pointermove",e=>{if(!labDragging)return;const dx=e.clientX-labDragging.x,dy=e.clientY-labDragging.y;labDragging={x:e.clientX,y:e.clientY};labRotationY+=dx*.009;labRotationX=Math.max(.15,Math.min(1.45,labRotationX+dy*.007));if(labType==="surface3d")$("#labSlider").value=Math.round(labRotationY*180/Math.PI);drawLab()});["pointerup","pointercancel","lostpointercapture"].forEach(ev=>labCanvas.addEventListener(ev,()=>{labDragging=null}));
+ window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
  if(state.lastDay!==new Date().toDateString()){const yesterday=new Date(Date.now()-86400000).toDateString();state.streak=state.lastDay===yesterday?state.streak+1:1;state.lastDay=new Date().toDateString();save()}
  renderDashboard();renderPath();renderCourses();renderExercises();renderProgress();typeset(document.body);
  if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>reg.update()).catch(()=>{});}
