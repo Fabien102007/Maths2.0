@@ -389,6 +389,26 @@ function init(){
  $$("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));$$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
  $("#mobileMenu").onclick=()=>$("#sidebar").classList.toggle("open");
  $("#resetData").onclick=()=>{if(confirm("Effacer toute la progression locale de Maths2.0 ?")){state=blank();save();go("home");toast("Progression réinitialisée.")}};
+ $("#exportData").onclick=()=>{
+  const payload={app:"Maths2.0",version:1,exportedAt:new Date().toISOString(),state};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="maths2-sauvegarde-"+new Date().toISOString().slice(0,10)+".json";
+  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast("Sauvegarde téléchargée.");
+ };
+ $("#importData").onchange=async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  try{
+   const payload=JSON.parse(await file.text()),incoming=payload.state||payload;
+   if(!incoming||typeof incoming!=="object"||Array.isArray(incoming)||!Array.isArray(incoming.solved)||!incoming.attempts||typeof incoming.attempts!=="object"||!incoming.reviews||typeof incoming.reviews!=="object")throw new Error("Format de sauvegarde non reconnu.");
+   if(!confirm("Importer cette sauvegarde et remplacer la progression actuellement enregistrée sur cet appareil ?"))return;
+   state={...blank(),...incoming,drafts:incoming.drafts&&typeof incoming.drafts==="object"?incoming.drafts:{}};
+   localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();renderPath();renderCourses();renderExercises();renderProgress();go("home");
+   toast("Progression restaurée.");
+  }catch(err){toast("Import impossible : "+err.message)}
+  finally{e.target.value=""}
+ };
  ["courseSearch","courseCategory","courseLevel"].forEach(id=>$("#"+id).addEventListener("input",renderCourses));["exerciseSearch","exerciseCategory","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
