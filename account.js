@@ -41,9 +41,11 @@
        if(upsertError)throw upsertError;
        message("Connecté : progression synchronisée avec ton compte.");
      }
-     const sub=await callWorker("/api/subscription");
-     const plan=document.getElementById("accountPlanStatus");
-     if(plan)plan.textContent=sub.active?"Maths2.0 Premium · abonnement "+sub.status:"Offre gratuite";
+     if(cfg.workerUrl){
+       const sub=await callWorker("/api/subscription");
+       const plan=document.getElementById("accountPlanStatus");
+       if(plan)plan.textContent=sub.active?"Maths2.0 Premium · abonnement "+sub.status:"Offre gratuite";
+     }
    }catch(e){message("Compte connecté, mais synchronisation non terminée : "+e.message);}
  };
  const refresh=async(s)=>{
