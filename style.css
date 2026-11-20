@@ -155,3 +155,5 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  .course-detail{max-height:none;overflow:visible}
  .course-meta{font-size:10px}
 }
+
+.import-label{display:grid;place-items:center;cursor:pointer}.top-actions .icon-btn{min-width:34px}
