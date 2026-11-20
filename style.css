@@ -157,3 +157,35 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 .import-label{display:grid;place-items:center;cursor:pointer}.top-actions .icon-btn{min-width:34px}
+
+
+/* Bibliothèque des cours : navigation par domaine, puis chapitre. */
+.course-library-toolbar{display:flex;justify-content:flex-end;margin:0 0 18px}
+.course-library-toolbar input{width:min(100%,420px);background:#111d30;border:1px solid #30415d;border-radius:12px;padding:13px 15px;color:var(--text);outline:none}
+.course-themes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.course-theme-card{display:flex;align-items:center;gap:16px;text-align:left;padding:24px;border:1px solid #30415d;border-radius:18px;background:linear-gradient(145deg,#17263c,#111b2e);color:var(--text);cursor:pointer;min-height:130px;transition:.18s}
+.course-theme-card:hover{border-color:#8b80f3;transform:translateY(-2px)}
+.course-theme-symbol{display:grid;place-items:center;flex:0 0 54px;height:54px;border-radius:15px;background:#29294d;color:#b7adff;font-size:29px}
+.course-theme-card b,.course-theme-card small{display:block}
+.course-theme-card b{font-size:20px;margin-bottom:7px}
+.course-theme-card small{font-size:11px;line-height:1.6;color:var(--muted)}
+.course-theme-card i{margin-left:auto;font-size:20px;color:#a69aff;font-style:normal}
+.course-back{border:1px solid #344762;background:#152238;color:#cbd8ed;border-radius:10px;padding:10px 14px;margin:0 0 14px;cursor:pointer}
+.course-detail[hidden],#courseTopicsView[hidden],#courseThemes[hidden]{display:none!important}
+.solution-step{padding:12px 14px;margin:10px 0;border-left:2px solid #70d9ad;background:#10372e80;border-radius:0 10px 10px 0}
+.solution-step>b{display:block;color:#9ce6c5;font-size:11px;margin-bottom:5px}
+.solution-step p{margin:0;line-height:1.75}
+.solution-conclusion{margin-top:16px;padding:14px;border:1px solid #42866b;border-radius:12px;background:#0d3028}
+.solution-conclusion>b{color:#a9ebc9}
+.solution-conclusion p{margin:6px 0 0}
+.account-button{border:1px solid #4b4d79;background:#242444;color:#e4e2ff;border-radius:10px;padding:8px 13px;font-size:11px;font-weight:700;cursor:pointer}
+.account-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:18px;background:#050a14d9;backdrop-filter:blur(8px)}
+.account-modal[hidden]{display:none}
+.account-dialog{position:relative;width:min(100%,440px);padding:28px}
+.account-dialog h2{font:750 24px Manrope;margin:9px 0}
+.account-dialog label{display:block;margin:14px 0 6px;color:#b9c6db;font-size:12px}
+.account-dialog input{width:100%;background:#0c1728;border:1px solid #344762;border-radius:10px;padding:12px;color:#fff}
+.account-close{position:absolute;right:16px;top:12px;background:none;border:0;color:#dce6f6;font-size:26px;cursor:pointer}
+.account-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.account-footnote{font-size:10px;line-height:1.6;color:#8d9db5;margin-top:18px}
+@media(max-width:760px){.course-themes{grid-template-columns:1fr}.course-theme-card{min-height:108px;padding:18px}.account-button{padding:7px 9px}}
