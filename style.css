@@ -137,3 +137,21 @@ body{background:radial-gradient(ellipse at 78% -18%,rgba(65,88,160,.24),transpar
  .flashcard,.flashcard-inner,.flashcard-face{min-height:225px}
 }
 @media(prefers-reduced-motion:reduce){.flashcard-inner,.review-rating{transition:none;animation:none}}
+
+
+/* === Programme enrichi : niveaux, chapitres et lisibilité === */
+.course-meta{margin:8px 0 18px;padding:9px 12px;border:1px solid rgba(130,151,198,.15);border-radius:10px;background:rgba(22,35,58,.55);color:#9eb0ce;font-size:10px;letter-spacing:.2px}
+.course-detail h3{margin-top:22px}
+.course-detail .definition{padding:13px 15px;margin:9px 0;border:1px solid rgba(123,148,194,.14);border-radius:12px;background:rgba(20,32,52,.55)}
+.course-detail .definition b{color:#c7c0ff;font-size:12px}
+.course-detail .definition p{margin:7px 0 0;color:#c3cde0;font-size:12px;line-height:1.8}
+.course-detail .property-list{padding-left:22px;color:#c5d1e5;font-size:12px;line-height:1.85}
+.course-detail .example-box{padding:15px 17px;border:1px solid rgba(75,195,190,.22);border-radius:12px;background:rgba(15,54,59,.25);color:#e0f4f4;line-height:1.85}
+.footer a,.privacy-note a{color:#a99fff;text-decoration:none}
+.footer a:hover,.privacy-note a:hover{text-decoration:underline}
+.privacy-note{line-height:1.7}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #8e9cff;outline-offset:3px}
+@media(max-width:800px){
+ .course-detail{max-height:none;overflow:visible}
+ .course-meta{font-size:10px}
+}
