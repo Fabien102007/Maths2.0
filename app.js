@@ -4,7 +4,7 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 const KEY="maths4_studio_v1";
 const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,diagnostic:null});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
-let activeTopic=null,activeExercise=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
+let activeTopic=null,activeCourseCategory=null,activeExercise=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 const save=()=>{localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const mathMap={"ℝ":"\\mathbb{R}","ℕ":"\\mathbb{N}","ℤ":"\\mathbb{Z}","ℚ":"\\mathbb{Q}","ℂ":"\\mathbb{C}","∈":"\\in ","∉":"\\notin ","∋":"\\ni ","∀":"\\forall","∃":"\\exists","⇒":"\\Rightarrow","⇔":"\\Leftrightarrow","⇐":"\\Leftarrow","→":"\\to","←":"\\leftarrow","↔":"\\leftrightarrow","↦":"\\mapsto","≤":"\\leq ","≥":"\\geq ","≠":"\\neq ","≈":"\\approx ","≡":"\\equiv ","≅":"\\cong","≪":"\\ll","≫":"\\gg","∞":"\\infty","∑":"\\sum","∏":"\\prod","∫":"\\int","∮":"\\oint","∬":"\\iint","∭":"\\iiint","√":"\\sqrt{}","∛":"\\sqrt[3]{}","∜":"\\sqrt[4]{}","∂":"\\partial","∇":"\\nabla","λ":"\\lambda","μ":"\\mu","ε":"\\varepsilon","π":"\\pi","θ":"\\theta","α":"\\alpha","β":"\\beta","γ":"\\gamma","δ":"\\delta","ρ":"\\rho","σ":"\\sigma","τ":"\\tau","φ":"\\varphi","ω":"\\omega","Ω":"\\Omega","Γ":"\\Gamma","Π":"\\Pi","Σ":"\\Sigma","Φ":"\\Phi","Ψ":"\\Psi","Δ":"\\Delta","ℓ":"\\ell","×":"\\times","·":"\\cdot","÷":"\\div","±":"\\pm","−":"-","∝":"\\propto ","∼":"\\sim ","⊥":"\\perp ","∧":"\\land","∨":"\\lor","¬":"\\neg","⊗":"\\otimes","⊕":"\\oplus","‖":"\\Vert","∥":"\\parallel ","∩":"\\cap","∪":"\\cup","∖":"\\setminus","⊂":"\\subset ","⊆":"\\subseteq ","⊃":"\\supset ","⊇":"\\supseteq ","∅":"\\varnothing","∴":"\\therefore","∵":"\\because","∠":"\\angle","°":"^{\\circ}","′":"^{\\prime}","″":"^{\\prime\\prime}","∣":"\\mid","∤":"\\nmid","⊤":"\\top","⊢":"\\vdash","⊨":"\\models","↪":"\\hookrightarrow","⟼":"\\longmapsto","⟨":"\\langle ","⟩":"\\rangle "};
@@ -145,11 +145,15 @@ function renderPath(){
  $("#startRecommended")?.addEventListener("click",()=>{go("courses");openTopic(next.id)});$("#startExercise")?.addEventListener("click",()=>{go("exercises");openExercise(next.exerciseId)});typeset(host);typeset(rec);
 }
 function renderCourses(){
- const q=$("#courseSearch").value.toLowerCase(),cat=$("#courseCategory").value,lev=$("#courseLevel").value;
- const list=TOPICS.filter(t=>(!q||(t.title+" "+t.summary+" "+(t.chapter||"")).toLowerCase().includes(q))&&(cat==="all"||t.category===cat)&&(lev==="all"||t.level===lev));
- $("#courseList").innerHTML=list.map(t=>`<button class="course-item ${activeTopic===t.id?"selected":""}" data-topic="${t.id}"><span class="course-symbol">${t.category==="Analyse"?"∫":"∑"}</span><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${esc(t.level)}</small></span><i>${mastered(t.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucune notion trouvée.</p>';
- $$("#courseList [data-topic]").forEach(b=>b.onclick=()=>openTopic(b.dataset.topic));
- if(activeTopic&&topic(activeTopic))renderTopic(activeTopic);
+ const q=$("#courseSearch").value.trim().toLowerCase();
+ const themes=$("#courseThemes"),topicsView=$("#courseTopicsView"),listHost=$("#courseList"),detail=$("#courseDetail");
+ const filtered=TOPICS.filter(t=>(!q||(t.title+" "+t.summary+" "+(t.chapter||"")).toLowerCase().includes(q))&&(!activeCourseCategory||t.category===activeCourseCategory));
+ const showTopics=!!activeCourseCategory||!!q||!!activeTopic;
+ themes.hidden=showTopics;topicsView.hidden=!showTopics;
+ if(!showTopics){activeTopic=null;detail.hidden=true;return;}
+ listHost.innerHTML=filtered.map(t=>`<button class="course-item ${activeTopic===t.id?"selected":""}" data-topic="${t.id}"><span class="course-symbol">${t.category==="Analyse"?"∫":"∑"}</span><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${esc(t.level)}</small></span><i>${mastered(t.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucune notion trouvée.</p>';
+ $("#courseList [data-topic]").forEach(b=>b.onclick=()=>openTopic(b.dataset.topic));
+ if(activeTopic&&topic(activeTopic)){detail.hidden=false;renderTopic(activeTopic);}else{detail.hidden=true;detail.innerHTML="";}
 }
 function openTopic(id){activeTopic=id;renderCourses()}
 function renderTopic(id){
@@ -172,7 +176,7 @@ function renderExercise(id){
  $("#exerciseBack").onclick=()=>{activeExercise=null;renderExercises()};
  $("#selfAnswer").addEventListener("input",()=>{state.drafts=state.drafts||{};state.drafts[id]=$("#selfAnswer").value;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){console.warn("Sauvegarde locale indisponible",e)}});
   let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${exerciseRichText(hints[h++])}</p>`;typesetExercise($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
- $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content"><p>${exerciseRichText(e.answer)}</p>${(e.solutionSteps||[]).map((s,i)=>`<p><b>Étape ${i+1}.</b> ${exerciseRichText(s)}</p>`).join("")}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typesetExercise($("#solutionBox"))};
+ $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content">${(e.solutionSteps||[]).map((s,i)=>`<div class="solution-step"><b>Étape ${i+1}</b><p>${exerciseRichText(s)}</p></div>`).join("")}<div class="solution-conclusion"><b>Conclusion</b><p>${exerciseRichText(e.answer)}</p></div></div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typesetExercise($("#solutionBox"))};
  $$(".rating-btn").forEach(b=>b.onclick=()=>recordAttempt(e,+b.dataset.score));
  // Attendre que le navigateur ait réellement inséré et peint l’énoncé avant MathJax.
  requestAnimationFrame(()=>{
@@ -227,8 +231,8 @@ async function sendChat(){
 function resizeImage(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{const scale=Math.min(1,1500/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);resolve(c.toDataURL("image/jpeg",.8))};img.onerror=reject;img.src=url})}
 const LABS={
  sequence:{label:"Nombre de termes",min:3,max:40,step:1,value:12,caption:"Les termes de uₙ=1+1/n se rapprochent de 1 sans jamais l'atteindre.",formula:"\\\\(u_n=1+\\\\frac1n\\\\),\\quad \\lim_{n\\to+\\infty}u_n=1"},
- limit:{label:"Distance à a = 1",min:0.08,max:2.5,step:0.02,value:1.2,caption:"Le point x se rapproche de 1. Observe la valeur f(x) et son rapprochement de 2.",formula:"\\\\(f(x)=x+1,\\quad \\lim_{x\\to1}f(x)=2\\\\)"},
- continuity:{label:"Position x",min:-3,max:3,step:0.05,value:1,caption:"La courbe varie continûment : une petite variation de x produit une petite variation de f(x).",formula:"\\\\(f(x)=\\sin(x)+0.2x\\\\)"},
+ limit:{label:"Distance δ à a = 1",min:0.05,max:2.4,step:0.05,value:1.2,caption:"Les deux points x=1−δ et x=1+δ se rapprochent de a=1. Observe leurs images sur la parabole f(x)=x² et la distance verticale à L=1.",formula:"\\\\(f(x)=x^2,\\quad \\lim_{x\\to1}f(x)=1\\\\)"},
+ continuity:{label:"Abscisse du point mobile x",min:-1.5,max:3.5,step:0.05,value:2.2,caption:"Le point A reste fixé en (1,1). Déplace P sur la parabole f(x)=x² : les segments en pointillés visualisent Δx et Δy.",formula:"\\\\(f(x)=x^2,\\quad \\lim_{x\\to1}f(x)=f(1)=1\\\\)"},
  derivative:{label:"Écart h du point mobile",min:-1.5,max:1.5,step:0.05,value:1.2,caption:"Le point fixe est a = 0,5. Fais tendre h vers 0 : le point mobile b = a + h rejoint le point fixe et la sécante tend vers la tangente.",formula:"\\\\(f(x)=x^2,\\quad m_{sec}=\\frac{f(a+h)-f(a)}{h}=2a+h,\\quad \\lim_{h\\to0}m_{sec}=f'(a)=2a\\)"},
  integral:{label:"Borne supérieure b",min:0.3,max:2.8,step:0.05,value:1.8,caption:"La zone colorée représente l'intégrale de x² entre 0 et b.",formula:"\\\\(\\int_0^b x^2\\,dx=\\frac{b^3}{3}\\\\)"},
  taylor:{label:"Ordre du développement",min:0,max:8,step:1,value:4,caption:"Compare exp(x) à son polynôme de Taylor. L'approximation s'améliore près de 0 quand l'ordre augmente.",formula:"\\\\(e^x=\\sum_{k=0}^{n}\\frac{x^k}{k!}+o(x^n)\\\\)"},
@@ -251,8 +255,8 @@ function renderLabGuide(){
   schmidt:{title:"Gram–Schmidt : décomposer puis orthogonaliser",text:"Le vecteur orange v₂ se décompose en deux morceaux : sa projection dorée sur la direction de v₁, et le résidu vert w₂. Ce résidu est perpendiculaire à v₁. L'algorithme conserve ensuite w₂, puis le normalise si l'on veut une base orthonormée.",question:"Quand l'angle entre v₁ et v₂ varie, comment évoluent la projection et le résidu orthogonal ?",steps:["1 · Le vecteur bleu v₁ fixe la première direction.","2 · La flèche dorée est projᵥ₁(v₂), la composante parallèle.","3 · La flèche verte w₂=v₂−projᵥ₁(v₂) est orthogonale à v₁ : ⟨v₁,w₂⟩=0."]},
   surface3d:{title:"Lire une fonction de deux variables",text:"La hauteur de chaque point représente f(x,y). La couleur et la perspective rendent visibles les zones de minimum, de maximum et les directions de variation. Fais tourner la surface pour ne pas confondre relief et projection.",question:"Comment la valeur de f(x,y) évolue-t-elle lorsque tu changes x ou y séparément ?",steps:["1 · x et y déterminent la position dans le plan de base.","2 · La hauteur z=f(x,y) donne la valeur de la fonction.","3 · Compare le paraboloïde, la selle et les surfaces ondulées."]},
   complex3d:{title:"De la rotation à l'hélice",text:"Dans le plan complexe, le point e^(iωt) tourne sur le cercle unité. En représentant aussi le temps t sur un troisième axe, la trajectoire devient une hélice. La norme reste égale à 1 : seule l'argument évolue.",question:"Pourquoi le rayon de la trajectoire reste-t-il constant alors que le point tourne ?",steps:["1 · La partie réelle vaut cos(ωt).","2 · La partie imaginaire vaut sin(ωt).","3 · cos²(ωt)+sin²(ωt)=1 : le point reste sur le cercle unité."]},
-  limit:{title:"Comprendre une limite",text:"Le point mobile se rapproche de l'abscisse cible. Observe comment son image se rapproche de la valeur limite.",question:"Quelle distance devient petite lorsque x se rapproche de la cible ?",steps:["Repère la valeur visée.","Observe l'écart entre le point et la limite.","Relie l'observation à la définition ε–δ."]},
-  continuity:{title:"Observer la continuité",text:"Lorsque x varie légèrement, l'image varie également sans saut.",question:"Comment le point image réagit-il à un petit déplacement horizontal ?",steps:["Déplace le point sur la courbe.","Observe l'évolution de son ordonnée.","Une petite variation de x entraîne une petite variation de f(x)."]},
+  limit:{title:"Limite en un point : rapprocher x de a",text:"On étudie f(x)=x² au voisinage de a=1. Les deux points mobiles sont placés en 1−δ et 1+δ. Lorsque δ diminue, leurs abscisses se rapprochent de 1 et leurs images se rapprochent de L=1. Les traits pointillés matérialisent les écarts.",question:"Quand δ est divisé par 2, que deviennent les écarts |(1±δ)²−1| ?",steps:["Le point fixe A=(1,1) représente (a,L).","Les points P− et P+ représentent les images de 1−δ et 1+δ.","Pour f(x)=x², |f(1±δ)−1|=|±2δ+δ²| : ces écarts tendent vers 0 avec δ."]},
+  continuity:{title:"Continuité en a : contrôler Δx et Δy",text:"Le point A=(1,1) reste fixe tandis que P=(x,x²) se déplace. Les pointillés montrent séparément Δx=x−1 et Δy=x²−1. La continuité en 1 signifie précisément que Δy devient arbitrairement petit dès que Δx est suffisamment petit.",question:"Peux-tu choisir une zone horizontale autour de 1 qui force |f(x)−f(1)| à être inférieur à 0,5 ?",steps:["A est le point de référence : f(1)=1.","P est le point mobile : Δx=x−1 et Δy=x²−1.","Comme x²−1=(x−1)(x+1), si |x−1|<0,2 alors x∈(0,8;1,2), donc |x+1|<2,2 et |x²−1|<0,44<0,5."]},
   taylor:{title:"Comparer exp et son polynôme",text:"La courbe bleue représente exp(x), la courbe dorée son polynôme de Taylor à l'ordre choisi. L'approximation est particulièrement bonne près de 0.",question:"Que se passe-t-il lorsque l'ordre du développement augmente ?",steps:["Compare les deux courbes près de 0.","Augmente l'ordre avec le curseur.","Observe l'amélioration locale de l'approximation."]},
   injectivity:{title:"Détecter une fonction non injective",text:"Pour f(x)=x², deux antécédents opposés ont la même image.",question:"Pourquoi x et −x ont-ils la même image ?",steps:["Observe les deux points symétriques.","Compare leurs ordonnées.","Une même image pour deux antécédents distincts empêche l'injectivité."]},
   determinant:{title:"Le déterminant comme aire orientée",text:"Les deux vecteurs forment un parallélogramme. La valeur absolue du déterminant est son aire.",question:"Que devient l'aire lorsque les vecteurs deviennent presque colinéaires ?",steps:["Fais varier l'angle.","Observe l'ouverture du parallélogramme.","L'aire vaut ||u|| ||v|| |sin θ|."]},
@@ -323,10 +327,11 @@ function drawLab(){
  else if(labType==="derivative"){xmin=-2.5;xmax=2.5;ymin=-1;ymax=6.5}
  else if(labType==="integral"){xmin=0;xmax=3.1;ymin=0;ymax=9}
  else if(labType==="trig"){xmin=-1.5;xmax=1.5;ymin=-1.5;ymax=1.5}
+ else if(labType==="limit"||labType==="continuity"){xmin=-1.5;xmax=3.5;ymin=-0.6;ymax=4.6}
  else{xmin=-3;xmax=3;ymin=-3;ymax=3}
  const trigScale=Math.min(pw/(xmax-xmin),ph/(ymax-ymin));const X=x=>labType==="trig"?W*.5+x*trigScale:m.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>labType==="trig"?H*.53-y*trigScale:m.t+(ymax-y)/(ymax-ymin)*ph;
  const grid="#263b52",axis="#91a8c0",txt="#9eb2c9";ctx.font="11px system-ui";ctx.lineWidth=1;ctx.strokeStyle=grid;ctx.fillStyle=txt;
- const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:labType==="integral"?[0,.5,1,1.5,2,2.5,3]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:labType==="integral"?[0,1,2,4,6,8]:[-2,-1,0,1,2];
+ const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:labType==="integral"?[0,.5,1,1.5,2,2.5,3]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:labType==="integral"?[0,1,2,4,6,8]:[-2,-1,0,1,2,3,4];
  xt.forEach(v=>{const x=X(v);ctx.beginPath();ctx.moveTo(x,m.t);ctx.lineTo(x,m.t+ph);ctx.stroke();ctx.textAlign="center";ctx.fillText(String(v),x,H-17)});
  yt.forEach(v=>{const y=Y(v);ctx.beginPath();ctx.moveTo(m.l,y);ctx.lineTo(m.l+pw,y);ctx.stroke();ctx.textAlign="right";ctx.fillText(String(v),m.l-9,y+4)});
  ctx.strokeStyle=axis;ctx.lineWidth=1.5;ctx.beginPath();if(ymin<=0&&ymax>=0){ctx.moveTo(m.l,Y(0));ctx.lineTo(m.l+pw,Y(0))}if(xmin<=0&&xmax>=0){ctx.moveTo(X(0),m.t);ctx.lineTo(X(0),m.t+ph)}ctx.stroke();
@@ -361,8 +366,34 @@ function drawLab(){
   else if(labType==="trig"){const theta=v*Math.PI/180,cx=X(0),cy=Y(0),rx=Math.abs(X(1)-X(0)),ry=Math.abs(Y(1)-Y(0));ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.strokeStyle="#526a8a";ctx.lineWidth=2;ctx.stroke();segment(0,0,Math.cos(theta),0,"#80b8f4",2,[4,4]);segment(Math.cos(theta),0,Math.cos(theta),Math.sin(theta),"#e0b86d",2,[4,4]);segment(0,0,Math.cos(theta),Math.sin(theta),"#54cbb2",3);point(Math.cos(theta),Math.sin(theta),"#54cbb2",6);ctx.fillStyle="#e8edf5";ctx.font="12px system-ui";ctx.textAlign="left";ctx.fillText("("+Math.cos(theta).toFixed(2)+", "+Math.sin(theta).toFixed(2)+")",X(Math.cos(theta))+(Math.cos(theta)>=0?9:-75),Y(Math.sin(theta))-10);$("#labLegend").innerHTML='<span style="color:#54cbb2">● Point (cos θ, sin θ)</span><span style="color:#80b8f4">┆ cos θ</span><span style="color:#e0b86d">┆ sin θ</span>'}
   else if(labType==="taylor"){const n=Math.round(v);curve(Math.exp,xmin,xmax,"#80b8f4",3);curve(x=>{let s=0,p=1,f=1;for(let k=0;k<=n;k++){if(k){p*=x;f*=k}s+=p/f}return s},xmin,xmax,"#e0b86d",2.5)}
   else if(labType==="injectivity"){curve(x=>x*x,-2.5,2.5,"#80b8f4",3);point(v,v*v,"#80b8f4");point(-v,v*v,"#e0b86d")}
-  else if(labType==="continuity"){curve(x=>Math.sin(x)+.2*x,xmin,xmax,"#80b8f4",3);point(v,Math.sin(v)+.2*v,"#e0b86d")}
-  else if(labType==="limit"){curve(x=>x+1,xmin,xmax,"#80b8f4",3);point(1+v/2.5,2+v/2.5,"#e0b86d")}
+  else if(labType==="limit"){
+    const delta=v,a=1,L=1,xm=a-delta,xp=a+delta,ym=xm*xm,yp=xp*xp;
+    curve(x=>x*x,-1.25,3.05,"#80b8f4",3.5);
+    segment(-1.25,L,3.05,L,"#e0b86d",2,[7,5]);
+    segment(a,0,a,4.5,"#8b9bb1",1.2,[3,5]);
+    segment(xm,0,xm,ym,"#54cbb2",1.8,[4,4]);segment(xp,0,xp,yp,"#54cbb2",1.8,[4,4]);
+    segment(xm,ym,a,L,"#e0b86d",2,[4,4]);segment(xp,yp,a,L,"#e0b86d",2,[4,4]);
+    point(a,L,"#e0b86d",6);point(xm,ym,"#54cbb2",5);point(xp,yp,"#54cbb2",5);
+    ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText("A = (1,1)",X(a)+9,Y(L)-12);
+    ctx.fillStyle="#54cbb2";ctx.fillText("P₋",X(xm)-22,Y(ym)-10);ctx.fillText("P₊",X(xp)+8,Y(yp)-10);
+    ctx.fillStyle="#e0b86d";ctx.fillText("L = 1",X(2.35),Y(L)-9);
+    ctx.fillStyle="#c8d5e8";ctx.font="12px system-ui";ctx.fillText("δ = "+delta.toFixed(2).replace(".",","),m.l+12,m.t+18);
+    $("#labLegend").innerHTML='<span style="color:#80b8f4">● Graphe f(x)=x²</span><span style="color:#54cbb2">● Images de 1−δ et 1+δ</span><span style="color:#e0b86d">┄ Valeur limite L=1</span>';
+    $("#labValue").textContent=delta.toFixed(2).replace(".",",");
+  }
+  else if(labType==="continuity"){
+    const a=1,L=1,x=v,y=x*x,dx=x-a,dy=y-L;
+    curve(t=>t*t,-1.25,3.05,"#80b8f4",3.5);
+    segment(a,0,a,4.5,"#8b9bb1",1,[3,5]);segment(-1.25,L,3.05,L,"#e0b86d",1.6,[7,5]);
+    segment(x,y,x,L,"#e0b86d",2,[4,4]);segment(x,L,a,L,"#54cbb2",2,[4,4]);segment(a,L,x,y,"#e0b86d",1.5,[3,4]);
+    point(a,L,"#e0b86d",6);point(x,y,"#54cbb2",6);
+    ctx.fillStyle="#e0b86d";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText("A=(1,1)",X(a)+9,Y(L)-12);
+    ctx.fillStyle="#54cbb2";ctx.fillText("P=(x,x²)",X(x)+8,Y(y)-10);
+    ctx.fillStyle="#c8d5e8";ctx.font="12px system-ui";ctx.fillText("Δx = "+dx.toFixed(2).replace(".",","),m.l+12,m.t+18);
+    ctx.fillText("Δy = "+dy.toFixed(2).replace(".",","),m.l+12,m.t+36);
+    $("#labLegend").innerHTML='<span style="color:#80b8f4">● Graphe f(x)=x²</span><span style="color:#e0b86d">● A : point de référence</span><span style="color:#54cbb2">● P : point mobile</span><span style="color:#e0b86d">┄ Écart vertical Δy</span>';
+    $("#labValue").textContent=x.toFixed(2).replace(".",",");
+  }
   else if(labType==="fourier"){curve(x=>{let s=0;for(let k=1;k<=Math.round(v);k+=2)s+=Math.sin(k*x)/k;return 4/Math.PI*s},-Math.PI,Math.PI,"#80b8f4",3)}
   else if(labType==="eigen"){curve(x=>.55*x,xmin,xmax,"#80b8f4",2);curve(x=>v*x,xmin,xmax,"#e0b86d",3)}
   else if(labType==="determinant"){const t=v*Math.PI/180;segment(0,0,2.1,0,"#80b8f4",3);segment(0,0,2.1*Math.cos(t),2.1*Math.sin(t),"#e0b86d",3)}
@@ -409,7 +440,9 @@ function init(){
   }catch(err){toast("Import impossible : "+err.message)}
   finally{e.target.value=""}
  };
- ["courseSearch","courseCategory","courseLevel"].forEach(id=>$("#"+id).addEventListener("input",renderCourses));["exerciseSearch","exerciseCategory","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
+ $("#courseSearch").addEventListener("input",()=>{activeTopic=null;renderCourses()});
+ $("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeTopic=null;renderCourses()}));
+ $("#courseBackThemes").onclick=()=>{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses()};["exerciseSearch","exerciseCategory","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
  $("#clearChat").onclick=()=>{chatHistory=[];$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};
