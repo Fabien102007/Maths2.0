@@ -12,6 +12,7 @@ Maths2.0 est une application web progressive (PWA) en français, publiée sur Gi
 - 91 exercices avec filtres par thème et difficulté, indices et corrections enrichies.
 - Parcours initial avec 10 questions diagnostiques et recommandations tenant compte des résultats, des notions fragiles et des prérequis.
 - Sauvegarde locale des démarches saisies dans les exercices.
+- Export et import d’un fichier JSON pour sauvegarder ou transférer manuellement la progression entre appareils.
 - Validation d'une notion après plusieurs réussites autonomes consécutives.
 - Révisions espacées dont les intervalles progressent selon la qualité du rappel.
 - 20 flashcards environ, avec retournement animé.
