@@ -67,7 +67,22 @@ const typeset=el=>{
 };
 const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
 // Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
-const exerciseRichText=value=>richText(value);
+const exerciseRichText=value=>{
+ const raw=String(value??"").replace(/(?:\\){2,}(?=[()[\]])/g,"\\");
+ const delimiters=/(\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g;
+ const parts=raw.split(delimiters);
+ return parts.map((part,i)=>{
+  if(i%2===1){
+   let formula=part,display=false;
+   if(formula.startsWith("$")&&formula.endsWith("$")){display=true;formula=formula.slice(2,-2);}
+   else if(formula.startsWith("$")&&formula.endsWith("$"))formula=formula.slice(1,-1);
+   else if(formula.startsWith("\\[")&&formula.endsWith("\\]")){display=true;formula=formula.slice(2,-2);}
+   else if(formula.startsWith("\\(")&&formula.endsWith("\\)"))formula=formula.slice(2,-2);
+   return display?"\\["+formula+"\\]":"\\("+formula+"\\)";
+  }
+  return mathifySegment(esc(part));
+ }).join("").replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
+};
 
 const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
@@ -177,8 +192,8 @@ function renderLabGuide(){
  const guides={
   sequence:{title:"Voir une suite converger",text:"Chaque point représente un terme. Quand n augmente, le terme se rapproche de 1 : la distance verticale à la droite y = 1 diminue.",question:"Peux-tu trouver un rang N à partir duquel tous les termes sont à moins de 0,1 de 1 ?",steps:["1 · Lis la hauteur du point : c'est uₙ.","2 · Compare sa distance à la droite y = 1.","3 · Relie la distance observée à |uₙ − 1| = 1/n."]},
   derivative:{title:"De la sécante à la tangente",text:"La droite verte relie deux points : c'est une sécante. La droite dorée est la tangente au point a. Quand le second point se rapproche de a, la sécante prend la direction de la tangente.",question:"Que devient le coefficient directeur de la sécante lorsque h tend vers 0 ?",steps:["1 · La courbe bleue donne f(x) = x².","2 · La sécante mesure un taux de variation moyen.","3 · À la limite, sa pente vaut f′(a) = 2a."]},
-  integral:{title:"L'intégrale comme accumulation d'aire",text:"La zone colorée représente l'aire sous la courbe y = x² entre 0 et b. En déplaçant b, tu ajoutes ou retires une tranche d'aire.",question:"Si tu doubles b, par combien l'aire est-elle multipliée ?",steps:["1 · Repère les bornes 0 et b.","2 · Observe la zone colorée sous la courbe.","3 · La primitive x³/3 donne l'aire : b³/3."]},
-  schmidt:{title:"Construire une direction orthogonale",text:"Le vecteur doré est décomposé en une projection sur l'axe du premier vecteur et une composante perpendiculaire. Cette seconde composante est celle que Gram–Schmidt conserve.",question:"Quand l'angle change, quelle composante reste perpendiculaire au premier vecteur ?",steps:["1 · Le vecteur bleu fixe la première direction.","2 · La projection retire la composante parallèle.","3 · Le vecteur vert restant est orthogonal au bleu."]}
+  integral:{title:"L'intégrale : aire exacte et sommes de rectangles",text:"La courbe bleue est f(x)=x². La surface bleutée est l'aire exacte entre 0 et b ; les rectangles dorés donnent une approximation par sommes de Riemann. Quand leur largeur diminue, leur aire totale se rapproche de l'intégrale.",question:"Pourquoi la somme des rectangles devient-elle une meilleure approximation lorsque leur largeur diminue ?",steps:["1 · Déplace b : la borne supérieure et l'aire changent.","2 · Compare les rectangles à la surface sous la courbe.","3 · L'aire exacte vaut b³/3 ; si b double, elle est multipliée par 8."]},
+  schmidt:{title:"Gram–Schmidt : décomposer puis orthogonaliser",text:"Le vecteur orange v₂ se décompose en deux morceaux : sa projection dorée sur la direction de v₁, et le résidu vert w₂. Ce résidu est perpendiculaire à v₁. L'algorithme conserve ensuite w₂, puis le normalise si l'on veut une base orthonormée.",question:"Quand l'angle entre v₁ et v₂ varie, comment évoluent la projection et le résidu orthogonal ?",steps:["1 · Le vecteur bleu v₁ fixe la première direction.","2 · La flèche dorée est projᵥ₁(v₂), la composante parallèle.","3 · La flèche verte w₂=v₂−projᵥ₁(v₂) est orthogonale à v₁ : ⟨v₁,w₂⟩=0."]}
  };
  const g=guides[labType]||{title:"Observer puis expliquer",text:$("#labCaption").textContent,question:"Quel phénomène mathématique le dessin illustre-t-il ?",steps:["1 · Modifie le paramètre.","2 · Décris ce qui change.","3 · Formule la propriété correspondante."]};
  $("#labLearningTitle").textContent=g.title;$("#labLearningText").textContent=g.text;$("#labQuestion").textContent=g.question;
