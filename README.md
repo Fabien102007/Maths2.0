@@ -1,28 +1,37 @@
 # Maths2.0 — Learning Studio
 
-Nouvelle version de Maths2.0, application web progressive (PWA) en français, sans compilation.
+Maths2.0 est une application web progressive (PWA) en français, publiée sur GitHub Pages. Cette version est une bêta pédagogique : elle vise à structurer l'apprentissage des mathématiques, l'entraînement et la mémorisation.
 
 ## Déploiement GitHub Pages
-1. Décompresser l'archive.
-2. Importer **tout le contenu** du dossier `Maths2.0` à la racine du dépôt GitHub Pages.
-3. Vérifier dans Settings → Pages que la publication utilise la branche `main` et le dossier `/ (root)`.
-4. Ouvrir le site et effectuer un rechargement forcé (Ctrl+F5).
+1. Le dépôt doit publier la branche principale à la racine.
+2. Tous les fichiers du dépôt doivent rester accessibles à la racine, notamment `data.js`, `curriculum.js`, `app.js`, `style.css` et `sw.js`.
+3. Après un déploiement, effectuer un rechargement forcé (Ctrl+F5). Le service worker utilise une version de cache dédiée et vérifie le réseau avant de servir les fichiers.
 
-## Fonctionnalités incluses
-- Tableau de bord avec indicateurs de progression.
-- Diagnostic de départ et recommandation de prochaine notion.
-- Cours filtrables en analyse et algèbre.
-- 61 exercices repris de Maths4, filtrables par thème et difficulté, avec indices progressifs, corrections détaillées sur fond vert et auto-évaluation.
-- Progression locale par notion et validation de maîtrise après plusieurs réussites autonomes.
-- Révisions espacées avec trois niveaux de rappel.
-- Tuteur IA avec quatre modes et envoi de photos manuscrites.
-- Laboratoire visuel interactif : 12 expériences en analyse, algèbre et géométrie (limites, dérivation, intégrales, Taylor, injectivité, déterminants, Gram-Schmidt, Fourier, trigonométrie, valeurs propres).
-- Installation PWA et cache hors ligne des fichiers essentiels.
+## Fonctionnalités pédagogiques
+- 20 chapitres filtrables par domaine et niveau : lycée, L1, L2 et prépa.
+- 91 exercices avec filtres par thème et difficulté, indices et corrections enrichies.
+- Parcours initial avec 10 questions diagnostiques et recommandations tenant compte des résultats, des notions fragiles et des prérequis.
+- Sauvegarde locale des démarches saisies dans les exercices.
+- Validation d'une notion après plusieurs réussites autonomes consécutives.
+- Révisions espacées dont les intervalles progressent selon la qualité du rappel.
+- 20 flashcards environ, avec retournement animé.
+- 14 expériences visuelles interactives : convergence, limites, continuité, dérivation, intégrales, développements limités, Fourier, trigonométrie, injectivité, déterminants, Gram–Schmidt, valeurs propres, surfaces 3D et exponentielle complexe en hélice.
+- Installation PWA et cache hors ligne des ressources essentielles.
 
-## Tuteur IA
-Le fichier `ai-config.js` contient l'URL du Worker Cloudflare déjà utilisé. L'application envoie au Worker les champs `mode`, `exercise`, `messages`, `text` et `image`. Aucune clé secrète n'est stockée dans le navigateur.
+## Données et confidentialité
+La progression, les tentatives, les révisions et les brouillons sont stockés dans le navigateur via `localStorage`. Ils ne sont pas synchronisés entre appareils et peuvent être perdus si le stockage du navigateur est effacé.
 
-Le quota et les coûts d'utilisation dépendent du compte Cloudflare et de la configuration du Worker. Cette application ne prétend pas fournir un accès IA illimité.
+Le tuteur IA existant n'a pas été retravaillé dans cette mise à jour. Lorsqu'il est utilisé, les messages et images sont transmis au Worker Cloudflare configuré. La politique de confidentialité décrit les flux connus et les points qui restent à préciser à partir de la configuration réelle du Worker et du fournisseur IA.
 
-## Données et limites de cette version
-La progression et les conversations sont stockées localement dans le navigateur : elles ne sont pas synchronisées entre appareils. Le diagnostic est un repérage initial court, pas une évaluation officielle. Le contenu pédagogique fourni constitue une première base structurée à enrichir et à vérifier avant une diffusion commerciale. MathJax et les polices web nécessitent une connexion lors du premier chargement.
+Consulter :
+- [Politique de confidentialité](privacy.html)
+- [Mentions légales](legal.html)
+
+## Limites à résoudre avant commercialisation
+- Tester chaque parcours dans les navigateurs et sur les appareils cibles.
+- Faire relire et valider l'intégralité des cours, exercices, solutions et visualisations par un enseignant ou un spécialiste.
+- Compléter les mentions légales et la politique de confidentialité avec l'identité de l'éditeur, ses coordonnées et les informations exactes sur les sous-traitants.
+- Mettre en place une infrastructure de comptes et de synchronisation uniquement si elle devient nécessaire.
+- Définir les conditions commerciales, le support utilisateur et le dispositif de paiement avant toute offre payante.
+
+Cette version ne comporte pas encore de compte utilisateur, de paiement intégré, ni de synchronisation cloud de la progression.
