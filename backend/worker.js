@@ -59,6 +59,12 @@ export default {
     const s=await stripe(env,"checkout/sessions",{mode:"subscription",customer, "line_items[0][price]":env.STRIPE_PRICE_ID,"line_items[0][quantity]":"1",success_url:env.APP_URL+"?payment=success",cancel_url:env.APP_URL+"?payment=cancelled",client_reference_id:user.id,"metadata[supabase_user_id]":user.id});
     return json({url:s.url},200,env);
    }
+   if(url.pathname==="/api/subscription"&&request.method==="POST"){
+    const user=await userFromRequest(request,env);
+    const rows=await db(env,"user_subscriptions?select=status,current_period_end&user_id=eq."+user.id);
+    const row=rows?.[0];
+    return json({active:!!row&&["active","trialing"].includes(row.status),status:row?.status||"inactive",currentPeriodEnd:row?.current_period_end||null},200,env);
+   }
    if(url.pathname==="/api/portal"&&request.method==="POST"){
     const user=await userFromRequest(request,env);
     const rows=await db(env,"user_subscriptions?select=stripe_customer_id&user_id=eq."+user.id);
