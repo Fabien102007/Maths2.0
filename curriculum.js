@@ -53,6 +53,18 @@ add("m4-88","euclidean","Avancé","Projection orthogonale","Projeter v=(2,1) sur
 add("m4-89","series","Facile","Série géométrique","Étudier la convergence de $\\sum_{n=0}^{+\\infty}(1/3)^n$ et calculer sa somme.","Série géométrique de raison 1/3, de module inférieur à 1 : elle converge et sa somme vaut $1/(1-1/3)=\\boxed{3/2}$.","Reconnais une série géométrique.");
 add("m4-90","series","Intermédiaire","Série harmonique","Montrer que $\\sum_{n=1}^{+\\infty}1/n$ diverge.","On regroupe les termes par blocs : 1/3+1/4≥1/2, 1/5+…+1/8≥1/2, etc. Les sommes partielles sont non bornées ; la série harmonique diverge.","La condition uₙ→0 est nécessaire mais ne suffit pas.");
 add("m4-91","series","Avancé","Série de Riemann","Pour p réel, déterminer quand $\\sum_{n=1}^{+\\infty}1/n^p$ converge.","La série de Riemann converge si et seulement si $\\boxed{p>1}$. Pour p≤0 le terme général ne tend pas vers 0 ; pour p>0 le critère intégral donne p>1.","Distingue p≤0 et p>0.");
+window.FLASHCARDS.push(
+ {topic:"trigonometry",front:"Identité fondamentale",back:"Pour tout réel x : cos²(x)+sin²(x)=1."},
+ {topic:"taylor",front:"DL de exp en 0 à l'ordre 2",back:"eˣ=1+x+x²/2+o(x²)."},
+ {topic:"compactness",front:"Compacité dans R",back:"Une partie de R est compacte si et seulement si elle est fermée et bornée."},
+ {topic:"multivariable",front:"Ligne de niveau",back:"La ligne de niveau c est l'ensemble des points (x,y) tels que f(x,y)=c."},
+ {topic:"complex",front:"Module d'un complexe",back:"Pour z=a+ib : |z|=√(a²+b²) et z z̄=|z|²."},
+ {topic:"polynomials",front:"Théorème du facteur",back:"P(a)=0 si et seulement si X−a divise P(X)."},
+ {topic:"linear-systems",front:"Forme matricielle",back:"Un système linéaire s'écrit AX=b ; les opérations élémentaires sur les lignes préservent les solutions."},
+ {topic:"probability",front:"Probabilité conditionnelle",back:"Si P(B)>0 : P(A|B)=P(A∩B)/P(B)."},
+ {topic:"differential-equations",front:"Équation y'=ay",back:"Les solutions sont y(x)=Ce^{ax}, avec C réel."},
+ {topic:"euclidean",front:"Projection sur une droite",back:"Pour u≠0 : projᵤ(v)=⟨v,u⟩u/||u||²."}
+);
 /* Repoint the original courses at their real exercise identifiers. */
 const links={limits:"m4-1",continuity:"m4-4",derivative:"m4-7",integrals:"m4-14",series:"m4-89","vector-spaces":"m4-17",basis:"m4-19","linear-maps":"m4-21",matrices:"m4-23",eigenvalues:"m4-34"};
 for(const t of window.TOPICS) if(links[t.id]) t.exerciseId=links[t.id];
