@@ -64,3 +64,22 @@
 .lab-canvas-wrap{min-width:0}
 .lab-legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 16px;color:#b9cbe0;font-size:11px}
 .lab-formula mjx-container,.lab-caption mjx-container,.lab-learning mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+
+/* === Maths2.0 · Midnight glass visual refresh === */
+:root{--bg:#070b16;--panel:#0d1424;--panel2:#121d31;--line:#202e49;--text:#eef3ff;--muted:#91a1bd;--violet:#9a8cff;--cyan:#52d8ed;--green:#55d6b0;--amber:#f4bd72;--radius:20px}
+body{background:radial-gradient(ellipse at 78% -18%,rgba(65,88,160,.24),transparent 43%),radial-gradient(ellipse at 4% 35%,rgba(40,111,139,.10),transparent 35%),#070b16}
+.sidebar{background:rgba(7,12,24,.97);border-right-color:#1b2942;backdrop-filter:blur(18px)}
+.topbar{border-bottom-color:#1b2942}.brand-mark{background:linear-gradient(135deg,#8274ff 0%,#3b9edb 55%,#47d4db 100%);box-shadow:0 10px 30px rgba(83,112,255,.25)}
+.nav-link:hover,.nav-link.active{background:linear-gradient(100deg,rgba(116,96,230,.20),rgba(44,139,176,.13));color:#f7f8ff}.nav-link.active{box-shadow:inset 3px 0 #9b8cff}
+.focus-card,.panel,.stat-card{border-color:rgba(113,139,184,.16);box-shadow:0 12px 36px rgba(0,0,0,.16)}
+.hero{background:radial-gradient(ellipse at 78% 40%,rgba(67,102,195,.22),transparent 40%),linear-gradient(125deg,#111a31 0%,#10192d 48%,#0b2030 100%);border:1px solid rgba(130,151,198,.19);box-shadow:0 24px 70px rgba(0,0,0,.22)}
+.hero h1 em{background:linear-gradient(95deg,#a89cff,#55d9ed);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat-card{background:linear-gradient(145deg,rgba(18,29,49,.96),rgba(11,19,34,.96))}
+.panel,.course-item,.exercise-item{background-color:rgba(13,20,36,.94)}
+.btn.primary{background:linear-gradient(110deg,#7468e8,#3c9ecb);box-shadow:0 8px 22px rgba(81,112,222,.22)}.btn.primary:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.lab-canvas-wrap{background:radial-gradient(ellipse at 50% 0%,#142943,#08111f 75%);border-color:#263b59}
+.lab-toolbar{display:flex;align-items:end;gap:14px;flex-wrap:wrap}.lab-select-group{display:grid;gap:7px;min-width:min(100%,270px);flex:1}
+.lab-toolbar label{color:#aab9d3;font-size:12px}.lab-toolbar select{width:100%;min-height:42px;border:1px solid #2a3c5a;border-radius:11px;background:#0b1424;color:#edf3ff;padding:0 12px}
+.lab-animate{min-height:42px}.lab-animate[hidden],#surfaceFunctionWrap[hidden]{display:none}
+.lab-canvas-wrap canvas{touch-action:pan-y;cursor:grab}.lab-canvas-wrap canvas:active{cursor:grabbing}
+@media(max-width:760px){.lab-toolbar{align-items:stretch}.lab-select-group{min-width:100%}.lab-animate{width:100%}}
