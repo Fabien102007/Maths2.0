@@ -8,7 +8,7 @@
   <title>Maths2.0 — Maîtriser les mathématiques</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261120-cloud-course-lab5">
+  <link rel="stylesheet" href="style.css?v=20261120-cloud-course-lab6">
   <script>window.MATHS4_AI_ENDPOINT="https://shiny-credit-68ac.freitasaguiarfabien.workers.dev/api/tutor";</script>
   <script>
 window.MathJax = {
@@ -164,13 +164,22 @@ window.__mathJaxReady = new Promise(resolve => {
       <label for="accountPassword">Mot de passe</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 caractères minimum">
       <div class="account-actions"><button class="btn primary" type="submit" id="accountSignIn">Se connecter</button><button class="btn ghost" type="button" id="accountSignUp">Créer un compte</button></div>
     </form>
-    <div id="accountSignedIn" hidden><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button><button class="btn primary" id="accountManagePlan" type="button">Gérer mon abonnement</button></div>
+    <div id="accountSignedIn" hidden><p id="accountPlanStatus" class="account-plan-status">Offre gratuite</p><div class="account-actions"><button class="btn primary" id="accountUpgrade" type="button">Passer à Premium</button><button class="btn ghost" id="accountManagePlan" type="button">Gérer mon abonnement</button><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button></div></div>
+    <div class="account-feedback">
+      <div class="eyebrow">BÊTA TEST</div><b>Donner un retour sur Maths2.0</b>
+      <label for="feedbackCategory">Sujet</label><select id="feedbackCategory"><option value="bug">Bug ou problème</option><option value="cours">Cours</option><option value="exercice">Exercice / correction</option><option value="visualisation">Visualisation</option><option value="idee">Idée d'amélioration</option><option value="autre">Autre</option></select>
+      <label for="feedbackRating">Note globale</label><select id="feedbackRating"><option value="5">5 — Excellent</option><option value="4">4 — Bien</option><option value="3" selected>3 — Moyen</option><option value="2">2 — Décevant</option><option value="1">1 — Très décevant</option></select>
+      <label for="feedbackMessage">Ton retour</label><textarea id="feedbackMessage" rows="3" maxlength="4000" placeholder="Décris ce qui fonctionne, ce qui bloque ou ce que tu aimerais voir…"></textarea>
+      <button class="btn ghost" id="feedbackSend" type="button">Envoyer mon retour</button>
+    </div>
     <p class="account-footnote">La création de compte et la synchronisation seront activées après configuration du projet Supabase.</p>
   </div>
 </div>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="config.js?v=20261120-cloud-course-lab6"></script>
   <script defer src="data.js?v=20261120-all-exercises-latex1"></script>
-  <script defer src="curriculum.js?v=20261120-cloud-course-lab5"></script>
-  <script defer src="app.js?v=20261120-cloud-course-lab5"></script>
-  <script defer src="account.js?v=20261120-cloud-course-lab5"></script>
+  <script defer src="curriculum.js?v=20261120-cloud-course-lab6"></script>
+  <script defer src="app.js?v=20261120-cloud-course-lab6"></script>
+  <script defer src="account.js?v=20261120-cloud-course-lab6"></script>
 </body>
 </html>
