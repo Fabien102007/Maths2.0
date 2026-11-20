@@ -324,7 +324,7 @@ function drawLab(){
  else if(labType==="integral"){xmin=0;xmax=3.1;ymin=0;ymax=9}
  else if(labType==="trig"){xmin=-1.5;xmax=1.5;ymin=-1.5;ymax=1.5}
  else{xmin=-3;xmax=3;ymin=-3;ymax=3}
- const X=x=>m.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>m.t+(ymax-y)/(ymax-ymin)*ph;
+ const trigScale=Math.min(pw/(xmax-xmin),ph/(ymax-ymin));const X=x=>labType==="trig"?W*.5+x*trigScale:m.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>labType==="trig"?H*.53-y*trigScale:m.t+(ymax-y)/(ymax-ymin)*ph;
  const grid="#263b52",axis="#91a8c0",txt="#9eb2c9";ctx.font="11px system-ui";ctx.lineWidth=1;ctx.strokeStyle=grid;ctx.fillStyle=txt;
  const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:labType==="integral"?[0,.5,1,1.5,2,2.5,3]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:labType==="integral"?[0,1,2,4,6,8]:[-2,-1,0,1,2];
  xt.forEach(v=>{const x=X(v);ctx.beginPath();ctx.moveTo(x,m.t);ctx.lineTo(x,m.t+ph);ctx.stroke();ctx.textAlign="center";ctx.fillText(String(v),x,H-17)});
