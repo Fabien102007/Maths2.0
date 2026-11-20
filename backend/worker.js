@@ -55,7 +55,7 @@ export default {
     const user=await userFromRequest(request,env);
     const rows=await db(env,"user_subscriptions?select=stripe_customer_id&user_id=eq."+user.id);
     let customer=rows?.[0]?.stripe_customer_id;
-    if(!customer){const c=await stripe(env,"customers",{email:user.email,"metadata[supabase_user_id]":user.id});customer=c.id;}
+    if(!customer){const c=await stripe(env,"customers",{email:user.email,"metadata[supabase_user_id]":user.id,"subscription_data[metadata][supabase_user_id]":user.id});customer=c.id;}
     const s=await stripe(env,"checkout/sessions",{mode:"subscription",customer, "line_items[0][price]":env.STRIPE_PRICE_ID,"line_items[0][quantity]":"1",success_url:env.APP_URL+"?payment=success",cancel_url:env.APP_URL+"?payment=cancelled",client_reference_id:user.id,"metadata[supabase_user_id]":user.id});
     return json({url:s.url},200,env);
    }
