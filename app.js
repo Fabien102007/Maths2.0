@@ -232,8 +232,8 @@ async function sendChat(){
 function resizeImage(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{const scale=Math.min(1,1500/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);resolve(c.toDataURL("image/jpeg",.8))};img.onerror=reject;img.src=url})}
 const LABS={
  sequence:{label:"Nombre de termes",min:3,max:40,step:1,value:12,caption:"Les termes de uₙ=1+1/n se rapprochent de 1 sans jamais l'atteindre.",formula:"\\\\(u_n=1+\\\\frac1n\\\\),\\quad \\lim_{n\\to+\\infty}u_n=1"},
- limit:{label:"Distance δ à a = 1",min:0.05,max:2.4,step:0.05,value:1.2,caption:"Les deux points x=1−δ et x=1+δ se rapprochent de a=1. Observe leurs images sur la parabole f(x)=x² et la distance verticale à L=1.",formula:"\\\\(f(x)=x^2,\\quad \\lim_{x\\to1}f(x)=1\\\\)"},
- continuity:{label:"Abscisse du point mobile x",min:-1.5,max:3.5,step:0.05,value:2.2,caption:"Le point A reste fixé en (1,1). Déplace P sur la parabole f(x)=x² : les segments en pointillés visualisent Δx et Δy.",formula:"\\\\(f(x)=x^2,\\quad \\lim_{x\\to1}f(x)=f(1)=1\\\\)"},
+ limit:{label:"Distance δ à a = 1",min:0.05,max:1.2,step:0.05,value:1.2,caption:"Les deux points x=1−δ et x=1+δ se rapprochent de a=1. Observe leurs images sur la parabole f(x)=x² et la distance verticale à L=1.",formula:"\\\\(f(x)=x^2,\\quad \\lim_{x\\to1}f(x)=1\\\\)"},
+ continuity:{label:"Abscisse du point mobile x",min:-0.5,max:2.3,step:0.05,value:2.2,caption:"Le point A reste fixé en (1,1). Déplace P sur la parabole f(x)=x² : les segments en pointillés visualisent Δx et Δy.",formula:"\\\\(f(x)=x^2,\\quad \\lim_{x\\to1}f(x)=f(1)=1\\\\)"},
  derivative:{label:"Écart h du point mobile",min:-1.5,max:1.5,step:0.05,value:1.2,caption:"Le point fixe est a = 0,5. Fais tendre h vers 0 : le point mobile b = a + h rejoint le point fixe et la sécante tend vers la tangente.",formula:"\\\\(f(x)=x^2,\\quad m_{sec}=\\frac{f(a+h)-f(a)}{h}=2a+h,\\quad \\lim_{h\\to0}m_{sec}=f'(a)=2a\\)"},
  integral:{label:"Borne supérieure b",min:0.3,max:2.8,step:0.05,value:1.8,caption:"La zone colorée représente l'intégrale de x² entre 0 et b.",formula:"\\\\(\\int_0^b x^2\\,dx=\\frac{b^3}{3}\\\\)"},
  taylor:{label:"Ordre du développement",min:0,max:8,step:1,value:4,caption:"Compare exp(x) à son polynôme de Taylor. L'approximation s'améliore près de 0 quand l'ordre augmente.",formula:"\\\\(e^x=\\sum_{k=0}^{n}\\frac{x^k}{k!}+o(x^n)\\\\)"},
@@ -328,11 +328,11 @@ function drawLab(){
  else if(labType==="derivative"){xmin=-2.5;xmax=2.5;ymin=-1;ymax=6.5}
  else if(labType==="integral"){xmin=0;xmax=3.1;ymin=0;ymax=9}
  else if(labType==="trig"){xmin=-1.5;xmax=1.5;ymin=-1.5;ymax=1.5}
- else if(labType==="limit"||labType==="continuity"){xmin=-1.5;xmax=3.5;ymin=-0.6;ymax=4.6}
+ else if(labType==="limit"||labType==="continuity"){xmin=-0.5;xmax=2.5;ymin=-0.6;ymax=5.4}
  else{xmin=-3;xmax=3;ymin=-3;ymax=3}
  const trigScale=Math.min(pw/(xmax-xmin),ph/(ymax-ymin));const X=x=>labType==="trig"?W*.5+x*trigScale:m.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>labType==="trig"?H*.53-y*trigScale:m.t+(ymax-y)/(ymax-ymin)*ph;
  const grid="#263b52",axis="#91a8c0",txt="#9eb2c9";ctx.font="11px system-ui";ctx.lineWidth=1;ctx.strokeStyle=grid;ctx.fillStyle=txt;
- const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:labType==="integral"?[0,.5,1,1.5,2,2.5,3]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:labType==="integral"?[0,1,2,4,6,8]:[-2,-1,0,1,2,3,4];
+ const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:labType==="integral"?[0,.5,1,1.5,2,2.5,3]:(labType==="limit"||labType==="continuity")?[0,.5,1,1.5,2]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:labType==="integral"?[0,1,2,4,6,8]:(labType==="limit"||labType==="continuity")?[0,1,2,3,4,5]:[-2,-1,0,1,2,3,4];
  xt.forEach(v=>{const x=X(v);ctx.beginPath();ctx.moveTo(x,m.t);ctx.lineTo(x,m.t+ph);ctx.stroke();ctx.textAlign="center";ctx.fillText(String(v),x,H-17)});
  yt.forEach(v=>{const y=Y(v);ctx.beginPath();ctx.moveTo(m.l,y);ctx.lineTo(m.l+pw,y);ctx.stroke();ctx.textAlign="right";ctx.fillText(String(v),m.l-9,y+4)});
  ctx.strokeStyle=axis;ctx.lineWidth=1.5;ctx.beginPath();if(ymin<=0&&ymax>=0){ctx.moveTo(m.l,Y(0));ctx.lineTo(m.l+pw,Y(0))}if(xmin<=0&&xmax>=0){ctx.moveTo(X(0),m.t);ctx.lineTo(X(0),m.t+ph)}ctx.stroke();
