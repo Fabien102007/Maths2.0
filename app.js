@@ -216,10 +216,11 @@ function drawLab(){
  let xmin,xmax,ymin,ymax;
  if(labType==="sequence"){xmin=0;xmax=Math.round(+$("#labSlider").value)+1;ymin=.75;ymax=2.15}
  else if(labType==="derivative"){xmin=-2.5;xmax=2.5;ymin=-1;ymax=6.5}
+ else if(labType==="integral"){xmin=0;xmax=3.1;ymin=0;ymax=9}
  else{xmin=-3;xmax=3;ymin=-3;ymax=3}
  const X=x=>m.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>m.t+(ymax-y)/(ymax-ymin)*ph;
  const grid="#263b52",axis="#91a8c0",txt="#9eb2c9";ctx.font="11px system-ui";ctx.lineWidth=1;ctx.strokeStyle=grid;ctx.fillStyle=txt;
- const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:[-2,-1,0,1,2];
+ const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:labType==="integral"?[0,.5,1,1.5,2,2.5,3]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:labType==="integral"?[0,1,2,4,6,8]:[-2,-1,0,1,2];
  xt.forEach(v=>{const x=X(v);ctx.beginPath();ctx.moveTo(x,m.t);ctx.lineTo(x,m.t+ph);ctx.stroke();ctx.textAlign="center";ctx.fillText(String(v),x,H-17)});
  yt.forEach(v=>{const y=Y(v);ctx.beginPath();ctx.moveTo(m.l,y);ctx.lineTo(m.l+pw,y);ctx.stroke();ctx.textAlign="right";ctx.fillText(String(v),m.l-9,y+4)});
  ctx.strokeStyle=axis;ctx.lineWidth=1.5;ctx.beginPath();if(ymin<=0&&ymax>=0){ctx.moveTo(m.l,Y(0));ctx.lineTo(m.l+pw,Y(0))}if(xmin<=0&&xmax>=0){ctx.moveTo(X(0),m.t);ctx.lineTo(X(0),m.t+ph)}ctx.stroke();
@@ -241,14 +242,31 @@ function drawLab(){
   $("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe f(x)=x²</span><span style="color:#e0b86d">━ Tangente en A</span><span style="color:#54cbb2">━ Sécante AB</span>';
  }else{
   const v=+$("#labSlider").value;
-  if(labType==="integral"){ctx.beginPath();ctx.moveTo(X(0),Y(0));for(let k=0;k<=300;k++){const x=v*k/300;ctx.lineTo(X(x),Y(x*x))}ctx.lineTo(X(v),Y(0));ctx.closePath();ctx.fillStyle="#4779c455";ctx.fill();curve(x=>x*x,0,Math.max(2.8,v),"#80b8f4",3)}
+  if(labType==="integral"){
+    const b=v,N=14,dx=b/N,area=b*b*b/3;
+    for(let k=0;k<N;k++){const x0=k*dx,x1=(k+1)*dx,mid=(x0+x1)/2,height=mid*mid;ctx.fillStyle=k%2?"rgba(235,177,91,.22)":"rgba(235,177,91,.32)";ctx.fillRect(X(x0),Y(height),Math.max(1,X(x1)-X(x0)),Y(0)-Y(height));ctx.strokeStyle="rgba(235,177,91,.72)";ctx.lineWidth=1;ctx.strokeRect(X(x0),Y(height),X(x1)-X(x0),Y(0)-Y(height))}
+    ctx.beginPath();ctx.moveTo(X(0),Y(0));for(let k=0;k<=400;k++){const x=b*k/400;ctx.lineTo(X(x),Y(x*x))}ctx.lineTo(X(b),Y(0));ctx.closePath();
+    const grad=ctx.createLinearGradient(0,Y(b*b),0,Y(0));grad.addColorStop(0,"rgba(76,145,235,.28)");grad.addColorStop(1,"rgba(76,145,235,.08)");ctx.fillStyle=grad;ctx.fill();
+    curve(x=>x*x,0,3.02,"#80b8f4",3.5);segment(b,0,b,b*b,"#e0b86d",2,[6,4]);point(b,b*b,"#e0b86d",6);point(b,0,"#e0b86d",4);
+    ctx.fillStyle="#e8edf5";ctx.font="bold 14px system-ui";ctx.textAlign="left";ctx.fillText("A(b) = b³/3 ≈ "+area.toFixed(2).replace(".",","),m.l+12,m.t+19);
+    ctx.fillStyle="#f0c77c";ctx.font="bold 12px system-ui";ctx.fillText("b = "+b.toFixed(2).replace(".",","),X(b)+8,Y(0)+18);
+   }
   else if(labType==="taylor"){const n=Math.round(v);curve(Math.exp,xmin,xmax,"#80b8f4",3);curve(x=>{let s=0,p=1,f=1;for(let k=0;k<=n;k++){if(k){p*=x;f*=k}s+=p/f}return s},xmin,xmax,"#e0b86d",2.5)}
   else if(labType==="injectivity"){curve(x=>x*x,-2.5,2.5,"#80b8f4",3);point(v,v*v,"#80b8f4");point(-v,v*v,"#e0b86d")}
   else if(labType==="continuity"){curve(x=>Math.sin(x)+.2*x,xmin,xmax,"#80b8f4",3);point(v,Math.sin(v)+.2*v,"#e0b86d")}
   else if(labType==="limit"){curve(x=>x+1,xmin,xmax,"#80b8f4",3);point(1+v/2.5,2+v/2.5,"#e0b86d")}
   else if(labType==="fourier"){curve(x=>{let s=0;for(let k=1;k<=Math.round(v);k+=2)s+=Math.sin(k*x)/k;return 4/Math.PI*s},-Math.PI,Math.PI,"#80b8f4",3)}
   else if(labType==="eigen"){curve(x=>.55*x,xmin,xmax,"#80b8f4",2);curve(x=>v*x,xmin,xmax,"#e0b86d",3)}
-  else if(labType==="determinant"||labType==="schmidt"){const t=v*Math.PI/180;segment(0,0,2.1,0,"#80b8f4",3);segment(0,0,2.1*Math.cos(t),2.1*Math.sin(t),"#e0b86d",3)}
+  else if(labType==="determinant"){const t=v*Math.PI/180;segment(0,0,2.1,0,"#80b8f4",3);segment(0,0,2.1*Math.cos(t),2.1*Math.sin(t),"#e0b86d",3)}
+   else if(labType==="schmidt"){
+    const theta=v*Math.PI/180,base=-Math.PI/7,v1=[2.05*Math.cos(base),2.05*Math.sin(base)],v2=[2.55*Math.cos(base+theta),2.55*Math.sin(base+theta)];
+    const coeff=(v2[0]*v1[0]+v2[1]*v1[1])/(v1[0]*v1[0]+v1[1]*v1[1]),p=[coeff*v1[0],coeff*v1[1]],w=[v2[0]-p[0],v2[1]-p[1]];
+    const vec=(x1,y1,x2,y2,color,width=3)=>{segment(x1,y1,x2,y2,color,width);const ex=X(x2),ey=Y(y2),ang=Math.atan2(Y(y2)-Y(y1),X(x2)-X(x1)),len=10;ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-len*Math.cos(ang-.4),ey-len*Math.sin(ang-.4));ctx.lineTo(ex-len*Math.cos(ang+.4),ey-len*Math.sin(ang+.4));ctx.closePath();ctx.fillStyle=color;ctx.fill()};
+    vec(0,0,v1[0],v1[1],"#80b8f4",4);vec(0,0,v2[0],v2[1],"#f2a45b",3.5);vec(0,0,p[0],p[1],"#e0b86d",4);vec(p[0],p[1],v2[0],v2[1],"#54c99b",4);
+    point(0,0,"#e8edf5",4);point(v1[0],v1[1],"#80b8f4",5);point(v2[0],v2[1],"#f2a45b",5);
+    ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillStyle="#80b8f4";ctx.fillText("v₁",X(v1[0])+7,Y(v1[1])-7);ctx.fillStyle="#f2a45b";ctx.fillText("v₂",X(v2[0])+7,Y(v2[1])-7);ctx.fillStyle="#e0b86d";ctx.fillText("projection",X(p[0])+7,Y(p[1])-8);ctx.fillStyle="#54c99b";ctx.fillText("w₂",X((p[0]+v2[0])/2)+7,Y((p[1]+v2[1])/2)-8);
+    ctx.fillStyle="#e8edf5";ctx.font="12px system-ui";ctx.fillText("v₂ = projᵥ₁(v₂) + w₂",m.l+8,m.t+16);ctx.fillText("⟨v₁,w₂⟩ = 0",m.l+8,m.t+32);
+   }
   else curve(x=>x,xmin,xmax,"#80b8f4",3);
   $("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
  }
