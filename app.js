@@ -144,7 +144,7 @@ function renderExercise(id){
  let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${exerciseRichText(hints[h++])}</p>`;typesetExercise($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
  $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content"><p>${exerciseRichText(e.answer)}</p>${(e.solutionSteps||[]).map((s,i)=>`<p><b>Étape ${i+1}.</b> ${exerciseRichText(s)}</p>`).join("")}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typesetExercise($("#solutionBox"))};
  $(".rating-btn").forEach(b=>b.onclick=()=>recordAttempt(e,+b.dataset.score));
- typesetExercise($("#exerciseDetail"));
+ typeset($("#exerciseDetail .question-box"));
 }
 function recordAttempt(e,score){
  const a=state.attempts[e.topic]||{independent:0,total:0,lastScore:0};a.total++;a.lastScore=score/2;if(score===2)a.independent++;else if(score===0)a.independent=0;state.attempts[e.topic]=a;
