@@ -153,7 +153,7 @@ function renderCourses(){
  themes.hidden=showTopics;topicsView.hidden=!showTopics;
  if(!showTopics){activeTopic=null;detail.hidden=true;return;}
  listHost.innerHTML=filtered.map(t=>`<button class="course-item ${activeTopic===t.id?"selected":""}" data-topic="${t.id}"><span class="course-symbol">${t.category==="Analyse"?"∫":"∑"}</span><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${esc(t.level)}</small></span><i>${mastered(t.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucune notion trouvée.</p>';
- $("#courseList [data-topic]").forEach(b=>b.onclick=()=>openTopic(b.dataset.topic));
+ $$("#courseList [data-topic]").forEach(b=>b.onclick=()=>openTopic(b.dataset.topic));
  if(activeTopic&&topic(activeTopic)){detail.hidden=false;renderTopic(activeTopic);}else{detail.hidden=true;detail.innerHTML="";}
 }
 function openTopic(id){activeTopic=id;renderCourses()}
@@ -448,7 +448,7 @@ function init(){
   finally{e.target.value=""}
  };
  $("#courseSearch").addEventListener("input",()=>{activeTopic=null;renderCourses()});
- $("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeTopic=null;renderCourses()}));
+ $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeTopic=null;renderCourses()}));
  $("#courseBackThemes").onclick=()=>{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses()};["exerciseSearch","exerciseCategory","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
