@@ -8,7 +8,7 @@ Maths2.0 est une application web progressive (PWA) en français, publiée sur Gi
 3. Après un déploiement, effectuer un rechargement forcé (Ctrl+F5). Le service worker utilise une version de cache dédiée et vérifie le réseau avant de servir les fichiers.
 
 ## Fonctionnalités pédagogiques
-- 20 chapitres filtrables par domaine et niveau : lycée, L1, L2 et prépa.
+- 20 chapitres regroupés par domaine : lycée, L1 et L2 (les intitulés « Prépa » trop généraux ont été retirés).
 - 91 exercices avec filtres par thème et difficulté, indices et corrections enrichies.
 - Parcours initial avec 10 questions diagnostiques et recommandations tenant compte des résultats, des notions fragiles et des prérequis.
 - Sauvegarde locale des démarches saisies dans les exercices.
