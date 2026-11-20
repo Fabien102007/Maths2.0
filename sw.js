@@ -1,4 +1,4 @@
-const CACHE = "maths2-runtime-v24";
+const CACHE = "maths2-runtime-v25";
 const CORE = ["./", "./index.html", "./style.css", "./app.js", "./data.js", "./curriculum.js", "./privacy.html", "./legal.html", "./manifest.webmanifest", "./assets/icon.svg"];
 
 self.addEventListener("install", event => {
@@ -28,7 +28,7 @@ self.addEventListener("fetch", event => {
       }
       return response;
     } catch (error) {
-      const cached = await caches.match(request);
+      const cached = await caches.match(request, { ignoreSearch: true });
       if (cached) return cached;
       if (request.mode === "navigate") return caches.match("./index.html");
       throw error;
