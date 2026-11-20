@@ -246,7 +246,7 @@ const LABS={
  surface3d:{label:"Angle de vue",min:-180,max:180,step:1,value:-38,caption:"Explore une surface z=f(x,y). Fais glisser le curseur ou déplace directement la vue à la souris pour observer les reliefs.",formula:"\\\\(z=f(x,y)\\\\)"},
  complex3d:{label:"Vitesse angulaire ω",min:0.5,max:2.5,step:0.1,value:1,caption:"L'exponentielle complexe décrit une rotation uniforme dans le plan complexe. En ajoutant le temps comme troisième axe, la trajectoire devient une hélice.",formula:"\\\\(e^{i\\omega t}=\\cos(\\omega t)+i\\sin(\\omega t)\\\\)"}
 };
-let labType="derivative";
+let labType="sequence";
 function renderLabGuide(){
  const value=Number($("#labSlider").value);
  const guides={
@@ -368,7 +368,9 @@ function drawLab(){
   else if(labType==="taylor"){const n=Math.round(v);curve(Math.exp,xmin,xmax,"#80b8f4",3);curve(x=>{let s=0,p=1,f=1;for(let k=0;k<=n;k++){if(k){p*=x;f*=k}s+=p/f}return s},xmin,xmax,"#e0b86d",2.5)}
   else if(labType==="injectivity"){curve(x=>x*x,-2.5,2.5,"#80b8f4",3);point(v,v*v,"#80b8f4");point(-v,v*v,"#e0b86d")}
   else if(labType==="limit"){
-    const delta=v,a=1,L=1,xm=a-delta,xp=a+delta,ym=xm*xm,yp=xp*xp;
+    const delta=v,a=1,L=1,xm=a-delta,xp=a+delta,ym=xm*xm,yp=xp*xp,epsilon=Math.max(Math.abs(ym-L),Math.abs(yp-L));
+    ctx.fillStyle="rgba(84,203,178,.08)";ctx.fillRect(X(xm),m.t,X(xp)-X(xm),ph);
+    ctx.fillStyle="rgba(224,184,109,.10)";ctx.fillRect(m.l,Y(L+epsilon),pw,Math.max(1,Y(L-epsilon)-Y(L+epsilon)));
     curve(x=>x*x,-1.25,3.05,"#80b8f4",3.5);
     segment(-1.25,L,3.05,L,"#e0b86d",2,[7,5]);
     segment(a,0,a,4.5,"#8b9bb1",1.2,[3,5]);
@@ -379,11 +381,14 @@ function drawLab(){
     ctx.fillStyle="#54cbb2";ctx.fillText("P₋",X(xm)-22,Y(ym)-10);ctx.fillText("P₊",X(xp)+8,Y(yp)-10);
     ctx.fillStyle="#e0b86d";ctx.fillText("L = 1",X(2.35),Y(L)-9);
     ctx.fillStyle="#c8d5e8";ctx.font="12px system-ui";ctx.fillText("δ = "+delta.toFixed(2).replace(".",","),m.l+12,m.t+18);
+    ctx.fillText("ε ≈ "+epsilon.toFixed(2).replace(".",","),m.l+12,m.t+36);
     $("#labLegend").innerHTML='<span style="color:#80b8f4">● Graphe f(x)=x²</span><span style="color:#54cbb2">● Images de 1−δ et 1+δ</span><span style="color:#e0b86d">┄ Valeur limite L=1</span>';
     $("#labValue").textContent=delta.toFixed(2).replace(".",",");
   }
   else if(labType==="continuity"){
-    const a=1,L=1,x=v,y=x*x,dx=x-a,dy=y-L;
+    const a=1,L=1,x=v,y=x*x,dx=x-a,dy=y-L,epsilon=Math.max(.15,Math.abs(dy)+.25);
+    ctx.fillStyle="rgba(224,184,109,.10)";ctx.fillRect(m.l,Y(L+epsilon),pw,Math.max(1,Y(L-epsilon)-Y(L+epsilon)));
+    ctx.fillStyle="rgba(84,203,178,.08)";ctx.fillRect(Math.min(X(a),X(x)),m.t,Math.abs(X(x)-X(a)),ph);
     curve(t=>t*t,-1.25,3.05,"#80b8f4",3.5);
     segment(a,0,a,4.5,"#8b9bb1",1,[3,5]);segment(-1.25,L,3.05,L,"#e0b86d",1.6,[7,5]);
     segment(x,y,x,L,"#e0b86d",2,[4,4]);segment(x,L,a,L,"#54cbb2",2,[4,4]);segment(a,L,x,y,"#e0b86d",1.5,[3,4]);
@@ -392,6 +397,7 @@ function drawLab(){
     ctx.fillStyle="#54cbb2";ctx.fillText("P=(x,x²)",X(x)+8,Y(y)-10);
     ctx.fillStyle="#c8d5e8";ctx.font="12px system-ui";ctx.fillText("Δx = "+dx.toFixed(2).replace(".",","),m.l+12,m.t+18);
     ctx.fillText("Δy = "+dy.toFixed(2).replace(".",","),m.l+12,m.t+36);
+    ctx.fillText("ε choisi ≈ "+epsilon.toFixed(2).replace(".",","),m.l+12,m.t+54);
     $("#labLegend").innerHTML='<span style="color:#80b8f4">● Graphe f(x)=x²</span><span style="color:#e0b86d">● A : point de référence</span><span style="color:#54cbb2">● P : point mobile</span><span style="color:#e0b86d">┄ Écart vertical Δy</span>';
     $("#labValue").textContent=x.toFixed(2).replace(".",",");
   }
@@ -409,7 +415,7 @@ function drawLab(){
     $("#labLegend").innerHTML='<span style="color:#80b8f4">→ v₁ : direction initiale</span><span style="color:#f2a45b">→ v₂ : vecteur à décomposer</span><span style="color:#e0b86d">→ projection parallèle</span><span style="color:#54c99b">→ w₂ : composante orthogonale</span>';
    }
   else curve(x=>x,xmin,xmax,"#80b8f4",3);
-  if(labType!=="integral"&&labType!=="schmidt"&&labType!=="trig")$("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
+  if(!["integral","schmidt","trig","limit","continuity"].includes(labType))$("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
  }
  typeset($("#labLegend"));$("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
 }
