@@ -65,6 +65,15 @@ const typeset=el=>{
   return mj.typesetPromise([el]);
  }).catch(error=>console.error("Erreur de rendu LaTeX :",error));
 };
+const typesetExercise=el=>{
+ if(!el)return Promise.resolve();
+ const ready=window.__mathJaxReady||Promise.resolve(window.MathJax||null);
+ return ready.then(mj=>{
+  if(!mj?.typesetPromise){console.error("MathJax indisponible : rendu des exercices impossible.");return;}
+  try{mj.typesetClear?.([el]);}catch(e){}
+  return mj.typesetPromise([el]);
+ }).catch(error=>console.error("Erreur MathJax dans un exercice :",error));
+};
 const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
 // Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
 const exerciseRichText=value=>{
@@ -132,10 +141,10 @@ function openExercise(id){activeExercise=id;renderExercises()}
 function renderExercise(id){
  const e=EXERCISES.find(x=>x.id===id);if(!e)return;
  $("#exerciseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${exerciseRichText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…"></textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
- let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${exerciseRichText(hints[h++])}</p>`;typeset($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
- $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content"><p>${exerciseRichText(e.answer)}</p>${(e.solutionSteps||[]).map((s,i)=>`<p><b>Étape ${i+1}.</b> ${exerciseRichText(s)}</p>`).join("")}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typeset($("#solutionBox"))};
+ let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${exerciseRichText(hints[h++])}</p>`;typesetExercise($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
+ $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content"><p>${exerciseRichText(e.answer)}</p>${(e.solutionSteps||[]).map((s,i)=>`<p><b>Étape ${i+1}.</b> ${exerciseRichText(s)}</p>`).join("")}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typesetExercise($("#solutionBox"))};
  $(".rating-btn").forEach(b=>b.onclick=()=>recordAttempt(e,+b.dataset.score));
- typeset($("#exerciseDetail"));
+ typesetExercise($("#exerciseDetail"));
 }
 function recordAttempt(e,score){
  const a=state.attempts[e.topic]||{independent:0,total:0,lastScore:0};a.total++;a.lastScore=score/2;if(score===2)a.independent++;else if(score===0)a.independent=0;state.attempts[e.topic]=a;
