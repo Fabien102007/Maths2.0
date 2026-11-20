@@ -19,6 +19,17 @@ Maths2.0 est une application web progressive (PWA) en français, publiée sur Gi
 - 14 expériences visuelles interactives : convergence, limites, continuité, dérivation, intégrales, développements limités, Fourier, trigonométrie, injectivité, déterminants, Gram–Schmidt, valeurs propres, surfaces 3D et exponentielle complexe en hélice.
 - Installation PWA et cache hors ligne des ressources essentielles.
 
+## Navigation et pédagogie
+- Bibliothèque des cours en trois temps : choix Analyse / Algèbre, sélection du chapitre, puis affichage du cours.
+- Visualisations de limite et de continuité recentrées sur les notions de voisinage, de limite et de contrôle de Δx / Δy.
+- Les 30 exercices complémentaires disposent désormais de corrections en étapes distinctes.
+
+## Comptes, synchronisation et paiements
+- Interface de compte et pont Supabase Auth préparés, désactivés tant que les paramètres du projet ne sont pas renseignés.
+- Synchronisation de progression préparée via Supabase et règles RLS.
+- Cloudflare Worker préparé pour Stripe Checkout, portail client, webhooks et retours bêta.
+- Voir `backend/README.md` pour le déploiement. Aucun compte ni paiement n'est actif tant que les services ne sont pas configurés et déployés.
+
 ## Données et confidentialité
 La progression, les tentatives, les révisions et les brouillons sont stockés dans le navigateur via `localStorage`. Ils ne sont pas synchronisés entre appareils et peuvent être perdus si le stockage du navigateur est effacé.
 
