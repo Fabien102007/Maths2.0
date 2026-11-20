@@ -8,7 +8,7 @@
   <title>Maths2.0 — Maîtriser les mathématiques</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261120-product-upgrade4">
+  <link rel="stylesheet" href="style.css?v=20261120-cloud-course-lab5">
   <script>window.MATHS4_AI_ENDPOINT="https://shiny-credit-68ac.freitasaguiarfabien.workers.dev/api/tutor";</script>
   <script>
 window.MathJax = {
@@ -59,7 +59,7 @@ window.__mathJaxReady = new Promise(resolve => {
     <header class="topbar">
       <button class="mobile-menu" id="mobileMenu">☰</button>
       <div class="breadcrumb"><span>Maths2.0</span><i>/</i><b id="crumb">Vue d'ensemble</b></div>
-      <div class="top-actions"><span class="streak">✦ <b id="streak">0</b> jour</span><button class="icon-btn" id="exportData" title="Exporter une sauvegarde">⇩</button><label class="icon-btn import-label" for="importData" title="Importer une sauvegarde">⇧</label><input type="file" id="importData" accept="application/json,.json" hidden><button class="icon-btn" id="resetData" title="Réinitialiser la progression">↺</button></div>
+      <div class="top-actions"><button class="account-button" id="accountOpen" type="button">Mon compte</button><span class="streak">✦ <b id="streak">0</b> jour</span><button class="icon-btn" id="exportData" title="Exporter une sauvegarde">⇩</button><label class="icon-btn import-label" for="importData" title="Importer une sauvegarde">⇧</label><input type="file" id="importData" accept="application/json,.json" hidden><button class="icon-btn" id="resetData" title="Réinitialiser la progression">↺</button></div>
     </header>
 
     <section class="view active" id="view-home">
@@ -91,8 +91,15 @@ window.__mathJaxReady = new Promise(resolve => {
 
     <section class="view" id="view-courses">
       <div class="page-intro"><div class="eyebrow">BIBLIOTHÈQUE MATHÉMATIQUE</div><h1>Les cours</h1><p>Des fiches structurées pour comprendre les définitions, les propriétés et leurs démonstrations.</p></div>
-      <div class="filters"><input id="courseSearch" placeholder="Rechercher une notion…"><select id="courseCategory"><option value="all">Tous les thèmes</option><option>Analyse</option><option>Algèbre</option></select><select id="courseLevel"><option value="all">Tous les niveaux</option><option>Lycée</option><option>L1</option><option>L2</option><option>Prépa</option></select></div>
-      <div class="course-layout"><div class="course-list" id="courseList"></div><article class="panel course-detail" id="courseDetail"><div class="empty-state"><span>∑</span><h3>Choisis une notion</h3><p>Le cours s'affichera ici avec ses définitions, propriétés et exemples.</p></div></article></div>
+      <div class="course-library-toolbar"><input id="courseSearch" placeholder="Rechercher directement un cours…"></div>
+      <div id="courseThemes" class="course-themes">
+        <button class="course-theme-card" data-course-category="Analyse"><span class="course-theme-symbol">∫</span><span><b>Analyse</b><small>Limites, continuité, dérivation, intégration, suites et séries…</small></span><i>→</i></button>
+        <button class="course-theme-card" data-course-category="Algèbre"><span class="course-theme-symbol">∑</span><span><b>Algèbre</b><small>Espaces vectoriels, matrices, applications linéaires, complexes…</small></span><i>→</i></button>
+      </div>
+      <div id="courseTopicsView" hidden>
+        <button class="course-back" id="courseBackThemes">← Analyse et Algèbre</button>
+        <div class="course-layout"><div class="course-list" id="courseList"></div><article class="panel course-detail" id="courseDetail" hidden></article></div>
+      </div>
     </section>
 
     <section class="view" id="view-exercises">
@@ -147,8 +154,23 @@ window.__mathJaxReady = new Promise(resolve => {
   </main>
 </div>
 <div class="toast" id="toast" role="status"></div>
+<div class="account-modal" id="accountModal" hidden>
+  <div class="account-dialog panel" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+    <button class="account-close" id="accountClose" type="button" aria-label="Fermer">×</button>
+    <div class="eyebrow">ESPACE PERSONNEL</div><h2 id="accountTitle">Ton compte Maths2.0</h2>
+    <p id="accountStatus" class="subtle">Connecte-toi pour retrouver ta progression sur tes appareils.</p>
+    <form id="accountForm">
+      <label for="accountEmail">Adresse e-mail</label><input id="accountEmail" type="email" autocomplete="email" required placeholder="toi@exemple.fr">
+      <label for="accountPassword">Mot de passe</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 caractères minimum">
+      <div class="account-actions"><button class="btn primary" type="submit" id="accountSignIn">Se connecter</button><button class="btn ghost" type="button" id="accountSignUp">Créer un compte</button></div>
+    </form>
+    <div id="accountSignedIn" hidden><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button><button class="btn primary" id="accountManagePlan" type="button">Gérer mon abonnement</button></div>
+    <p class="account-footnote">La création de compte et la synchronisation seront activées après configuration du projet Supabase.</p>
+  </div>
+</div>
   <script defer src="data.js?v=20261120-all-exercises-latex1"></script>
-  <script defer src="curriculum.js?v=20261120-curriculum2"></script>
-  <script defer src="app.js?v=20261120-product-upgrade4"></script>
+  <script defer src="curriculum.js?v=20261120-cloud-course-lab5"></script>
+  <script defer src="app.js?v=20261120-cloud-course-lab5"></script>
+  <script defer src="account.js?v=20261120-cloud-course-lab5"></script>
 </body>
 </html>
