@@ -1,0 +1,40 @@
+name: Maths2.0 quality gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app.html"
+      - "app.js"
+      - "data.js"
+      - "curriculum.js"
+      - "style.css"
+      - "manifest.webmanifest"
+      - "assets/**"
+      - "scripts/**"
+      - ".github/workflows/quality-check.yml"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check data.js
+          node --check curriculum.js
+          node --check account.js
+      - name: Validate product content and local resources
+        run: node scripts/validate-content.cjs
