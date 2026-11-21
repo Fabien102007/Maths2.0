@@ -237,3 +237,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Le niveau est choisi dans les cartes Facile / Intermédiaire / Avancé. */
 #exerciseDifficulty{display:none!important}
+
+/* Parcours des exercices strictement séquentiel : domaine, niveau, exercices. */
+#exerciseTopicList[hidden]{display:none!important}
+#exerciseTopicsView.exercise-level-selected .course-layout{display:block}
+#exerciseTopicsView.exercise-level-selected #exerciseWorkspace{width:100%}
+#exerciseTopicsView.exercise-level-selected #exerciseTopicHeading{margin-top:4px}
