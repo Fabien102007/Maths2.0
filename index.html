@@ -4,276 +4,99 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0b1020">
-  <meta name="description" content="Maths2.0 — apprendre, comprendre et maîtriser les mathématiques.">
-  <title>Maths2.0 — Maîtriser les mathématiques</title>
-  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="description" content="Maths2.0 : cours, exercices corrigés, flashcards et animations mathématiques pour le lycée et la L1.">
+  <meta property="og:title" content="Maths2.0 — Comprendre les maths autrement">
+  <meta property="og:description" content="Apprends, entraîne-toi et visualise les mathématiques du lycée à l'université.">
+  <title>Maths2.0 — Comprendre les maths autrement</title>
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261121-manim1">
-  <script>window.MATHS4_AI_ENDPOINT="https://shiny-credit-68ac.freitasaguiarfabien.workers.dev/api/tutor";</script>
-  <script>
-window.MathJax = {
- tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']], processEscapes: true },
- options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
-};
-</script>
-  <script>
-window.__mathJaxReady = new Promise(resolve => {
-  const sources = [
-    "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
-    "https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"
-  ];
-  let index = 0;
-  const loadNext = () => {
-    if (index >= sources.length) { console.error("MathJax indisponible sur les deux CDN."); resolve(null); return; }
-    const script = document.createElement("script");
-    script.src = sources[index++];
-    script.onload = () => Promise.resolve(window.MathJax?.startup?.promise).then(() => resolve(window.MathJax)).catch(() => resolve(null));
-    script.onerror = loadNext;
-    document.head.appendChild(script);
-  };
-  loadNext();
-});
-</script>  <style>
-    .presentation-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:clamp(22px,4vw,42px);margin-bottom:28px;background:radial-gradient(circle at 85% 15%,#39346e88,transparent 42%),linear-gradient(120deg,#182641,#111c30)}
-    .presentation-hero h2{font-size:clamp(25px,4vw,38px);line-height:1.15;margin:16px 0 10px}.presentation-hero p{color:var(--muted);max-width:580px}
-    .presentation-equation{padding:28px 16px;border:1px solid #6870a0;border-radius:16px;background:#0d1729;color:#d8d5ff;text-align:center;font:clamp(17px,2.4vw,25px) Georgia,serif;overflow-wrap:anywhere}
-    .presentation-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:34px}
-    .presentation-grid .panel{padding:22px}.presentation-grid h3{margin:10px 0 6px}.presentation-grid p,.presentation-audiences p{color:var(--muted);font-size:13px;line-height:1.7}
-    .presentation-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#302e58;color:#c4bdff;font-size:21px}
-    .presentation-grid .text-btn{margin-top:8px}.presentation-audiences{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}.presentation-audiences .panel{padding:24px}
-    .presentation-audiences h3{font-size:21px;margin:13px 0 5px}.presentation-price{font-size:32px;font-weight:850;margin:6px 0}.presentation-price small{font-size:12px;color:var(--muted);font-weight:500}
-    .presentation-note{font-size:11px;color:var(--muted);line-height:1.7;margin:8px 0 20px}
-    @media(max-width:850px){.presentation-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.presentation-hero{grid-template-columns:1fr}}
-    @media(max-width:560px){.presentation-grid,.presentation-audiences{grid-template-columns:1fr}}
+  <style>
+    :root{color-scheme:dark;--bg:#0b1020;--panel:#121d31;--line:#293a58;--text:#edf2ff;--muted:#a6b4cc;--violet:#9b91ff;--cyan:#58c9e8;--green:#70dcb2}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 75% 0,#20234b 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.65 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+    a{color:inherit;text-decoration:none}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}.top{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff14}.brand{display:flex;gap:11px;align-items:center;font-weight:800;letter-spacing:-.4px}.mark{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:linear-gradient(135deg,#8879f4,#39b8d8);font:28px Georgia}.brand small{display:block;font-size:9px;letter-spacing:1.7px;color:#94a4c2}.top nav{display:flex;align-items:center;gap:24px;color:#bac6db;font-size:12px}.top nav a:hover{color:white}.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;border-radius:11px;font-weight:750;font-size:12px;transition:.2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}.primary{background:linear-gradient(110deg,#8174f1,#42afd2);color:white;box-shadow:0 10px 28px #635bd533}.secondary{border:1px solid #3a4b69;background:#17243a;color:#e4ebfa}.hero{padding:86px 0 72px;display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:55px}.eyebrow{color:#b8afff;font-size:10px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}.hero h1{font-size:clamp(42px,6vw,68px);line-height:1.04;letter-spacing:-3px;margin:18px 0}.hero h1 em{font-style:normal;background:linear-gradient(90deg,#aaa0ff,#5bd5e8);color:transparent;background-clip:text}.hero p{max-width:570px;color:var(--muted);font-size:16px;line-height:1.8}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.proof{display:flex;gap:18px;flex-wrap:wrap;margin-top:27px;color:#9baac4;font-size:11px}.proof b{color:#e5eaff}.visual{position:relative;padding:14px;border:1px solid #39466b;border-radius:23px;background:linear-gradient(145deg,#1a2540,#101a2c);box-shadow:0 30px 80px #0006;transform:rotate(1.5deg)}.visual video{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#080e1a;border-radius:14px}.visual-label{display:flex;justify-content:space-between;gap:10px;padding:13px 5px 3px;font-size:11px;color:#bac7df}.visual-label b{color:#e8edff}.float-card{position:absolute;right:-22px;bottom:44px;padding:12px 16px;border:1px solid #4d5d80;border-radius:13px;background:#1a2941;box-shadow:0 15px 35px #0005;font-size:11px}.float-card strong{display:block;color:#9ce8c9;font-size:17px}
+    .strip{border-block:1px solid #ffffff14;background:#ffffff05}.strip .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:20px 0}.metric{text-align:center}.metric b{display:block;font-size:21px}.metric span{color:#9eacc4;font-size:10px}
+    section{padding:76px 0}.section-head{max-width:680px;margin-bottom:30px}.section-head h2{font-size:clamp(28px,4vw,39px);line-height:1.15;letter-spacing:-1.2px;margin:10px 0}.section-head p{color:var(--muted);margin:0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card{padding:23px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#16243a,#111b2e)}.ico{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#302e58;color:#c1baff;font-size:20px;margin-bottom:16px}.card h3{font-size:16px;margin:0 0 7px}.card p{color:var(--muted);font-size:12px;line-height:1.75;margin:0}.audiences{display:grid;grid-template-columns:1fr 1fr;gap:16px}.audience{padding:27px;border:1px solid #3b4b6a;border-radius:18px;background:radial-gradient(circle at 100% 0,#30325c 0,transparent 45%),#142137}.audience:nth-child(2){background:radial-gradient(circle at 100% 0,#17465a 0,transparent 45%),#142137}.audience h3{font-size:22px;margin:9px 0}.audience p{color:var(--muted);font-size:13px}.audience ul{padding-left:18px;color:#c8d4e8;font-size:12px;line-height:2}
+    .videos{display:grid;grid-template-columns:repeat(2,1fr);gap:17px}.video-card{overflow:hidden;border:1px solid var(--line);border-radius:17px;background:#111c30}.video-card video{display:block;width:100%;aspect-ratio:16/9;background:#080e1a;object-fit:cover}.video-copy{padding:16px 18px}.video-copy small{color:#a99fff;font-size:9px;font-weight:800;letter-spacing:1px}.video-copy h3{font-size:15px;margin:5px 0}.video-copy p{font-size:11px;color:var(--muted);margin:0}
+    .pricing{display:grid;grid-template-columns:1fr 1fr;gap:16px}.price-card{padding:27px;border:1px solid var(--line);border-radius:18px;background:#121e32}.price-card.featured{border-color:#756bd0;background:linear-gradient(145deg,#24264b,#142139)}.price-card h3{font-size:19px;margin:5px 0}.price{font-size:34px;font-weight:850;letter-spacing:-1.4px}.price small{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:0}.price-card p,.price-card li{font-size:12px;color:var(--muted)}.price-card ul{padding-left:18px;line-height:2}.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#302e58;color:#c5beff;font-size:9px;font-weight:800;letter-spacing:1px}.note{font-size:10px;color:#9aa9c2;margin-top:16px}
+    .cta{padding:38px;border:1px solid #46527d;border-radius:22px;background:radial-gradient(circle at 80% 0,#39346e,transparent 42%),linear-gradient(110deg,#192641,#17233b);display:flex;align-items:center;justify-content:space-between;gap:25px}.cta h2{font-size:27px;line-height:1.2;margin:7px 0}.cta p{color:var(--muted);font-size:12px;margin:0}.faq{display:grid;grid-template-columns:1fr 1fr;gap:12px}.faq details{padding:17px 19px;border:1px solid var(--line);border-radius:13px;background:#121e32}.faq summary{cursor:pointer;font-size:12px;font-weight:750}.faq p{font-size:11px;color:var(--muted);line-height:1.7;margin:10px 0 0}.footer{padding:30px 0;border-top:1px solid #ffffff14;color:#8594af;font-size:10px}.footer .wrap{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.footer a{color:#b7b0ff}
+    @media(max-width:800px){.hero{grid-template-columns:1fr;padding:60px 0;gap:35px}.visual{max-width:600px}.float-card{right:0}.grid{grid-template-columns:1fr 1fr}.strip .wrap{grid-template-columns:1fr 1fr}.top nav a:not(.btn){display:none}.top nav{gap:8px}.cta{align-items:flex-start;flex-direction:column}}
+    @media(max-width:560px){.wrap{width:min(100% - 28px,1120px)}.hero h1{font-size:43px;letter-spacing:-2px}.grid,.audiences,.videos,.pricing,.faq{grid-template-columns:1fr}section{padding:55px 0}.card{padding:19px}.cta{padding:25px}.top{height:66px}.top nav .btn{padding:10px 12px;font-size:10px}}
   </style>
 </head>
 <body>
-<div class="app-shell">
-  <aside class="sidebar" id="sidebar">
-    <a class="brand" href="#" data-view="home"><span class="brand-mark">∑</span><span><b>Maths2.0</b><small>MATHS WORKSPACE</small></span></a>
-    <div class="side-label">ESPACE DE TRAVAIL</div>
-    <nav class="nav">
-      <button class="nav-link" data-view="home"><span>⌂</span> Vue d'ensemble</button>
-      <button class="nav-link active" data-view="presentation"><span>✦</span> Découvrir Maths2.0</button>
-      <button class="nav-link" data-view="courses"><span>▤</span> Cours</button>
-      <button class="nav-link" data-view="exercises"><span>⌘</span> Exercices</button>
-      <button class="nav-link" data-view="tutor"><span>✳</span> Tuteur IA</button>
-      <button class="nav-link" data-view="visuals"><span>⌁</span> Laboratoire visuel</button>
-      <button class="nav-link" data-view="animations"><span>▶</span> Animations Manim</button>
-      <button class="nav-link" data-view="review"><span>⟳</span> Révisions</button>
-      <button class="nav-link" data-view="progress"><span>▥</span> Progression</button>
-    </nav>
-    <div class="sidebar-bottom">
-      <div class="focus-card"><div class="focus-icon">✦</div><b>La régularité construit la maîtrise.</b><p>Une séance ciblée vaut mieux qu'une longue session désordonnée.</p></div>
-      <div class="profile"><div class="avatar">M</div><div><b>Mon espace</b><small>Progression locale</small></div><span class="online-dot"></span></div>
+<header class="top wrap">
+  <a class="brand" href="landing.html"><span class="mark">∑</span><span>Maths2.0<small>COMPRENDRE · S'ENTRAÎNER · PROGRESSER</small></span></a>
+  <nav><a href="#methode">La méthode</a><a href="#animations">Animations</a><a href="#offres">Offres</a><a class="btn secondary" href="app.html">Ouvrir l'application →</a></nav>
+</header>
+<main>
+  <div class="wrap hero">
+    <div>
+      <div class="eyebrow">Du lycée à l'université</div>
+      <h1>Les maths ne se devinent pas.<br><em>Elles se comprennent.</em></h1>
+      <p>Cours structurés, exercices corrigés, flashcards et visualisations interactives : un espace de travail pour comprendre les notions et construire un raisonnement solide.</p>
+      <div class="actions"><a class="btn primary" href="app.html">Essayer gratuitement <span>→</span></a><a class="btn secondary" href="#animations">Voir les animations</a></div>
+      <div class="proof"><span>✓ <b>Accès gratuit</b> à la bêta</span><span>✓ Lycée & L1</span><span>✓ Sans carte bancaire</span></div>
     </div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar">
-      <button class="mobile-menu" id="mobileMenu">☰</button>
-      <div class="breadcrumb"><span>Maths2.0</span><i>/</i><b id="crumb">Vue d'ensemble</b></div>
-      <div class="top-actions"><button class="account-button" id="accountOpen" type="button">Mon compte</button><span class="streak">✦ <b id="streak">0</b> jour</span><button class="icon-btn" id="exportData" title="Exporter une sauvegarde">⇩</button><label class="icon-btn import-label" for="importData" title="Importer une sauvegarde">⇧</label><input type="file" id="importData" accept="application/json,.json" hidden><button class="icon-btn" id="resetData" title="Réinitialiser la progression">↺</button></div>
-    </header>
-
-    <section class="view active" id="view-presentation">
-      <div class="page-intro"><div class="eyebrow">BIENVENUE DANS MATHS2.0</div><h1>Les maths ne se devinent pas. Elles se comprennent.</h1><p>Cours structurés, exercices corrigés, flashcards et visualisations interactives : découvre tout ce que tu peux faire dans ton espace de travail.</p></div>
-      <div class="presentation-hero panel">
-        <div><span class="tag">DU LYCÉE À L'UNIVERSITÉ</span><h2>Comprendre. S'entraîner. Progresser.</h2><p>Un environnement de travail conçu pour t'aider à construire un raisonnement mathématique solide, étape après étape.</p><button class="btn primary" type="button" data-go="exercises">Commencer à travailler →</button></div>
-        <div class="presentation-equation">∫ f(x) dx = aire sous la courbe</div>
-      </div>
-      <div class="section-heading"><div><div class="eyebrow">UNE MÉTHODE COMPLÈTE</div><h2>De la compréhension à la maîtrise</h2></div></div>
-      <div class="presentation-grid">
-        <article class="panel"><span class="presentation-icon">▤</span><h3>Comprendre les cours</h3><p>Définitions, propriétés, exemples et démonstrations organisés par thème.</p><button class="text-btn" type="button" data-go="courses">Explorer les cours →</button></article>
-        <article class="panel"><span class="presentation-icon">⌘</span><h3>S'entraîner vraiment</h3><p>Exercices classés par niveau et difficulté, avec indices et corrections détaillées.</p><button class="text-btn" type="button" data-go="exercises">Faire des exercices →</button></article>
-        <article class="panel"><span class="presentation-icon">⌁</span><h3>Visualiser les concepts</h3><p>Expériences interactives pour observer les limites, dérivées, intégrales et objets algébriques.</p><button class="text-btn" type="button" data-go="visuals">Ouvrir le laboratoire →</button></article>
-        <article class="panel"><span class="presentation-icon">▶</span><h3>Voir les maths en mouvement</h3><p>Animations Manim pour rendre visibles les mécanismes derrière les formules.</p><button class="text-btn" type="button" data-go="animations">Voir les animations →</button></article>
-        <article class="panel"><span class="presentation-icon">⟳</span><h3>Mémoriser durablement</h3><p>Flashcards et révisions espacées pour consolider les notions dans le temps.</p><button class="text-btn" type="button" data-go="review">Réviser →</button></article>
-        <article class="panel"><span class="presentation-icon">✳</span><h3>Être accompagné</h3><p>Un tuteur IA facultatif pour demander des indices, clarifier une notion ou examiner une preuve.</p><button class="text-btn" type="button" data-go="tutor">Essayer le tuteur IA →</button></article>
-      </div>
-      <div class="section-heading"><div><div class="eyebrow">DEUX PARCOURS</div><h2>Du lycée aux premières années du supérieur</h2></div></div>
-      <div class="presentation-audiences">
-        <article class="panel"><span class="tag">LYCÉE</span><h3>Terminale spécialité maths</h3><p>Consolider les fondamentaux, s'entraîner et préparer les évaluations.</p></article>
-        <article class="panel"><span class="tag">SUPÉRIEUR</span><h3>L1 mathématiques</h3><p>Approfondir l'analyse et l'algèbre, comprendre les démonstrations et travailler avec rigueur.</p></article>
-      </div>
-      <div class="section-heading"><div><div class="eyebrow">LES OFFRES</div><h2>Commence gratuitement</h2><p>La bêta est accessible sans paiement. Premium est en préparation.</p></div></div>
-      <div class="presentation-audiences">
-        <article class="panel"><span class="tag">DISPONIBLE</span><h3>Gratuit · Bêta</h3><div class="presentation-price">0 €</div><p>Cours, exercices, corrections, flashcards, progression locale, visualisations et animations.</p><button class="btn primary" type="button" data-go="home">Ouvrir mon espace →</button></article>
-        <article class="panel"><span class="tag">EN PRÉPARATION</span><h3>Premium</h3><div class="presentation-price">5,99 € <small>/ mois envisagés</small></div><p>Tarif indicatif. Les fonctionnalités et prix définitifs seront annoncés avant toute souscription. Aucun paiement n'est activé.</p></article>
-      </div>
-      <p class="presentation-note">La progression est actuellement enregistrée sur cet appareil. Les comptes, la synchronisation multi-appareils et les paiements ne sont pas encore activés. Le tuteur IA est facultatif ; les messages et images envoyés sont transmis au service IA pour traitement.</p>
-    </section>
-
-    <section class="view" id="view-home">
-      <div class="hero">
-        <div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> TON ESPACE DE PROGRESSION</div>
-          <h1>Comprendre. Raisonner.<br><em>Maîtriser.</em></h1>
-          <p>Un environnement de travail conçu pour faire progresser ton raisonnement mathématique, étape après étape.</p>
-          <div class="hero-actions"><button class="btn primary" data-go="exercises">Reprendre les exercices <span>→</span></button><button class="btn ghost" data-go="courses">Explorer les cours</button></div>
-        </div>
-        <div class="hero-art"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="math-symbol">∫</div><span class="float f1">lim</span><span class="float f2">∇</span><span class="float f3">∑</span><span class="float f4">π</span></div>
-      </div>
-      <div class="section-heading"><div><div class="eyebrow">TON TABLEAU DE BORD</div><h2>Ta progression, en un regard</h2></div><span class="subtle" id="todayLabel"></span></div>
-      <div class="stats-grid">
-        <article class="stat-card"><span class="stat-icon violet">◈</span><small>Notions maîtrisées</small><strong id="statMastered">0</strong><div class="stat-foot"><span id="masteryRate">0 %</span> du programme</div></article>
-        <article class="stat-card"><span class="stat-icon blue">⌘</span><small>Exercices réussis</small><strong id="statSolved">0</strong><div class="stat-foot">Réussites enregistrées</div></article>
-        <article class="stat-card"><span class="stat-icon green">⟳</span><small>Révisions dues</small><strong id="statDue">0</strong><div class="stat-foot">À consolider aujourd'hui</div></article>
-        <article class="stat-card"><span class="stat-icon amber">◷</span><small>Séances réalisées</small><strong id="statSessions">0</strong><div class="stat-foot">Depuis ton démarrage</div></article>
-      </div>
-      <div class="home-grid">
-        <article class="panel daily-panel"><div class="panel-head"><div><div class="eyebrow">RECOMMANDATION DU JOUR</div><h3 id="dailyTitle">Construis ta prochaine réussite</h3></div><span class="tag">PERSONNALISÉ</span></div><p id="dailyDescription">Ton parcours s'adaptera à tes résultats.</p><div class="daily-meta"><span>◷ 15–25 min</span><span>◈ Une notion ciblée</span></div><button class="btn primary" data-go="exercises">Commencer les exercices <span>→</span></button></article>
-        <article class="panel quick-panel"><div class="panel-head"><div><div class="eyebrow">ACCÈS RAPIDE</div><h3>Que souhaites-tu faire ?</h3></div></div><button class="quick-link" data-go="exercises"><span class="quick-icon">⌘</span><span><b>Résoudre un exercice</b><small>Choisir un thème et un niveau</small></span><i>→</i></button><button class="quick-link" data-go="tutor"><span class="quick-icon">✳</span><span><b>Demander au tuteur IA</b><small>Débloquer un raisonnement</small></span><i>→</i></button><button class="quick-link" data-go="review"><span class="quick-icon">⟳</span><span><b>Faire mes révisions</b><small>Entretenir les acquis</small></span><i>→</i></button></article>
-      </div>
-    </section>
-
-    <section class="view" id="view-courses">
-      <div class="page-intro"><div class="eyebrow">BIBLIOTHÈQUE MATHÉMATIQUE</div><h1>Les cours</h1><p>Des fiches structurées pour comprendre les définitions, les propriétés et leurs démonstrations.</p></div>
-      <div class="course-library-toolbar"><input id="courseSearch" placeholder="Rechercher directement un cours…"></div>
-      <div id="courseThemes" class="course-themes">
-        <button class="course-theme-card" data-course-category="Analyse"><span class="course-theme-symbol">∫</span><span><b>Analyse</b><small>Limites, continuité, dérivation, intégration, suites et séries…</small></span><i>→</i></button>
-        <button class="course-theme-card" data-course-category="Algèbre"><span class="course-theme-symbol">∑</span><span><b>Algèbre</b><small>Espaces vectoriels, matrices, applications linéaires, complexes…</small></span><i>→</i></button>
-      </div>
-      <div id="courseTopicsView" hidden>
-        <button class="course-back" id="courseBackThemes">← Analyse et Algèbre</button>
-        <div class="course-layout"><div class="course-list" id="courseList"></div><article class="panel course-detail" id="courseDetail" hidden></article></div>
-      </div>
-    </section>
-
-    <section class="view" id="view-exercises">
-      <div class="page-intro"><div class="eyebrow">ENTRAÎNEMENT ACTIF</div><h1>Les exercices</h1><p>Choisis un domaine, puis un niveau. Les exercices correspondants s'afficheront à l'étape suivante.</p></div>
-      <div id="exerciseThemes" class="course-themes">
-        <button class="course-theme-card" type="button" data-ex-category="Analyse"><span class="course-theme-symbol">∫</span><span><b>Analyse</b><small>Limites, continuité, dérivation, intégration, suites, séries et probabilités…</small></span><i>→</i></button>
-        <button class="course-theme-card" type="button" data-ex-category="Algèbre"><span class="course-theme-symbol">∑</span><span><b>Algèbre</b><small>Espaces vectoriels, matrices, déterminants, polynômes, systèmes et géométrie…</small></span><i>→</i></button>
-      </div>
-      <div id="exerciseTopicsView" hidden><button class="course-back" id="exerciseBackThemes">← Analyse et Algèbre</button>
-        <div class="course-layout"><div class="course-list" id="exerciseTopicList"></div><section id="exerciseWorkspace" hidden>
-          <button class="course-back" id="exerciseTopicBack">← Choisir une autre difficulté</button><h2 id="exerciseTopicHeading" class="exercise-topic-heading"></h2>
-          <div class="filters"><input id="exerciseSearch" placeholder="Rechercher dans ce chapitre…"><select id="exerciseDifficulty"><option value="all">Toutes difficultés</option><option>Facile</option><option>Intermédiaire</option><option>Avancé</option></select></div>
-          <div class="exercise-layout"><div class="exercise-list" id="exerciseList"></div><article class="panel exercise-detail" id="exerciseDetail"><div class="empty-state"><span>⌘</span><h3>À toi de jouer</h3><p>Sélectionne un exercice pour commencer.</p></div></article></div>
-        </section></div>
-      </div>
-    </section>
-
-    <section class="view" id="view-tutor">
-      <div class="page-intro"><div class="eyebrow">ASSISTANT PÉDAGOGIQUE</div><h1>Le tuteur IA</h1><p>Il ne fait pas le travail à ta place : il t'aide à construire le raisonnement.</p></div>
-      <div class="tutor-layout"><div class="panel tutor-panel"><div class="tutor-header"><div class="tutor-avatar">✳</div><div><b>Maths2.0 Tutor</b><small><span class="online-dot"></span> Connecté au Worker Cloudflare</small></div><button class="text-btn" id="clearChat">Nouvelle discussion</button></div><div class="mode-tabs" id="tutorModes"><button class="mode active" data-mode="tutor">Tuteur guidé</button><button class="mode" data-mode="concept">Expliquer une notion</button><button class="mode" data-mode="exam">Mode examen</button><button class="mode" data-mode="proof_review">Analyser ma preuve</button></div><div class="chat" id="chat"><div class="chat-welcome"><span>✳</span><h3>Sur quoi travailles-tu ?</h3><p>Décris ton blocage, colle une démonstration ou joins une photo de ta copie.</p></div></div><div class="chat-composer" id="chatComposer"><div class="chat-attachment-row"><label class="upload-btn" for="tutorImage"><span class="attach-icon">＋</span> Joindre une photo</label><input type="file" id="tutorImage" accept="image/png,image/jpeg,image/webp" hidden><span id="uploadName" class="subtle">Aucune image jointe</span></div><div class="chat-compose"><textarea id="chatInput" rows="2" placeholder="Pose ta question, partage ton raisonnement…"></textarea><button class="send-button" id="sendChat" type="button" aria-label="Envoyer le message" title="Envoyer"><span>↑</span></button></div><div class="compose-footer"><span>↵ Envoyer</span><span>⇧ + ↵ pour aller à la ligne</span></div></div><div class="status-line" id="tutorStatus" aria-live="polite">Le tuteur IA est prêt à t'accompagner.</div></div><aside class="panel tutor-tips"><div class="eyebrow">POUR MIEUX APPRENDRE</div><h3>Comment utiliser le tuteur ?</h3><div class="tip"><b>01</b><p>Montre ce que tu as déjà essayé, même si ce n'est pas terminé.</p></div><div class="tip"><b>02</b><p>Demande un indice précis plutôt que la solution complète.</p></div><div class="tip"><b>03</b><p>Vérifie chaque étape et reformule le résultat avec tes mots.</p></div><div class="privacy-note">◎ La progression reste sur cet appareil. Si tu utilises le tuteur IA, tes messages et pièces jointes sont transmis au Worker pour traitement. <a href="privacy.html">Voir la politique de confidentialité</a>.</div></aside></div>
-    </section>
-
-    <section class="view" id="view-visuals">
-      <div class="page-intro"><div class="eyebrow">MATHÉMATIQUES EN MOUVEMENT</div><h1>Laboratoire visuel</h1><p>Des expériences interactives guidées pour comprendre les objets mathématiques, étape par étape. Change les paramètres, observe les phénomènes et relie l'image aux formules.</p></div>
-      <div class="lab-shell panel">
-        <div class="lab-toolbar">
-          <div class="lab-select-group"><label for="labType">Expérience mathématique</label><select id="labType"><optgroup label="Analyse"><option value="sequence" selected>Convergence d’une suite</option><option value="limit">Limite d’une fonction</option><option value="continuity">Continuité</option><option value="derivative">Dérivée : sécante et tangente</option><option value="integral">Intégrale et sommes de Riemann</option><option value="taylor">Développement limité de exp</option><option value="fourier">Série de Fourier</option></optgroup><optgroup label="Algèbre et géométrie"><option value="trig">Cercle trigonométrique</option><option value="injectivity">Injectivité</option><option value="determinant">Déterminant et aire</option><option value="schmidt">Gram–Schmidt</option><option value="eigen">Valeurs propres et directions</option></optgroup><optgroup label="Visualisations 3D"><option value="surface3d">Surfaces : fonctions de deux variables</option><option value="complex3d">Exponentielle complexe : hélice 3D</option></optgroup></select></div>
-          <div class="lab-select-group" id="surfaceFunctionWrap" hidden><label for="surfaceFunction">Fonction à représenter</label><select id="surfaceFunction"><option value="paraboloid">Paraboloïde · x² + y²</option><option value="saddle">Selle · x² − y²</option><option value="wave">Surface ondulée · sin(x) cos(y)</option><option value="gaussian">Gaussienne · e⁻⁽ˣ²⁺ʸ²⁾</option></select></div>
-          <button class="btn primary lab-animate" id="labAnimate" type="button" hidden>▶ Animer</button>
-        </div>
-        <div class="lab-canvas-wrap"><canvas id="labCanvas" width="1100" height="560" aria-label="Visualisation mathématique interactive"></canvas><div class="lab-legend" id="labLegend"></div></div>
-        <div class="lab-controls"><div class="lab-control-label"><label id="labSliderLabel" for="labSlider">Paramètre</label><strong id="labValue">0,70</strong></div><input type="range" id="labSlider" min="-2" max="2" step="0.05" value="0.7"><p id="labCaption" class="lab-caption"></p><div id="labExtraControls" class="lab-extra-controls"></div></div>
-        <div class="lab-formula" id="labFormula"></div>
-        <div class="lab-learning panel" id="labLearning" aria-live="polite">
-          <div class="eyebrow">POUR COMPRENDRE, PAS SEULEMENT REGARDER</div>
-          <h3 id="labLearningTitle">Ce que tu dois observer</h3>
-          <p id="labLearningText">Manipule le paramètre, puis relie le mouvement du dessin à la définition mathématique.</p>
-          <div class="lab-learning-question"><b>Question active</b><span id="labQuestion">Qu'est-ce qui change ? Qu'est-ce qui reste invariant ?</span></div>
-          <div class="lab-learning-steps" id="labSteps"></div>
-        </div>
-      </div>
-      <div class="lab-insight-grid">
-        <article class="panel"><span class="lab-insight-icon">↗</span><h3>Manipule</h3><p>Fais varier un paramètre à la fois pour identifier son effet sur l'objet mathématique.</p></article>
-        <article class="panel"><span class="lab-insight-icon">◎</span><h3>Observe</h3><p>Repère les invariants, les limites, les symétries et les changements de comportement.</p></article>
-        <article class="panel"><span class="lab-insight-icon">∴</span><h3>Formalise</h3><p>Relie ce que tu vois à une définition, une propriété ou une démonstration.</p></article>
-      </div>
-    </section>
-
-    <section class="view" id="view-animations">
-      <div class="page-intro"><div class="eyebrow">STUDIO VISUEL · MANIM</div><h1>Animations mathématiques</h1><p>Des visualisations cinématiques haute résolution pour rendre visibles les mécanismes derrière les formules. Choisis une expérience, observe, puis relie le mouvement au raisonnement.</p></div>
-      <div class="manim-library-layout">
-        <div class="manim-library-grid">
-          <button class="manim-card active" type="button" data-manim="euler">
-            <span class="manim-card-kicker">ALGÈBRE · NOMBRES COMPLEXES</span><strong>Exponentielle complexe</strong><span class="manim-card-formula">e^{i\theta}=\cos\theta+i\sin\theta</span><small>Du cercle unité à l'hélice : rotation, projections et module constant.</small><i>Explorer l'animation →</i>
-          </button>
-          <button class="manim-card" type="button" data-manim="derivative">
-            <span class="manim-card-kicker">ANALYSE · DÉRIVATION</span><strong>De la sécante à la tangente</strong><span class="manim-card-formula">f'(a)=\lim_{h\to0}\frac{f(a+h)-f(a)}h</span><small>Regarde le taux de variation moyen devenir une pente instantanée.</small><i>Explorer l'animation →</i>
-          </button>
-          <button class="manim-card" type="button" data-manim="fourier">
-            <span class="manim-card-kicker">ANALYSE · SÉRIES</span><strong>La naissance d'un signal</strong><span class="manim-card-formula">S_N(x)=\sum_{n=0}^{N-1}\frac{\sin((2n+1)x)}{2n+1}</span><small>Les harmoniques s'additionnent et reconstruisent progressivement un signal carré.</small><i>Explorer l'animation →</i>
-          </button>
-          <button class="manim-card" type="button" data-manim="integral">
-            <span class="manim-card-kicker">ANALYSE · INTÉGRATION</span><strong>Approcher l'aire</strong><span class="manim-card-formula">\int_0^b x^2\,dx</span><small>Les rectangles de Riemann se raffinent jusqu'à l'aire sous la courbe.</small><i>Explorer l'animation →</i>
-          </button>
-        </div>
-        <article class="manim-viewer panel">
-          <div class="manim-viewer-head"><div><div class="eyebrow" id="manimActiveKicker">ALGÈBRE · NOMBRES COMPLEXES</div><h2 id="manimActiveTitle">Exponentielle complexe</h2></div><span class="manim-quality">4K · 60 FPS</span></div>
-          <div class="manim-stage">
-            <video id="manimVideo" class="manim-video" controls playsinline preload="metadata">
-              <source src="assets/manim/euler_helix.mp4" type="video/mp4">
-            </video>
-          </div>
-          <div class="manim-viewer-equation" id="manimActiveEquation">\\(e^{i\\theta}=\\cos\\theta+i\\sin\\theta\\)</div>
-          <p class="manim-viewer-description" id="manimActiveDescription">Le mouvement sur le cercle unité donne les parties réelle et imaginaire. L'ajout du temps comme troisième coordonnée transforme la rotation en hélice.</p>
-          <div class="manim-viewer-footer"><span>Animation rendue en 3840 × 2160 · 60 images/s</span><span>Conçue pour observer les étapes, pas seulement le résultat.</span></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="view" id="view-review">
-      <div class="page-intro"><div class="eyebrow">MÉMORISATION ACTIVE</div><h1>Révisions espacées</h1><p>Revois les notions avant de les oublier. Le calendrier s'adapte à la qualité de ton rappel.</p></div>
-      <div class="review-layout"><article class="panel review-main" id="reviewCard"><div class="empty-state"><span>⟳</span><h3>Prêt à consolider ?</h3><p>Les notions à réviser apparaîtront ici.</p><button class="btn primary" id="startReview">Commencer les révisions</button></div></article><aside class="panel review-side"><div class="eyebrow">TON SYSTÈME DE RÉVISION</div><h3>Un rappel actif</h3><p>Essaie de retrouver la définition ou la propriété avant de retourner la carte.</p><div class="review-intervals"><span>Difficile <b>1 jour</b></span><span>Moyen <b>progressif</b></span><span>Facile <b>progressif</b></span></div></aside></div>
-    </section>
-
-    <section class="view" id="view-progress">
-      <div class="page-intro"><div class="eyebrow">MESURE DE LA MAÎTRISE</div><h1>Ta progression</h1><p>La maîtrise se construit par la compréhension, l'application et la capacité à raisonner seul.</p></div>
-      <div class="progress-grid"><article class="panel"><div class="eyebrow">VUE GLOBALE</div><div class="big-progress" id="bigProgress">0%</div><div class="progress-track"><span id="bigProgressBar"></span></div><p class="subtle">Notions validées après plusieurs réussites indépendantes.</p></article><article class="panel"><div class="eyebrow">ACTIVITÉ</div><div class="activity-stats"><div><b id="pSolved">0</b><small>Exercices réussis</small></div><div><b id="pSessions">0</b><small>Séances terminées</small></div><div><b id="pReviews">0</b><small>Révisions effectuées</small></div></div></article></div>
-      <article class="panel mastery-panel"><div class="panel-head"><div><div class="eyebrow">PAR THÈME</div><h3>État de maîtrise des notions</h3></div></div><div id="masteryList"></div></article>
-    </section>
-
-    <footer class="footer">MATHS2.0 <span>·</span> Apprendre avec exigence, progresser avec méthode. <span>·</span> <a href="landing.html">Présentation</a> <span>·</span> <a href="privacy.html">Confidentialité</a> <span>·</span> <a href="legal.html">Mentions légales</a></footer>
-  </main>
-</div>
-<div class="toast" id="toast" role="status"></div>
-<div class="account-modal" id="accountModal" hidden>
-  <div class="account-dialog panel" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
-    <button class="account-close" id="accountClose" type="button" aria-label="Fermer">×</button>
-    <div class="eyebrow">ESPACE PERSONNEL</div><h2 id="accountTitle">Ton compte Maths2.0</h2>
-    <p id="accountStatus" class="subtle">Les comptes et la synchronisation multi-appareils seront ouverts après les tests techniques. L’application reste utilisable gratuitement sans compte.</p>
-    <form id="accountForm">
-      <label for="accountEmail">Adresse e-mail</label><input id="accountEmail" type="email" autocomplete="email" required placeholder="toi@exemple.fr">
-      <label for="accountPassword">Mot de passe</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 caractères minimum">
-      <div class="account-actions"><button class="btn primary" type="submit" id="accountSignIn">Se connecter</button><button class="btn ghost" type="button" id="accountSignUp">Créer un compte</button></div>
-    </form>
-    <div id="accountSignedIn" hidden><p id="accountPlanStatus" class="account-plan-status">Offre gratuite</p><div class="account-actions"><button class="btn primary" id="accountUpgrade" type="button" disabled>Premium en préparation</button><button class="btn ghost" id="accountManagePlan" type="button" disabled>Abonnement indisponible</button><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button></div></div>
-    <div class="subscription-preview">
-      <div class="eyebrow">LES OFFRES MATHS2.0</div>
-      <h3>Choisis ton espace de travail</h3>
-      <div class="subscription-grid">
-        <article class="subscription-card">
-          <span class="subscription-kicker">POUR COMMENCER</span><h4>Gratuit</h4><div class="subscription-price">0 € <small>/ toujours</small></div>
-          <ul><li>Accès aux cours et fiches</li><li>Exercices et corrections</li><li>Laboratoire visuel</li><li>Progression sur cet appareil</li></ul>
-          <span class="subscription-current">Inclus pour tous</span>
-        </article>
-        <article class="subscription-card premium">
-          <span class="subscription-kicker">EN PRÉPARATION</span><h4>Premium</h4><div class="subscription-price">5,99 € <small>/ mois envisagés</small></div>
-          <ul><li>Tout le contenu gratuit</li><li>Parcours et statistiques avancés</li><li>Synchronisation multi-appareils</li><li>Collections d'exercices approfondies</li><li>Fonctionnalités pédagogiques exclusives</li></ul>
-          <button class="btn primary" id="accountUpgradePreview" type="button" disabled>Abonnement bientôt disponible</button>
-        </article>
-      </div>
-      <p class="subscription-note">Tarif indicatif à tester : 5,99 €/mois ou 49,99 €/an. Offre en préparation : aucun paiement ni abonnement n’est activé.</p>
+    <div class="visual">
+      <video controls muted playsinline preload="none" poster="assets/icon.svg">
+        <source src="assets/manim/euler_helix.mp4" type="video/mp4">
+      </video>
+      <div class="visual-label"><b>Exponentielle complexe</b><span>Animation Manim · 4K</span></div>
+      <div class="float-card"><strong>4 animations</strong>pour rendre les idées visibles</div>
     </div>
-    <div class="account-feedback">
-      <div class="eyebrow">BÊTA TEST</div><b>Donner un retour sur Maths2.0</b>
-      <label for="feedbackCategory">Sujet</label><select id="feedbackCategory"><option value="bug">Bug ou problème</option><option value="cours">Cours</option><option value="exercice">Exercice / correction</option><option value="visualisation">Visualisation</option><option value="idee">Idée d'amélioration</option><option value="autre">Autre</option></select>
-      <label for="feedbackRating">Note globale</label><select id="feedbackRating"><option value="5">5 — Excellent</option><option value="4">4 — Bien</option><option value="3" selected>3 — Moyen</option><option value="2">2 — Décevant</option><option value="1">1 — Très décevant</option></select>
-      <label for="feedbackMessage">Ton retour</label><textarea id="feedbackMessage" rows="3" maxlength="4000" placeholder="Décris ce qui fonctionne, ce qui bloque ou ce que tu aimerais voir…"></textarea>
-      <button class="btn ghost" id="feedbackSend" type="button">Envoyer mon retour</button>
-    </div>
-    <p class="account-footnote">Version de pré-lancement : la progression reste enregistrée sur cet appareil. Les comptes, la synchronisation cloud et les paiements ne sont pas encore activés.</p>
   </div>
-</div>
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="config.js?v=20261120-supabase-config1"></script>
-  <script defer src="data.js?v=20261120-all-exercises-latex1"></script>
-  <script defer src="curriculum.js?v=20261120-supabase-config1"></script>
-  <script defer src="app.js?v=20261121-presentation-default2"></script>
-  <script defer src="account.js?v=20261120-supabase-config1"></script>
+  <div class="strip"><div class="wrap">
+    <div class="metric"><b>20</b><span>chapitres structurés</span></div>
+    <div class="metric"><b>91</b><span>exercices annoncés dans la bêta</span></div>
+    <div class="metric"><b>14</b><span>expériences visuelles interactives</span></div>
+    <div class="metric"><b>4</b><span>animations mathématiques Manim</span></div>
+  </div></div>
+  <section id="methode" class="wrap">
+    <div class="section-head"><div class="eyebrow">Une méthode complète</div><h2>Un seul espace pour passer de la compréhension à la maîtrise.</h2><p>Maths2.0 rassemble les outils essentiels du travail mathématique, sans remplacer le raisonnement personnel.</p></div>
+    <div class="grid">
+      <article class="card"><div class="ico">▤</div><h3>Comprendre les cours</h3><p>Des chapitres organisés, des définitions, propriétés et exemples pour construire des bases solides.</p></article>
+      <article class="card"><div class="ico">⌘</div><h3>S'entraîner vraiment</h3><p>Des exercices classés par thème et difficulté, avec indices et corrections détaillées pour progresser.</p></article>
+      <article class="card"><div class="ico">⌁</div><h3>Voir les concepts</h3><p>Des visualisations interactives et animations pour donner une intuition géométrique aux notions abstraites.</p></article>
+      <article class="card"><div class="ico">⟳</div><h3>Réviser au bon moment</h3><p>Des flashcards et des révisions espacées pour consolider les connaissances dans la durée.</p></article>
+      <article class="card"><div class="ico">✳</div><h3>Être accompagné par l'IA</h3><p>Un tuteur facultatif pour poser des questions, demander des indices et examiner une démarche.</p></article>
+      <article class="card"><div class="ico">▥</div><h3>Suivre sa progression</h3><p>Un tableau de bord local, des notions maîtrisées et des sauvegardes exportables pour garder le fil.</p></article>
+    </div>
+  </section>
+  <section class="wrap">
+    <div class="section-head"><div class="eyebrow">Deux parcours</div><h2>Du lycée aux premières années du supérieur.</h2><p>Choisis ton niveau et travaille les notions qui correspondent à ton programme.</p></div>
+    <div class="audiences">
+      <article class="audience"><span class="tag">LYCÉE</span><h3>Terminale spécialité maths</h3><p>Consolider les fondamentaux, s'entraîner et préparer les évaluations.</p><ul><li>Révisions par chapitre</li><li>Exercices progressifs</li><li>Visualisations de notions clés</li></ul></article>
+      <article class="audience"><span class="tag">SUPÉRIEUR</span><h3>L1 mathématiques</h3><p>Approfondir l'analyse et l'algèbre, comprendre les démonstrations et s'exercer avec rigueur.</p><ul><li>Analyse et algèbre</li><li>Définitions et propriétés</li><li>Exercices et raisonnements</li></ul></article>
+    </div>
+  </section>
+  <section id="animations" class="wrap">
+    <div class="section-head"><div class="eyebrow">La signature Maths2.0</div><h2>Les mathématiques prennent vie.</h2><p>Quatre animations Manim conçues pour montrer les étapes d'une idée, et pas seulement afficher une formule.</p></div>
+    <div class="videos">
+      <article class="video-card"><video controls playsinline preload="none"><source src="assets/manim/derivative_tangent.mp4" type="video/mp4"></video><div class="video-copy"><small>ANALYSE · DÉRIVATION</small><h3>De la sécante à la tangente</h3><p>Observer le taux d'accroissement lorsque le point mobile se rapproche du point fixe.</p></div></article>
+      <article class="video-card"><video controls playsinline preload="none"><source src="assets/manim/fourier_square.mp4" type="video/mp4"></video><div class="video-copy"><small>ANALYSE · SÉRIES</small><h3>La naissance d'un signal</h3><p>Voir les harmoniques s'additionner pour approcher un signal carré.</p></div></article>
+      <article class="video-card"><video controls playsinline preload="none"><source src="assets/manim/riemann_integral.mp4" type="video/mp4"></video><div class="video-copy"><small>ANALYSE · INTÉGRATION</small><h3>Approcher une aire</h3><p>Les rectangles de Riemann se raffinent pour approcher l'intégrale.</p></div></article>
+      <article class="video-card"><video controls playsinline preload="none"><source src="assets/manim/euler_helix.mp4" type="video/mp4"></video><div class="video-copy"><small>ALGÈBRE · COMPLEXES</small><h3>L'exponentielle complexe</h3><p>Relier rotation, cercle trigonométrique et parties réelle et imaginaire.</p></div></article>
+    </div>
+  </section>
+  <section id="offres" class="wrap">
+    <div class="section-head"><div class="eyebrow">Les offres</div><h2>Commence gratuitement. La suite se construit avec les utilisateurs.</h2><p>La bêta actuelle est accessible gratuitement. L'offre payante est en préparation et ne sera ouverte qu'après validation du produit et des conditions de vente.</p></div>
+    <div class="pricing">
+      <article class="price-card"><span class="tag">DISPONIBLE</span><h3>Gratuit · Bêta</h3><div class="price">0 € <small>/ aujourd'hui</small></div><p>Découvrir Maths2.0 et tester les outils pédagogiques disponibles.</p><ul><li>Cours et chapitres disponibles</li><li>Exercices, indices et corrections</li><li>Flashcards et progression locale</li><li>Visualisations interactives</li><li>Animations Manim</li></ul><a class="btn primary" href="app.html">Essayer l'application →</a></article>
+      <article class="price-card featured"><span class="tag">EN PRÉPARATION</span><h3>Premium</h3><div class="price">5,99 € <small>/ mois envisagés</small></div><p>Un tarif indicatif soumis aux retours des premiers utilisateurs. Aucun abonnement n'est actuellement vendu.</p><ul><li>Parcours de progression avancés</li><li>Collections d'exercices enrichies</li><li>Accompagnement pédagogique approfondi</li><li>Synchronisation multi-appareils</li></ul><p class="note">Le prix annuel envisagé est de 49,99 €. Les fonctionnalités et tarifs définitifs seront annoncés avant toute souscription.</p></article>
+    </div>
+  </section>
+  <section class="wrap">
+    <div class="cta"><div><div class="eyebrow">Découvrir la bêta</div><h2>Travaille les maths avec méthode.</h2><p>Teste l'application, explore les animations et aide à construire la prochaine version.</p></div><a class="btn primary" href="app.html">Ouvrir Maths2.0 →</a></div>
+  </section>
+  <section class="wrap">
+    <div class="section-head"><div class="eyebrow">Questions fréquentes</div><h2>Avant de commencer</h2></div>
+    <div class="faq">
+      <details><summary>Maths2.0 est-il vraiment gratuit ?</summary><p>Oui. La version bêta actuelle est accessible gratuitement. Aucun paiement ni abonnement n'est activé.</p></details>
+      <details><summary>À quels niveaux s'adresse l'application ?</summary><p>La bêta propose des contenus pour le lycée et le supérieur, avec un accent sur la Terminale et la L1. Vérifie le niveau de chaque chapitre dans l'application.</p></details>
+      <details><summary>Ma progression est-elle synchronisée ?</summary><p>Pour l'instant, la progression est enregistrée dans le navigateur utilisé. Tu peux l'exporter pour la sauvegarder ou la transférer manuellement.</p></details>
+      <details><summary>Le tuteur IA est-il obligatoire ?</summary><p>Non. Il est facultatif. Les messages et images envoyés au tuteur sont transmis au service IA ; consulte la politique de confidentialité avant de l'utiliser.</p></details>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="wrap"><span>© Maths2.0 · Apprendre avec exigence, progresser avec méthode.</span><span><a href="app.html">Application</a> · <a href="privacy.html">Confidentialité</a> · <a href="legal.html">Mentions légales</a></span></div></footer>
 </body>
 </html>
