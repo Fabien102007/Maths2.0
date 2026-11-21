@@ -67,10 +67,10 @@ for (const file of htmlFiles) {
 }
 
 const appScript = fs.readFileSync(path.join(root, "app.js"), "utf8");
-assert.match(appScript, /async function sendChat\\(/, "Le tuteur doit conserver son gestionnaire de requête asynchrone.");
-assert.match(appScript, /function openTutorWithContext\\(/, "Les cours et exercices doivent pouvoir ouvrir le tuteur contextuel.");
-assert.match(appScript, /\\$\\$\\("#tutorModes \\.mode"\\)/, "Le changement de mode du tuteur doit cibler tous les boutons.");
-assert.match(appScript, /labType==="trig"\\?\\[-1,0,1\\]/, "Le cercle trigonométrique doit conserver des graduations dans le cadre.");
+assert.ok(appScript.includes("async function sendChat(){"), "Le tuteur doit conserver son gestionnaire de requête asynchrone.");
+assert.ok(appScript.includes("function openTutorWithContext(message){"), "Les cours et exercices doivent pouvoir ouvrir le tuteur contextuel.");
+assert.ok(appScript.includes('$$("#tutorModes .mode").forEach'), "Le changement de mode du tuteur doit cibler tous les boutons.");
+assert.ok(appScript.includes('labType==="trig"?[-1,0,1]'), "Le cercle trigonométrique doit conserver des graduations dans le cadre.");
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.webmanifest"), "utf8"));
 assert.equal(manifest.start_url, "./app.html", "La PWA doit ouvrir directement l'espace de travail.");
