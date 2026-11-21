@@ -185,7 +185,7 @@ window.__mathJaxReady = new Promise(resolve => {
       <article class="panel mastery-panel"><div class="panel-head"><div><div class="eyebrow">PAR THÈME</div><h3>État de maîtrise des notions</h3></div></div><div id="masteryList"></div></article>
     </section>
 
-    <footer class="footer">MATHS2.0 <span>·</span> Apprendre avec exigence, progresser avec méthode. <span>·</span> <a href="privacy.html">Confidentialité</a> <span>·</span> <a href="legal.html">Mentions légales</a></footer>
+    <footer class="footer">MATHS2.0 <span>·</span> Apprendre avec exigence, progresser avec méthode. <span>·</span> <a href="landing.html">Présentation</a> <span>·</span> <a href="privacy.html">Confidentialité</a> <span>·</span> <a href="legal.html">Mentions légales</a></footer>
   </main>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -199,7 +199,7 @@ window.__mathJaxReady = new Promise(resolve => {
       <label for="accountPassword">Mot de passe</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 caractères minimum">
       <div class="account-actions"><button class="btn primary" type="submit" id="accountSignIn">Se connecter</button><button class="btn ghost" type="button" id="accountSignUp">Créer un compte</button></div>
     </form>
-    <div id="accountSignedIn" hidden><p id="accountPlanStatus" class="account-plan-status">Offre gratuite</p><div class="account-actions"><button class="btn primary" id="accountUpgrade" type="button">Passer à Premium</button><button class="btn ghost" id="accountManagePlan" type="button">Gérer mon abonnement</button><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button></div></div>
+    <div id="accountSignedIn" hidden><p id="accountPlanStatus" class="account-plan-status">Offre gratuite</p><div class="account-actions"><button class="btn primary" id="accountUpgrade" type="button" disabled>Premium en préparation</button><button class="btn ghost" id="accountManagePlan" type="button" disabled>Abonnement indisponible</button><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button></div></div>
     <div class="subscription-preview">
       <div class="eyebrow">LES OFFRES MATHS2.0</div>
       <h3>Choisis ton espace de travail</h3>
@@ -210,12 +210,12 @@ window.__mathJaxReady = new Promise(resolve => {
           <span class="subscription-current">Inclus pour tous</span>
         </article>
         <article class="subscription-card premium">
-          <span class="subscription-kicker">POUR ALLER PLUS LOIN</span><h4>Premium</h4><div class="subscription-price">Prix à définir <small>/ mois</small></div>
+          <span class="subscription-kicker">EN PRÉPARATION</span><h4>Premium</h4><div class="subscription-price">5,99 € <small>/ mois envisagés</small></div>
           <ul><li>Tout le contenu gratuit</li><li>Parcours et statistiques avancés</li><li>Synchronisation multi-appareils</li><li>Collections d'exercices approfondies</li><li>Fonctionnalités pédagogiques exclusives</li></ul>
-          <button class="btn primary" id="accountUpgrade" type="button" disabled>Abonnement bientôt disponible</button>
+          <button class="btn primary" id="accountUpgradePreview" type="button" disabled>Abonnement bientôt disponible</button>
         </article>
       </div>
-      <p class="subscription-note">Aperçu de la future offre : aucun paiement n'est activé et aucun abonnement ne sera facturé à ce stade.</p>
+      <p class="subscription-note">Tarif indicatif à tester : 5,99 €/mois ou 49,99 €/an. Offre en préparation : aucun paiement ni abonnement n’est activé.</p>
     </div>
     <div class="account-feedback">
       <div class="eyebrow">BÊTA TEST</div><b>Donner un retour sur Maths2.0</b>
@@ -224,7 +224,7 @@ window.__mathJaxReady = new Promise(resolve => {
       <label for="feedbackMessage">Ton retour</label><textarea id="feedbackMessage" rows="3" maxlength="4000" placeholder="Décris ce qui fonctionne, ce qui bloque ou ce que tu aimerais voir…"></textarea>
       <button class="btn ghost" id="feedbackSend" type="button">Envoyer mon retour</button>
     </div>
-    <p class="account-footnote">Les comptes réels nécessitent encore la configuration du projet Supabase. Les offres ci-dessus sont une maquette : aucun paiement n’est activé.</p>
+    <p class="account-footnote">La progression reste disponible localement. La synchronisation cloud et les paiements seront activés après configuration et tests des services nécessaires.</p>
   </div>
 </div>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
