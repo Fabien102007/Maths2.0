@@ -81,7 +81,7 @@ const exerciseRichText=value=>{
  const raw=String(value??"").replace(/(?:\\){2,}(?=[()[\]])/g,"\\");
  const delimiters=/(\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g;
  const parts=raw.split(delimiters);
- return parts.map((part,i)=>{
+ const html=parts.map((part,i)=>{
   if(i%2===1){
    let formula=part,display=false;
    if(formula.startsWith("$$")&&formula.endsWith("$$")){display=true;formula=formula.slice(2,-2);}
@@ -92,7 +92,7 @@ const exerciseRichText=value=>{
   }
   return mathifySegment(esc(part));
  }).join("").replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>");
- return html.trim()?`<p>${html.replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ")}</p>`: "");
+ return html.trim()?"<p>"+html.replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ")+"</p>":"";
 };
 
 const topic=id=>TOPICS.find(t=>t.id===id);
