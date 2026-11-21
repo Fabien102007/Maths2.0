@@ -122,29 +122,6 @@ function chooseNextTopic(){
  };
  return remaining.sort((a,b)=>priority(a)-priority(b))[0];
 }
-function renderPath(){
- const host=$("#diagnosticArea"),rec=$("#pathRecommendation");rec.innerHTML="";
- if(!state.diagnostic){$("#pathTitle").textContent="Diagnostic de départ";$("#pathText").textContent="Réponds à quelques questions pour identifier tes points d'appui. Ce diagnostic ne note pas ton niveau : il oriente simplement ton parcours.";
- const qs=[
- {q:"Si uₙ=1/n, quelle est sa limite lorsque n tend vers +∞ ?",a:["0","1","+∞"],correct:0,topic:"limits"},
- {q:"Une fonction dérivable en a est nécessairement…",a:["continue en a","bornée sur R","strictement croissante"],correct:0,topic:"derivative"},
- {q:"Une famille libre de n vecteurs dans un espace de dimension n est…",a:["une base","toujours orthogonale","vide"],correct:0,topic:"basis"},
- {q:"Une matrice carrée est inversible lorsque…",a:["son déterminant est non nul","tous ses coefficients sont positifs","sa trace vaut 1"],correct:0,topic:"matrices"},
- {q:"La période fondamentale de cos(2x) est…",a:["π","2π","π/2"],correct:0,topic:"trigonometry"},
- {q:"Le module de 3−4i vaut…",a:["5","7","1"],correct:0,topic:"complex"},
- {q:"Pour un dé équilibré, la probabilité d'obtenir 6 vaut…",a:["1/6","1/2","1/3"],correct:0,topic:"probability"},
- {q:"Si deux vecteurs ont un produit scalaire nul, ils sont…",a:["orthogonaux","colinéaires","égaux"],correct:0,topic:"vector-spaces"},
- {q:"La série géométrique Σqⁿ converge lorsque…",a:["|q|<1","q>1","q=1"],correct:0,topic:"series"},
- {q:"Le développement de eˣ à l'ordre 1 en 0 commence par…",a:["1+x","x²","1−x"],correct:0,topic:"taylor"}
- ];;
- host.innerHTML='<div class="diagnostic-questions">'+qs.map((q,i)=>`<div class="diagnostic-q"><b>${i+1}. ${q.q}</b><div>${q.a.map((a,j)=>`<label><input type="radio" name="dq${i}" value="${j}"> ${a}</label>`).join("")}</div></div>`).join("")+'</div><button class="btn primary" id="submitDiagnostic">Analyser mes réponses →</button>';
- typeset(host);$("#submitDiagnostic").onclick=()=>{let score=0,by={};qs.forEach((q,i)=>{const v=$(`input[name="dq${i}"]:checked`),ok=!!v&&+v.value===q.correct;if(ok)score++;by[q.topic]=ok});state.diagnostic={score,total:qs.length,at:Date.now(),topics:by};save();renderPath();toast("Diagnostic enregistré.")};return;
- }
- const d=state.diagnostic;$("#pathTitle").textContent="Ton parcours est initialisé";$("#pathText").textContent=`Diagnostic : ${d.score}/${d.total}. Ce résultat est un point de départ, pas une étiquette.`;
- const next=chooseNextTopic();host.innerHTML=`<div class="diagnostic-result"><div class="result-score">${Math.round(100*d.score/d.total)}<small>%</small></div><div><b>Une première photographie de tes acquis</b><p>Les résultats servent à choisir les notions à travailler, puis seront affinés par tes exercices.</p></div></div>`;
- rec.innerHTML=next?`<div class="recommendation"><span class="eyebrow">PROCHAINE NOTION CONSEILLÉE</span><h3>${esc(next.title)}</h3><p>${esc(next.summary)}</p><button class="btn primary" id="startRecommended">Ouvrir le cours →</button><button class="btn ghost" id="startExercise">Faire un exercice</button></div>`:"";
- $("#startRecommended")?.addEventListener("click",()=>{go("courses");openTopic(next.id)});$("#startExercise")?.addEventListener("click",()=>{const e=EXERCISES.find(x=>x.topic===next.id);if(e){go("exercises");openExercise(e.id)}else toast("Aucun exercice disponible pour cette notion.")});typeset(host);typeset(rec);
-}
 function courseLevelOf(t){return t.level==="Lycée"||t.level==="Terminale"?"Terminale":t.level==="L1"||t.level==="Prépa"?"L1":t.level||"Autre";}
 function renderCourses(){
  const q=$("#courseSearch").value.trim().toLowerCase();
