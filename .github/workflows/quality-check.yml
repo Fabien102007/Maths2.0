@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - "app.html"
+      - "index.html"
+      - "landing.html"
+      - "privacy.html"
+      - "legal.html"
+      - "sw.js"
       - "app.js"
       - "data.js"
       - "curriculum.js"
