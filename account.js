@@ -41,17 +41,24 @@
        if(upsertError)throw upsertError;
        message("Connecté : progression synchronisée avec ton compte.");
      }
+     const plan=document.getElementById("accountPlanStatus");
      if(cfg.workerUrl){
        const sub=await callWorker("/api/subscription");
-       const plan=document.getElementById("accountPlanStatus");
        if(plan)plan.textContent=sub.active?"Maths2.0 Premium · abonnement "+sub.status:"Offre gratuite";
-     }
+     }else if(plan){plan.textContent="Offre gratuite · Premium en préparation";}
    }catch(e){message("Compte connecté, mais synchronisation non terminée : "+e.message);}
  };
  const refresh=async(s)=>{
    session=s;
    if(s){
      form.hidden=true;signed.hidden=false;
+     const billingReady=!!cfg.workerUrl;
+     const upgrade=document.getElementById("accountUpgrade");
+     const manage=document.getElementById("accountManagePlan");
+     const feedback=document.getElementById("feedbackSend");
+     if(upgrade){upgrade.disabled=!billingReady;upgrade.textContent=billingReady?"Passer à Premium":"Premium en préparation";}
+     if(manage)manage.disabled=!billingReady;
+     if(feedback)feedback.disabled=!billingReady;
      open.textContent="Mon compte · connecté";
      message("Connecté avec "+s.user.email+".");
      await syncProgress();
@@ -64,7 +71,9 @@
  modal.addEventListener("click",e=>{if(e.target===modal)hide()});
  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!modal.hidden)hide()});
  if(!ready()){
-   message("Configuration requise : renseigner l'URL et la clé publique du projet Supabase, puis déployer le Worker Cloudflare.");
+   message("Les comptes seront activés après finalisation de la configuration Supabase. Tu peux utiliser gratuitement l’application sans créer de compte.");
+   form?.querySelectorAll("input,button").forEach(control=>control.disabled=true);
+   const feedback=document.getElementById("feedbackSend");if(feedback)feedback.disabled=true;
  }else{
    client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
    client.auth.getSession().then(({data})=>refresh(data.session));
