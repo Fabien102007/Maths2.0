@@ -74,6 +74,9 @@ assert.ok(appScript.includes('labType==="trig"?[-1,0,1]'), "Le cercle trigonomé
 assert.ok(appScript.includes('const base=[.65,.38],image=[base[0]*v,base[1]*v]'), "La visualisation des valeurs propres doit montrer Av = λv.");
 assert.ok(appScript.includes('"fourier","eigen"].includes(labType)'), "Les légendes propres des visualisations doivent être préservées.");
 assert.ok(appScript.includes("rating.sum/rating.count"), "Une session ne doit pas multiplier l'intervalle de révision pour chaque flashcard.");
+assert.ok(appScript.includes('go("home");typeset(document.body);'), "L'application doit s'ouvrir sur la vue d'ensemble.");
+assert.ok(appScript.includes('listHost.hidden=!!activeTopic') && appScript.includes('course-detail-open'), "La fiche d'un cours doit s'afficher seule après sélection.");
+assert.ok(appScript.includes('id="courseBackList"'), "La fiche de cours doit proposer un retour à la liste.");
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.webmanifest"), "utf8"));
 assert.equal(manifest.start_url, "./app.html", "La PWA doit ouvrir directement l'espace de travail.");
