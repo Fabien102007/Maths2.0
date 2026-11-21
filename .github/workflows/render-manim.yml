@@ -41,17 +41,17 @@ jobs:
             local source="$1"
             local scene="$2"
             local slug="$3"
-            local video="media/videos/\${source}/2160p60/\${scene}.mp4"
-            echo "Rendering \${scene} in 4K / 60 FPS"
-            manim -qk --fps 60 --format mp4 "manim/\${source}.py" "\${scene}"
-            test -s "\${video}"
+            local video="media/videos/${source}/2160p60/${scene}.mp4"
+            echo "Rendering ${scene} in 4K / 60 FPS"
+            manim -qk --fps 60 --format mp4 "manim/${source}.py" "${scene}"
+            test -s "${video}"
             local duration
-            duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "\${video}")
-            echo "\${slug}: \${duration}s"
-            awk -v duration="\${duration}" 'BEGIN { exit !(duration > 8) }'
-            ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of csv=p=0 "\${video}"
-            cp "\${video}" "assets/manim/\${slug}.mp4"
-            test -s "assets/manim/\${slug}.mp4"
+            duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${video}")
+            echo "${slug}: ${duration}s"
+            awk -v duration="${duration}" 'BEGIN { exit !(duration > 8) }'
+            ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of csv=p=0 "${video}"
+            cp "${video}" "assets/manim/${slug}.mp4"
+            test -s "assets/manim/${slug}.mp4"
           }
           render_and_publish euler EulerHelix euler_helix
           render_and_publish concepts DerivativeTangent derivative_tangent
