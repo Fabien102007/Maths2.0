@@ -77,6 +77,8 @@ assert.ok(appScript.includes("rating.sum/rating.count"), "Une session ne doit pa
 assert.ok(appScript.includes('go("home");typeset(document.body);'), "L'application doit s'ouvrir sur la vue d'ensemble.");
 assert.ok(appScript.includes('listHost.hidden=!!activeTopic') && appScript.includes('course-detail-open'), "La fiche d'un cours doit s'afficher seule après sélection.");
 assert.ok(appScript.includes('id="courseBackList"'), "La fiche de cours doit proposer un retour à la liste.");
+assert.ok(appScript.includes('$("#courseDetail [data-course-anchor]").forEach'), "Le sommaire des cours doit utiliser une sélection multiple.");
+assert.ok(appScript.includes('typeset($("#courseDetail"))'), "Les formules LaTeX des fiches cours doivent être composées.");
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.webmanifest"), "utf8"));
 assert.equal(manifest.start_url, "./app.html", "La PWA doit ouvrir directement l'espace de travail.");
