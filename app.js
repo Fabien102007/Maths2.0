@@ -158,7 +158,7 @@ function renderTopic(id){
  const visualByTopic={limits:"limit",continuity:"continuity",derivative:"derivative",integrals:"integral",basis:"schmidt",matrices:"determinant",eigenvalues:"eigen","term-sequences":"sequence","term-functions":"derivative","term-complex":"complex3d"};
  const visual=visualByTopic[id]||null;
  const prerequisites=(t.prerequisites||[]).map(topic).filter(Boolean);
- const theorems=(t.theorems||[]).map((th,i)=>`<div class="theorem-card"><b>Théorème ${i+1} — ${esc(th.title)}</b><p>${th.statement}</p><details><summary>Voir la démonstration</summary><p>${th.proof}</p></details></div>`).join("");
+ const theorems=(t.theorems||[]).map((th,i)=>`<div class="theorem-card"><b>Théorème ${i+1} — ${esc(th.title)}</b><p>${th.statement}</p><details><summary>Voir la démonstration</summary><div class="theorem-proof">${th.proof}</div></details></div>`).join("");
  const methods=(t.methods||[]).map(x=>`<li>${x}</li>`).join("");
  const errors=(t.commonErrors||[]).map(x=>`<li>${x}</li>`).join("");
  const outline=[["course-definitions","Définitions"],["course-properties","Propriétés"],...(theorems?[["course-theorems","Démonstrations"]]:[]),["course-example","Exemple"],...(methods?[["course-methods","Méthodes"]]:[])];
