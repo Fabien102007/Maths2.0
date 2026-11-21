@@ -4,7 +4,7 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 const KEY="maths4_studio_v1";
 const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,diagnostic:null});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
-let activeTopic=null,activeCourseCategory=null,activeExercise=null,activeExerciseCategory=null,activeExerciseTopic=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
+let activeTopic=null,activeCourseCategory=null,activeExercise=null,activeExerciseCategory=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 let progressSyncTimer=null;
 const save=()=>{state.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();if(window.Maths2Account?.sync){clearTimeout(progressSyncTimer);progressSyncTimer=setTimeout(()=>window.Maths2Account.sync(),1200);}};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -163,27 +163,32 @@ function renderTopic(id){
  $("#topicExercise").onclick=()=>{go("exercises");openExercise(t.exerciseId)};$("#topicReview").onclick=()=>scheduleReview(id,1);typeset($("#courseDetail"));
 }
 function renderExercises(){
- const q=$("#exerciseSearch").value.toLowerCase(),diff=$("#exerciseDifficulty").value;
+ const q=$("#exerciseSearch").value.toLowerCase(),diff=activeExerciseDifficulty;
  const themes=$("#exerciseThemes"),topicsView=$("#exerciseTopicsView"),detail=$("#exerciseWorkspace");
- const topicCards=TOPICS.filter(t=>t.category===activeExerciseCategory);
- const showTopics=!!activeExerciseCategory;
- themes.hidden=showTopics;topicsView.hidden=!showTopics;
- if(!showTopics){$("#exerciseTopicList").innerHTML="";detail.hidden=true;return;}
- $("#exerciseTopicList").innerHTML=topicCards.map(t=>{
-  const count=EXERCISES.filter(e=>e.topic===t.id).length,solved=EXERCISES.filter(e=>e.topic===t.id&&state.solved.includes(e.id)).length;
-  return `<button class="course-item ${activeExerciseTopic===t.id?"selected":""}" data-ex-topic="${t.id}"><span class="course-symbol">${t.category==="Analyse"?"∫":"∑"}</span><span><b>${esc(t.title)}</b><small>${esc(t.level)} · ${count} exercice(s) · ${solved} réussi(s)</small></span><i>→</i></button>`;
- }).join("")||'<p class="subtle">Aucun chapitre disponible.</p>';
- $$("[data-ex-topic]").forEach(b=>b.onclick=()=>{activeExerciseTopic=b.dataset.exTopic;activeExercise=null;renderExercises()});
- if(!activeExerciseTopic){detail.hidden=true;return;}
- detail.hidden=false;$("#exerciseTopicHeading").textContent=topic(activeExerciseTopic)?.title||"Exercices";
- const list=EXERCISES.filter(e=>e.topic===activeExerciseTopic&&(!q||(e.title+" "+e.question).toLowerCase().includes(q))&&(diff==="all"||e.difficulty===diff));
- $("#exerciseList").innerHTML=list.map(e=>`<button class="exercise-item ${activeExercise===e.id?"selected":""}" data-ex="${e.id}"><span class="difficulty ${e.difficulty.toLowerCase()}">${e.difficulty}</span><b>${esc(e.title)}</b><small>${esc(topic(e.topic)?.title||"")}</small><i>${state.solved.includes(e.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucun exercice correspondant.</p>';
+ const showLevels=!!activeExerciseCategory;
+ themes.hidden=showLevels;topicsView.hidden=!showLevels;
+ if(!showLevels){$("#exerciseTopicList").innerHTML="";detail.hidden=true;return;}
+ const levels=[
+  {name:"Facile",desc:"Consolider les méthodes et les notions fondamentales",icon:"Ⅰ"},
+  {name:"Intermédiaire",desc:"Combiner plusieurs propriétés et structurer le raisonnement",icon:"Ⅱ"},
+  {name:"Avancé",desc:"Résoudre des problèmes plus exigeants et approfondir",icon:"Ⅲ"}
+ ];
+ $("#exerciseTopicList").innerHTML='<div class="exercise-level-intro"><b>Choisis ton niveau</b><span>'+esc(activeExerciseCategory)+'</span></div>'+levels.map(l=>{
+  const count=EXERCISES.filter(e=>e.category===activeExerciseCategory&&e.difficulty===l.name).length;
+  return `<button type="button" class="course-theme-card exercise-level-card ${diff===l.name?"selected":""}" data-ex-level="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count} exos →</i></button>`;
+ }).join("");
+ $$("[data-ex-level]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exLevel;activeExercise=null;renderExercises()});
+ if(!diff){detail.hidden=true;return;}
+ detail.hidden=false;
+ $("#exerciseTopicHeading").textContent="Exercices · "+diff;
+ const list=EXERCISES.filter(e=>e.category===activeExerciseCategory&&e.difficulty===diff&&(!q||(e.title+" "+e.question).toLowerCase().includes(q)));
+ $("#exerciseList").innerHTML=list.map(e=>`<button class="exercise-item ${activeExercise===e.id?"selected":""}" data-ex="${e.id}"><span class="difficulty ${e.difficulty.toLowerCase()}">${e.difficulty}</span><b>${esc(e.title)}</b><small>${esc(topic(e.topic)?.title||"")}</small><i>${state.solved.includes(e.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucun exercice disponible à ce niveau pour le moment.</p>';
  $(".exercise-layout").classList.toggle("exercise-open",!!activeExercise);
  $$("#exerciseList [data-ex]").forEach(b=>b.onclick=()=>openExercise(b.dataset.ex));
- if(activeExercise&&EXERCISES.some(e=>e.id===activeExercise&&e.topic===activeExerciseTopic))renderExercise(activeExercise);
- else if(!activeExercise)$("#exerciseDetail").innerHTML='<div class="empty-state"><span>⌘</span><h3>Choisis un exercice</h3><p>Sélectionne un exercice dans la liste pour commencer.</p></div>';
+ if(activeExercise&&EXERCISES.some(e=>e.id===activeExercise&&e.category===activeExerciseCategory&&e.difficulty===diff))renderExercise(activeExercise);
+ else if(!activeExercise)$("#exerciseDetail").innerHTML='<div class="empty-state"><span>⌘</span><h3>Choisis un exercice</h3><p>Les exercices du niveau '+esc(diff.toLowerCase())+' apparaissent dans cette liste.</p></div>';
 }
-function openExercise(id){const e=EXERCISES.find(x=>x.id===id);if(e){activeExerciseCategory=e.category;activeExerciseTopic=e.topic;activeExercise=id;}renderExercises()}
+function openExercise(id){const e=EXERCISES.find(x=>x.id===id);if(e){activeExerciseCategory=e.category;activeExerciseDifficulty=e.difficulty;activeExerciseTopic=null;activeExercise=id;}renderExercises()}
 function renderExercise(id){
  const e=EXERCISES.find(x=>x.id===id);if(!e)return;
  $("#exerciseDetail").innerHTML=`<button class="exercise-back" id="exerciseBack" type="button">← Tous les exercices</button><div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${exerciseRichText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…">${esc(state.drafts?.[id]||"")}</textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
@@ -358,11 +363,12 @@ function drawLab(){
  else if(labType==="integral"){xmin=0;xmax=3.1;ymin=0;ymax=9}
  else if(labType==="determinant"){xmin=-1;xmax=5.2;ymin=-3.5;ymax=3.5}
  else if(labType==="trig"){xmin=-1.5;xmax=1.5;ymin=-1.5;ymax=1.5}
+ else if(labType==="fourier"){xmin=-Math.PI;xmax=Math.PI;ymin=-1.65;ymax=1.65}
  else if(labType==="limit"||labType==="continuity"){xmin=-0.5;xmax=2.5;ymin=-0.6;ymax=5.4}
  else{xmin=-3;xmax=3;ymin=-3;ymax=3}
  const trigScale=Math.min(pw/(xmax-xmin),ph/(ymax-ymin));const X=x=>labType==="trig"?W*.5+x*trigScale:m.l+(x-xmin)/(xmax-xmin)*pw,Y=y=>labType==="trig"?H*.53-y*trigScale:m.t+(ymax-y)/(ymax-ymin)*ph;
  const grid="#263b52",axis="#91a8c0",txt="#9eb2c9";ctx.font="11px system-ui";ctx.lineWidth=1;ctx.strokeStyle=grid;ctx.fillStyle=txt;
- const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:labType==="integral"?[0,.5,1,1.5,2,2.5,3]:(labType==="limit"||labType==="continuity")?[0,.5,1,1.5,2]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:labType==="integral"?[0,1,2,4,6,8]:(labType==="limit"||labType==="continuity")?[0,1,2,3,4,5]:[-2,-1,0,1,2,3,4];
+ const xt=labType==="sequence"?[0,Math.round(xmax/2),xmax-1]:labType==="integral"?[0,.5,1,1.5,2,2.5,3]:labType==="fourier"?[-Math.PI,-Math.PI/2,0,Math.PI/2,Math.PI]:(labType==="limit"||labType==="continuity")?[0,.5,1,1.5,2]:[-2,-1,0,1,2],yt=labType==="sequence"?[1,1.5,2]:labType==="derivative"?[0,1,2,3,4,5,6]:labType==="integral"?[0,1,2,4,6,8]:labType==="fourier"?[-1,0,1]:(labType==="limit"||labType==="continuity")?[0,1,2,3,4,5]:[-2,-1,0,1,2,3,4];
  xt.forEach(v=>{const x=X(v);ctx.beginPath();ctx.moveTo(x,m.t);ctx.lineTo(x,m.t+ph);ctx.stroke();ctx.textAlign="center";ctx.fillText(String(v),x,H-17)});
  yt.forEach(v=>{const y=Y(v);ctx.beginPath();ctx.moveTo(m.l,y);ctx.lineTo(m.l+pw,y);ctx.stroke();ctx.textAlign="right";ctx.fillText(String(v),m.l-9,y+4)});
  ctx.strokeStyle=axis;ctx.lineWidth=1.5;ctx.beginPath();if(ymin<=0&&ymax>=0){ctx.moveTo(m.l,Y(0));ctx.lineTo(m.l+pw,Y(0))}if(xmin<=0&&xmax>=0){ctx.moveTo(X(0),m.t);ctx.lineTo(X(0),m.t+ph)}ctx.stroke();
@@ -402,6 +408,11 @@ function drawLab(){
    segment(0,0,c,0,"#80b8f4",2,[4,4]);segment(c,0,c,sn,"#e0b86d",2,[4,4]);segment(0,0,c,sn,"#54cbb2",3);point(c,sn,"#54cbb2",6);
    ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText("θ = "+v+"°",m.l+10,m.t+18);ctx.font="12px system-ui";ctx.fillText("cos θ = "+c.toFixed(4),m.l+10,m.t+39);ctx.fillText("sin θ = "+sn.toFixed(4),m.l+10,m.t+57);
    const exact={0:["1","0"],30:["√3/2","1/2"],45:["√2/2","√2/2"],60:["1/2","√3/2"],90:["0","1"],120:["−1/2","√3/2"],135:["−√2/2","√2/2"],150:["−√3/2","1/2"],180:["−1","0"],210:["−√3/2","−1/2"],225:["−√2/2","−√2/2"],240:["−1/2","−√3/2"],270:["0","−1"],300:["1/2","−√3/2"],315:["√2/2","−√2/2"],330:["√3/2","−1/2"],360:["1","0"]};
+   // Étiquettes exactes posées autour du cercle, aux angles remarquables.
+   const labels={0:"(1, 0)",30:"(√3/2, 1/2)",45:"(√2/2, √2/2)",60:"(1/2, √3/2)",90:"(0, 1)",120:"(−1/2, √3/2)",135:"(−√2/2, √2/2)",150:"(−√3/2, 1/2)",180:"(−1, 0)",210:"(−√3/2, −1/2)",225:"(−√2/2, −√2/2)",240:"(−1/2, −√3/2)",270:"(0, −1)",300:"(1/2, −√3/2)",315:"(√2/2, −√2/2)",330:"(√3/2, −1/2)"};
+   ctx.save();ctx.font="9px system-ui";ctx.fillStyle="#dce8fa";ctx.textAlign="center";
+   Object.entries(labels).forEach(([deg,label])=>{const a=Number(deg)*Math.PI/180,rr=1.28;let tx=X(rr*Math.cos(a)),ty=Y(rr*Math.sin(a));if(deg==="0")ctx.textAlign="left";else if(deg==="180")ctx.textAlign="right";else ctx.textAlign="center";ctx.fillText(label,tx,ty+3)});
+   ctx.restore();
    const angle=((v%360)+360)%360,exactValues=exact[angle];$("#labTrigValues").innerHTML=exactValues?'<b>Valeurs exactes :</b> cos θ = '+exactValues[0]+' · sin θ = '+exactValues[1]:'<b>Valeurs remarquables :</b> angle non remarquable — valeurs décimales affichées.';
    $("#labLegend").innerHTML='<span style="color:#54cbb2">● Point mobile</span><span style="color:#80b8f4">┆ cos θ : abscisse</span><span style="color:#e0b86d">┆ sin θ : ordonnée</span>';
   }
@@ -441,7 +452,15 @@ function drawLab(){
     $("#labLegend").innerHTML='<span style="color:#80b8f4">● Graphe f(x)=x²</span><span style="color:#e0b86d">● A : point de référence</span><span style="color:#54cbb2">● P : point mobile</span><span style="color:#e0b86d">┄ Écart vertical Δy</span>';
     $("#labValue").textContent=x.toFixed(2).replace(".",",");
   }
-  else if(labType==="fourier"){const N=Math.max(1,Math.round(v));curve(x=>{let s=0;for(let k=0;k<N;k++){const odd=2*k+1;s+=Math.sin(odd*x)/odd}return 4/Math.PI*s},-Math.PI,Math.PI,"#80b8f4",3);ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText(N+" harmonique"+(N>1?"s":"")+" impaire"+(N>1?"s":""),m.l+10,m.t+18)}
+  else if(labType==="fourier"){
+   const N=Math.max(1,Math.round(v)),sum=x=>{let s=0;for(let k=0;k<N;k++){const odd=2*k+1;s+=Math.sin(odd*x)/odd}return 4/Math.PI*s};
+   // Le signal carré de référence est discontinu en ±π ; l'intervalle complet rend visibles les oscillations de Gibbs.
+   ctx.save();ctx.setLineDash([7,5]);ctx.strokeStyle="#e0b86d";ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(X(-Math.PI),Y(-1));ctx.lineTo(X(0),Y(-1));ctx.moveTo(X(0),Y(1));ctx.lineTo(X(Math.PI),Y(1));ctx.stroke();ctx.restore();
+   curve(sum,-Math.PI,Math.PI,"#80b8f4",3);
+   ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText(N+" harmonique"+(N>1?"s":"")+" impaire"+(N>1?"s":""),m.l+10,m.t+18);
+   ctx.fillStyle="#e0b86d";ctx.font="11px system-ui";ctx.fillText("Signal carré de référence",m.l+10,m.t+36);
+   $("#labLegend").innerHTML='<span style="color:#80b8f4">━ Somme de Fourier</span><span style="color:#e0b86d">┄ Signal carré de référence</span><span style="color:#9eb2c9">Oscillations de Gibbs près de ±π</span>';
+  }
   else if(labType==="eigen"){curve(x=>.55*x,xmin,xmax,"#80b8f4",2);curve(x=>v*x,xmin,xmax,"#e0b86d",3)}
   else if(labType==="determinant"){
     const t=v*Math.PI/180,u=[2,0],len=Number($("#labExtraSlider")?.value||2),w=[len*Math.cos(t),len*Math.sin(t)],cross=u[0]*w[1]-u[1]*w[0],area=Math.abs(cross);
@@ -499,9 +518,9 @@ function init(){
  $("#courseSearch").addEventListener("input",()=>{activeTopic=null;renderCourses()});
  $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeTopic=null;renderCourses()}));
  $("#courseBackThemes").onclick=()=>{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses()};
- $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseTopic=null;activeExercise=null;renderExercises()};
+ $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseDifficulty=null;activeExerciseTopic=null;activeExercise=null;renderExercises()};
   // Les catégories sont gérées par délégation globale pour rester actives après les rerendus.
- $("#exerciseTopicBack").onclick=()=>{activeExerciseTopic=null;activeExercise=null;renderExercises()};
+ $("#exerciseTopicBack").onclick=()=>{activeExerciseDifficulty=null;activeExercise=null;renderExercises()};
  ["exerciseSearch","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
@@ -519,6 +538,7 @@ document.addEventListener("click",event=>{
  const card=event.target.closest("#exerciseThemes [data-ex-category]");
  if(!card)return;
  activeExerciseCategory=card.dataset.exCategory;
+ activeExerciseDifficulty=null;
  activeExerciseTopic=null;
  activeExercise=null;
  renderExercises();
