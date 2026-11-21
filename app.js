@@ -295,7 +295,7 @@ function renderLabExtras(){
   $("#labExtraSlider").oninput=()=>{$("#labExtraValue").textContent=$("#labExtraSlider").value+" rectangles";drawLab()};
  }else if(labType==="trig"){
   const angles=[0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330,360];
-  host.innerHTML='<div class="lab-extra-head"><b>Angles remarquables</b><span>Accès direct</span></div><div class="lab-angle-presets">'+angles.map(a=>`<button type="button" data-angle="${a}">${a}°</button>`).join("")+'</div><div class="lab-trig-values" id="labTrigValues"></div>';
+  const radians={0:"0",30:"π/6",45:"π/4",60:"π/3",90:"π/2",120:"2π/3",135:"3π/4",150:"5π/6",180:"π",210:"7π/6",225:"5π/4",240:"4π/3",270:"3π/2",300:"5π/3",315:"7π/4",330:"11π/6",360:"2π"};host.innerHTML='<div class="lab-extra-head"><b>Angles remarquables (radians)</b><span>Accès direct</span></div><div class="lab-angle-presets">'+angles.map(a=>`<button type="button" data-angle="${a}">${radians[a]}</button>`).join("")+'</div><div class="lab-trig-values" id="labTrigValues"></div>';
   $$("[data-angle]").forEach(b=>b.onclick=()=>{$("#labSlider").value=b.dataset.angle;drawLab()});
  }else if(labType==="determinant"){
   host.innerHTML='<div class="lab-extra-head"><b>Norme du second vecteur</b><span id="labExtraValue">2,0</span></div><input id="labExtraSlider" type="range" min="0.5" max="3" step="0.1" value="2"><p>Le déterminant dépend de la longueur des deux vecteurs et de leur angle.</p>';
@@ -406,11 +406,11 @@ function drawLab(){
    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle="#526a8a";ctx.lineWidth=2;ctx.stroke();
    ctx.beginPath();ctx.arc(cx,cy,r*.28,0,-theta,true);ctx.strokeStyle="#f0c77c";ctx.lineWidth=2;ctx.stroke();
    segment(0,0,c,0,"#80b8f4",2,[4,4]);segment(c,0,c,sn,"#e0b86d",2,[4,4]);segment(0,0,c,sn,"#54cbb2",3);point(c,sn,"#54cbb2",6);
-   ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText("θ = "+v+"°",m.l+10,m.t+18);ctx.font="12px system-ui";ctx.fillText("cos θ = "+c.toFixed(4),m.l+10,m.t+39);ctx.fillText("sin θ = "+sn.toFixed(4),m.l+10,m.t+57);
+   ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";const radLabel=({0:"0",30:"π/6",45:"π/4",60:"π/3",90:"π/2",120:"2π/3",135:"3π/4",150:"5π/6",180:"π",210:"7π/6",225:"5π/4",240:"4π/3",270:"3π/2",300:"5π/3",315:"7π/4",330:"11π/6",360:"2π"})[v]||((v*Math.PI/180).toFixed(3)+" rad");ctx.fillText("θ = "+radLabel,m.l+10,m.t+18);ctx.font="12px system-ui";ctx.fillText("cos θ = "+c.toFixed(4),m.l+10,m.t+39);ctx.fillText("sin θ = "+sn.toFixed(4),m.l+10,m.t+57);
    const exact={0:["1","0"],30:["√3/2","1/2"],45:["√2/2","√2/2"],60:["1/2","√3/2"],90:["0","1"],120:["−1/2","√3/2"],135:["−√2/2","√2/2"],150:["−√3/2","1/2"],180:["−1","0"],210:["−√3/2","−1/2"],225:["−√2/2","−√2/2"],240:["−1/2","−√3/2"],270:["0","−1"],300:["1/2","−√3/2"],315:["√2/2","−√2/2"],330:["√3/2","−1/2"],360:["1","0"]};
    // Étiquettes exactes posées autour du cercle, aux angles remarquables.
-   const labels={0:"(1, 0)",30:"(√3/2, 1/2)",45:"(√2/2, √2/2)",60:"(1/2, √3/2)",90:"(0, 1)",120:"(−1/2, √3/2)",135:"(−√2/2, √2/2)",150:"(−√3/2, 1/2)",180:"(−1, 0)",210:"(−√3/2, −1/2)",225:"(−√2/2, −√2/2)",240:"(−1/2, −√3/2)",270:"(0, −1)",300:"(1/2, −√3/2)",315:"(√2/2, −√2/2)",330:"(√3/2, −1/2)"};
-   ctx.save();ctx.font="9px system-ui";ctx.fillStyle="#dce8fa";ctx.textAlign="center";
+   const labels={0:"0",30:"π/6",45:"π/4",60:"π/3",90:"π/2",120:"2π/3",135:"3π/4",150:"5π/6",180:"π",210:"7π/6",225:"5π/4",240:"4π/3",270:"3π/2",300:"5π/3",315:"7π/4",330:"11π/6"};
+   ctx.save();ctx.font="bold 11px system-ui";ctx.fillStyle="#dce8fa";ctx.textAlign="center";
    Object.entries(labels).forEach(([deg,label])=>{const a=Number(deg)*Math.PI/180,rr=1.28;let tx=X(rr*Math.cos(a)),ty=Y(rr*Math.sin(a));if(deg==="0")ctx.textAlign="left";else if(deg==="180")ctx.textAlign="right";else ctx.textAlign="center";ctx.fillText(label,tx,ty+3)});
    ctx.restore();
    const angle=((v%360)+360)%360,exactValues=exact[angle];$("#labTrigValues").innerHTML=exactValues?'<b>Valeurs exactes :</b> cos θ = '+exactValues[0]+' · sin θ = '+exactValues[1]:'<b>Valeurs remarquables :</b> angle non remarquable — valeurs décimales affichées.';
