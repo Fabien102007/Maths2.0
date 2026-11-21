@@ -151,6 +151,7 @@ function renderCourses(){
  const themes=$("#courseThemes"),topicsView=$("#courseTopicsView"),listHost=$("#courseList"),detail=$("#courseDetail"),back=$("#courseBackThemes");
  const showTopics=!!activeCourseCategory||!!q||!!activeTopic;
  themes.hidden=showTopics;topicsView.hidden=!showTopics;
+ topicsView.classList.toggle("course-level-selecting",!!activeCourseCategory&&!q&&!activeCourseLevel&&!activeTopic);
  if(!showTopics){activeTopic=null;detail.hidden=true;return;}
  if(activeCourseCategory&&!q&&!activeCourseLevel&&!activeTopic){
   back.textContent="← Analyse et Algèbre";
@@ -159,7 +160,7 @@ function renderCourses(){
    {name:"L1",desc:"Université · Première année de licence",icon:"∑"}
   ].map(level=>{
    const count=TOPICS.filter(t=>t.category===activeCourseCategory&&courseLevelOf(t)===level.name).length;
-   return `<button type="button" class="course-theme-card course-level-card" data-course-level="${level.name}"><span class="course-theme-symbol">${level.icon}</span><span><b>${level.name}</b><small>${level.desc}</small></span><i>${count} notions →</i></button>`;
+   return `<button type="button" class="course-theme-card course-level-card" data-course-level="${level.name}"><span class="course-theme-symbol">${level.icon}</span><span><b>${level.name}</b><small>${level.desc}</small></span><i>${count?count+" notions":"Contenu à venir"} →</i></button>`;
   }).join("");
   detail.hidden=true;detail.innerHTML="";
   $$("[data-course-level]").forEach(b=>b.onclick=()=>{activeCourseLevel=b.dataset.courseLevel;activeTopic=null;renderCourses()});
