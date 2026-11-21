@@ -386,9 +386,10 @@ function drawLab(){
   const v=+$("#labSlider").value;
   if(labType==="integral"){
     const b=v,N=Math.max(2,Math.round(Number($("#labExtraSlider")?.value||20))),dx=b/N,area=b*b*b/3;let riemann=0;
-    for(let k=0;k<N;k++){const x0=k*dx,x1=(k+1)*dx,mid=(x0+x1)/2,height=mid*mid;riemann+=height*dx;ctx.fillStyle=k%2?"rgba(235,177,91,.20)":"rgba(235,177,91,.34)";ctx.fillRect(X(x0),Y(height),Math.max(1,X(x1)-X(x0)),Y(0)-Y(height));ctx.strokeStyle="rgba(235,177,91,.72)";ctx.lineWidth=1;ctx.strokeRect(X(x0),Y(height),X(x1)-X(x0),Y(0)-Y(height))}
+    // L'aire exacte est peinte en premier pour laisser les rectangles de Riemann visibles.
     ctx.beginPath();ctx.moveTo(X(0),Y(0));for(let k=0;k<=400;k++){const x=b*k/400;ctx.lineTo(X(x),Y(x*x))}ctx.lineTo(X(b),Y(0));ctx.closePath();
-    const grad=ctx.createLinearGradient(0,Y(b*b),0,Y(0));grad.addColorStop(0,"rgba(76,145,235,.28)");grad.addColorStop(1,"rgba(76,145,235,.08)");ctx.fillStyle=grad;ctx.fill();
+    const grad=ctx.createLinearGradient(0,Y(b*b),0,Y(0));grad.addColorStop(0,"rgba(76,145,235,.24)");grad.addColorStop(1,"rgba(76,145,235,.07)");ctx.fillStyle=grad;ctx.fill();
+    for(let k=0;k<N;k++){const x0=k*dx,x1=(k+1)*dx,mid=(x0+x1)/2,height=mid*mid;riemann+=height*dx;ctx.fillStyle=k%2?"rgba(235,177,91,.28)":"rgba(235,177,91,.42)";ctx.fillRect(X(x0),Y(height),Math.max(1,X(x1)-X(x0)),Y(0)-Y(height));ctx.strokeStyle="rgba(235,177,91,.9)";ctx.lineWidth=1;ctx.strokeRect(X(x0),Y(height),X(x1)-X(x0),Y(0)-Y(height))}
     curve(x=>x*x,0,3.02,"#80b8f4",3.5);segment(b,0,b,b*b,"#e0b86d",2,[6,4]);point(b,b*b,"#e0b86d",6);point(b,0,"#e0b86d",4);
     ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText("Intégrale = "+area.toFixed(4).replace(".",","),m.l+12,m.t+18);ctx.fillStyle="#e0b86d";ctx.font="12px system-ui";ctx.fillText("Riemann = "+riemann.toFixed(4).replace(".",",")+" · erreur = "+Math.abs(area-riemann).toFixed(4).replace(".",","),m.l+12,m.t+37);$("#labExtraValue").textContent=N+" rectangles";
     ctx.fillStyle="#f0c77c";ctx.font="bold 12px system-ui";ctx.fillText("b = "+b.toFixed(2).replace(".",","),X(b)+8,Y(0)+18);
@@ -499,7 +500,7 @@ function init(){
  $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeTopic=null;renderCourses()}));
  $("#courseBackThemes").onclick=()=>{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses()};
  $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseTopic=null;activeExercise=null;renderExercises()};
- $("#exerciseThemes [data-ex-category]").forEach(b=>b.addEventListener("click",()=>{activeExerciseCategory=b.dataset.exCategory;activeExerciseTopic=null;activeExercise=null;renderExercises()}));
+  // Les catégories sont gérées par délégation globale pour rester actives après les rerendus.
  $("#exerciseTopicBack").onclick=()=>{activeExerciseTopic=null;activeExercise=null;renderExercises()};
  ["exerciseSearch","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
@@ -513,5 +514,14 @@ function init(){
  renderDashboard();renderPath();renderCourses();renderExercises();renderProgress();typeset(document.body);
  if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>reg.update()).catch(()=>{});}
 }
+// Délégation globale pour les cartes Analyse / Algèbre.
+document.addEventListener("click",event=>{
+ const card=event.target.closest("#exerciseThemes [data-ex-category]");
+ if(!card)return;
+ activeExerciseCategory=card.dataset.exCategory;
+ activeExerciseTopic=null;
+ activeExercise=null;
+ renderExercises();
+});
 document.addEventListener("DOMContentLoaded",init);
 })();
