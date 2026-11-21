@@ -293,3 +293,27 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .compose-footer{display:flex;justify-content:space-between;padding:7px 3px 0;color:#687b9c;font-size:9px}
 .status-line{padding:0 18px 13px;background:#111c30;color:#7486a5;font-size:9px}
 @media(max-width:480px){.chat{height:390px;padding:17px 13px}.chat-message{max-width:96%}.chat-composer{padding:11px}.chat-compose{flex-direction:row;align-items:flex-end}.chat-compose .send-button{align-self:flex-end}}
+
+/* Transitions fluides à l'envoi et à la réception des messages */
+.chat-message{animation:chatMessageEnter .42s cubic-bezier(.2,.75,.25,1) both;will-change:transform,opacity}
+.chat-message.user{transform-origin:100% 100%}
+.chat-message.assistant{transform-origin:0 100%}
+.chat-message-body{transition:border-color .25s,box-shadow .25s}
+.chat-message.user .chat-message-body{animation:userBubbleGlow .55s ease-out both}
+.chat-message.assistant .chat-message-body{animation:assistantBubbleGlow .65s ease-out both}
+@keyframes chatMessageEnter{
+ 0%{opacity:0;transform:translateY(14px) scale(.975);filter:blur(2px)}
+ 65%{opacity:1;transform:translateY(-2px) scale(1.005);filter:blur(0)}
+ 100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+@keyframes userBubbleGlow{0%{box-shadow:0 0 0 0 #7c9bff00}45%{box-shadow:0 0 0 4px #7c9bff18,0 9px 26px #050b1640}100%{box-shadow:0 7px 20px #050b1625}}
+@keyframes assistantBubbleGlow{0%{box-shadow:0 0 0 0 #9a8aff00}45%{box-shadow:0 0 0 4px #9a8aff20,0 9px 26px #050b1640}100%{box-shadow:0 7px 20px #050b1625}}
+.chat-typing{animation:chatMessageEnter .32s cubic-bezier(.2,.75,.25,1) both}
+.chat-typing .chat-message-body{animation:typingGlow 1.8s ease-in-out infinite}
+@keyframes typingGlow{0%,100%{border-color:#30405d}50%{border-color:#7770c2}}
+.chat-composer.is-sending .chat-compose{border-color:#7770d0;box-shadow:0 0 0 3px #8278ed20,0 0 24px #8278ed18}
+.chat-composer.is-sending .send-button{filter:saturate(.8);transform:scale(.94)}
+.send-button:active{transform:scale(.9)}
+@media(prefers-reduced-motion:reduce){
+ .chat-message,.chat-message-body,.chat-typing .chat-message-body,.chat-composer.is-sending .chat-compose,.send-button{animation:none!important;transition:none!important;transform:none!important;filter:none!important}
+}
