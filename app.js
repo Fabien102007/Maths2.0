@@ -253,7 +253,7 @@ const LABS={
  injectivity:{label:"Valeur x",min:0.25,max:2.5,step:0.05,value:1.4,caption:"Pour x² sur ℝ, x et −x ont la même image : la fonction n'est pas injective.",formula:"\\\\(f(x)=x^2=f(-x),\\quad x\\ne0\\\\)"},
  determinant:{label:"Angle orienté entre les vecteurs",min:0,max:360,step:1,value:55,caption:"L'aire du parallélogramme est la valeur absolue du déterminant des deux vecteurs.",formula:"\\\\(\\det(u,v)=\\|u\\|\\,\\|v\\|\\sin(\\theta)\\\\)"},
  schmidt:{label:"Angle entre v₁ et v₂",min:10,max:170,step:1,value:55,caption:"La projection de v₂ sur v₁ est retirée : le résidu obtenu est orthogonal à v₁.",formula:"\\\\(w_2=v_2-\\frac{\\langle v_2,v_1\\rangle}{\\|v_1\\|^2}v_1,\\quad \\langle w_2,v_1\\rangle=0\\\\)"},
- fourier:{label:"Nombre d'harmoniques",min:1,max:21,step:2,value:5,caption:"La somme des harmoniques impaires approche une onde carrée. Observe les oscillations près des discontinuités.",formula:"\\\\(S_n(x)=\\frac4\\pi\\sum_{k=0}^{n}\\frac{\\sin((2k+1)x)}{2k+1}\\\\)"},
+ fourier:{label:"Nombre d'harmoniques impaires",min:1,max:11,step:1,value:5,caption:"La somme des N premières harmoniques impaires approche une onde carrée. Observe les oscillations près des discontinuités.",formula:"\\\\(S_N(x)=\\frac4\\pi\\sum_{k=0}^{N-1}\\frac{\\sin((2k+1)x)}{2k+1}\\\\)"},
  trig:{label:"Angle θ (degrés)",min:0,max:360,step:1,value:45,caption:"Le point mobile parcourt le cercle unité. Ses coordonnées sont le cosinus et le sinus de l'angle.",formula:"\\\\((\\cos\\theta,\\sin\\theta),\\quad \\cos^2\\theta+\\sin^2\\theta=1\\\\)"},
  eigen:{label:"Valeur propre λ",min:-2,max:4,step:0.1,value:2,caption:"Une direction propre reste stable par l'application : le vecteur est simplement multiplié par λ.",formula:"\\\\(Av=\\lambda v,\\quad v\\ne0\\\\)"},
  surface3d:{label:"Angle de vue",min:-180,max:180,step:1,value:-38,caption:"Explore une surface z=f(x,y). Fais glisser le curseur ou déplace directement la vue à la souris pour observer les reliefs.",formula:"\\\\(z=f(x,y)\\\\)"},
@@ -441,7 +441,7 @@ function drawLab(){
     $("#labLegend").innerHTML='<span style="color:#80b8f4">● Graphe f(x)=x²</span><span style="color:#e0b86d">● A : point de référence</span><span style="color:#54cbb2">● P : point mobile</span><span style="color:#e0b86d">┄ Écart vertical Δy</span>';
     $("#labValue").textContent=x.toFixed(2).replace(".",",");
   }
-  else if(labType==="fourier"){curve(x=>{let s=0;for(let k=1;k<=Math.round(v);k+=2)s+=Math.sin(k*x)/k;return 4/Math.PI*s},-Math.PI,Math.PI,"#80b8f4",3)}
+  else if(labType==="fourier"){const N=Math.max(1,Math.round(v));curve(x=>{let s=0;for(let k=0;k<N;k++){const odd=2*k+1;s+=Math.sin(odd*x)/odd}return 4/Math.PI*s},-Math.PI,Math.PI,"#80b8f4",3);ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText(N+" harmonique"+(N>1?"s":"")+" impaire"+(N>1?"s":""),m.l+10,m.t+18)}
   else if(labType==="eigen"){curve(x=>.55*x,xmin,xmax,"#80b8f4",2);curve(x=>v*x,xmin,xmax,"#e0b86d",3)}
   else if(labType==="determinant"){
     const t=v*Math.PI/180,u=[2,0],len=Number($("#labExtraSlider")?.value||2),w=[len*Math.cos(t),len*Math.sin(t)],cross=u[0]*w[1]-u[1]*w[0],area=Math.abs(cross);
