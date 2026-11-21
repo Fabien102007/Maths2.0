@@ -4,7 +4,7 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 const KEY="maths4_studio_v1";
 const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,diagnostic:null});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
-let activeTopic=null,activeCourseCategory=null,activeExercise=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
+let activeTopic=null,activeCourseCategory=null,activeExercise=null,activeExerciseCategory=null,activeExerciseTopic=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 let progressSyncTimer=null;
 const save=()=>{state.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();if(window.Maths2Account?.sync){clearTimeout(progressSyncTimer);progressSyncTimer=setTimeout(()=>window.Maths2Account.sync(),1200);}};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -163,14 +163,27 @@ function renderTopic(id){
  $("#topicExercise").onclick=()=>{go("exercises");openExercise(t.exerciseId)};$("#topicReview").onclick=()=>scheduleReview(id,1);typeset($("#courseDetail"));
 }
 function renderExercises(){
- const q=$("#exerciseSearch").value.toLowerCase(),cat=$("#exerciseCategory").value,diff=$("#exerciseDifficulty").value;
- const list=EXERCISES.filter(e=>(!q||(e.title+" "+e.question).toLowerCase().includes(q))&&(cat==="all"||e.category===cat)&&(diff==="all"||e.difficulty===diff));
+ const q=$("#exerciseSearch").value.toLowerCase(),diff=$("#exerciseDifficulty").value;
+ const themes=$("#exerciseThemes"),topicsView=$("#exerciseTopicsView"),detail=$("#exerciseWorkspace");
+ const topicCards=TOPICS.filter(t=>t.category===activeExerciseCategory);
+ const showTopics=!!activeExerciseCategory;
+ themes.hidden=showTopics;topicsView.hidden=!showTopics;
+ if(!showTopics){$("#exerciseTopicList").innerHTML="";detail.hidden=true;return;}
+ $("#exerciseTopicList").innerHTML=topicCards.map(t=>{
+  const count=EXERCISES.filter(e=>e.topic===t.id).length,solved=EXERCISES.filter(e=>e.topic===t.id&&state.solved.includes(e.id)).length;
+  return `<button class="course-item ${activeExerciseTopic===t.id?"selected":""}" data-ex-topic="${t.id}"><span class="course-symbol">${t.category==="Analyse"?"∫":"∑"}</span><span><b>${esc(t.title)}</b><small>${esc(t.level)} · ${count} exercice(s) · ${solved} réussi(s)</small></span><i>→</i></button>`;
+ }).join("")||'<p class="subtle">Aucun chapitre disponible.</p>';
+ $$("[data-ex-topic]").forEach(b=>b.onclick=()=>{activeExerciseTopic=b.dataset.exTopic;activeExercise=null;renderExercises()});
+ if(!activeExerciseTopic){detail.hidden=true;return;}
+ detail.hidden=false;$("#exerciseTopicHeading").textContent=topic(activeExerciseTopic)?.title||"Exercices";
+ const list=EXERCISES.filter(e=>e.topic===activeExerciseTopic&&(!q||(e.title+" "+e.question).toLowerCase().includes(q))&&(diff==="all"||e.difficulty===diff));
  $("#exerciseList").innerHTML=list.map(e=>`<button class="exercise-item ${activeExercise===e.id?"selected":""}" data-ex="${e.id}"><span class="difficulty ${e.difficulty.toLowerCase()}">${e.difficulty}</span><b>${esc(e.title)}</b><small>${esc(topic(e.topic)?.title||"")}</small><i>${state.solved.includes(e.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucun exercice correspondant.</p>';
  $(".exercise-layout").classList.toggle("exercise-open",!!activeExercise);
-  $$("#exerciseList [data-ex]").forEach(b=>b.onclick=()=>openExercise(b.dataset.ex));
- if(activeExercise&&EXERCISES.some(e=>e.id===activeExercise))renderExercise(activeExercise);
+ $$("#exerciseList [data-ex]").forEach(b=>b.onclick=()=>openExercise(b.dataset.ex));
+ if(activeExercise&&EXERCISES.some(e=>e.id===activeExercise&&e.topic===activeExerciseTopic))renderExercise(activeExercise);
+ else if(!activeExercise)$("#exerciseDetail").innerHTML='<div class="empty-state"><span>⌘</span><h3>Choisis un exercice</h3><p>Sélectionne un exercice dans la liste pour commencer.</p></div>';
 }
-function openExercise(id){activeExercise=id;renderExercises()}
+function openExercise(id){const e=EXERCISES.find(x=>x.id===id);if(e){activeExerciseCategory=e.category;activeExerciseTopic=e.topic;activeExercise=id;}renderExercises()}
 function renderExercise(id){
  const e=EXERCISES.find(x=>x.id===id);if(!e)return;
  $("#exerciseDetail").innerHTML=`<button class="exercise-back" id="exerciseBack" type="button">← Tous les exercices</button><div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${exerciseRichText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…">${esc(state.drafts?.[id]||"")}</textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
@@ -238,7 +251,7 @@ const LABS={
  integral:{label:"Borne supérieure b",min:0.3,max:2.8,step:0.05,value:1.8,caption:"La zone colorée représente l'intégrale de x² entre 0 et b.",formula:"\\\\(\\int_0^b x^2\\,dx=\\frac{b^3}{3}\\\\)"},
  taylor:{label:"Ordre du développement",min:0,max:8,step:1,value:4,caption:"Compare exp(x) à son polynôme de Taylor. L'approximation s'améliore près de 0 quand l'ordre augmente.",formula:"\\\\(e^x=\\sum_{k=0}^{n}\\frac{x^k}{k!}+o(x^n)\\\\)"},
  injectivity:{label:"Valeur x",min:0.25,max:2.5,step:0.05,value:1.4,caption:"Pour x² sur ℝ, x et −x ont la même image : la fonction n'est pas injective.",formula:"\\\\(f(x)=x^2=f(-x),\\quad x\\ne0\\\\)"},
- determinant:{label:"Angle entre les vecteurs",min:10,max:170,step:1,value:55,caption:"L'aire du parallélogramme est la valeur absolue du déterminant des deux vecteurs.",formula:"\\\\(\\det(u,v)=\\|u\\|\\,\\|v\\|\\sin(\\theta)\\\\)"},
+ determinant:{label:"Angle orienté entre les vecteurs",min:0,max:360,step:1,value:55,caption:"L'aire du parallélogramme est la valeur absolue du déterminant des deux vecteurs.",formula:"\\\\(\\det(u,v)=\\|u\\|\\,\\|v\\|\\sin(\\theta)\\\\)"},
  schmidt:{label:"Angle entre v₁ et v₂",min:10,max:170,step:1,value:55,caption:"La projection de v₂ sur v₁ est retirée : le résidu obtenu est orthogonal à v₁.",formula:"\\\\(w_2=v_2-\\frac{\\langle v_2,v_1\\rangle}{\\|v_1\\|^2}v_1,\\quad \\langle w_2,v_1\\rangle=0\\\\)"},
  fourier:{label:"Nombre d'harmoniques",min:1,max:21,step:2,value:5,caption:"La somme des harmoniques impaires approche une onde carrée. Observe les oscillations près des discontinuités.",formula:"\\\\(S_n(x)=\\frac4\\pi\\sum_{k=0}^{n}\\frac{\\sin((2k+1)x)}{2k+1}\\\\)"},
  trig:{label:"Angle θ (degrés)",min:0,max:360,step:1,value:45,caption:"Le point mobile parcourt le cercle unité. Ses coordonnées sont le cosinus et le sinus de l'angle.",formula:"\\\\((\\cos\\theta,\\sin\\theta),\\quad \\cos^2\\theta+\\sin^2\\theta=1\\\\)"},
@@ -270,9 +283,25 @@ function renderLabGuide(){
  $("#labSteps").innerHTML=g.steps.map((step,i)=>'<div class="lab-step"><span>'+(i+1)+'</span><p>'+step.replace(/^\d+ · /,"")+'</p></div>').join("");
  typeset($("#labLearning"));
 }
+function renderLabExtras(){
+ const host=$("#labExtraControls");if(!host)return;
+ if(labType==="integral"){
+  host.innerHTML='<div class="lab-extra-head"><b>Précision de l’approximation</b><span id="labExtraValue">20 rectangles</span></div><input id="labExtraSlider" type="range" min="2" max="100" step="1" value="20"><p>Augmente le nombre de subdivisions pour observer la convergence de la somme de Riemann.</p>';
+  $("#labExtraSlider").oninput=()=>{$("#labExtraValue").textContent=$("#labExtraSlider").value+" rectangles";drawLab()};
+ }else if(labType==="trig"){
+  const angles=[0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330,360];
+  host.innerHTML='<div class="lab-extra-head"><b>Angles remarquables</b><span>Accès direct</span></div><div class="lab-angle-presets">'+angles.map(a=>`<button type="button" data-angle="${a}">${a}°</button>`).join("")+'</div><div class="lab-trig-values" id="labTrigValues"></div>';
+  $("[data-angle]").forEach(b=>b.onclick=()=>{$("#labSlider").value=b.dataset.angle;drawLab()});
+ }else if(labType==="determinant"){
+  host.innerHTML='<div class="lab-extra-head"><b>Norme du second vecteur</b><span id="labExtraValue">2,0</span></div><input id="labExtraSlider" type="range" min="0.5" max="3" step="0.1" value="2"><p>Le déterminant dépend de la longueur des deux vecteurs et de leur angle.</p>';
+  $("#labExtraSlider").oninput=()=>{$("#labExtraValue").textContent=Number($("#labExtraSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:1});drawLab()};
+ }else if(labType==="fourier"){
+  host.innerHTML='<div class="lab-extra-head"><b>Lecture du signal</b><span>Harmoniques impaires</span></div><p>Les oscillations près des discontinuités illustrent le phénomène de Gibbs.</p>';
+ }else host.innerHTML="";
+}
 function labSetup(){
  const cfg=LABS[labType],slider=$("#labSlider");
- $("#surfaceFunctionWrap").hidden=labType!=="surface3d";$("#labAnimate").hidden=labType!=="complex3d";
+ $("#surfaceFunctionWrap").hidden=labType!=="surface3d";$("#labAnimate").hidden=labType!=="complex3d";renderLabExtras();
  if(labType!=="complex3d")stopComplexAnimation();
  $("#labSliderLabel").textContent=cfg.label;slider.min=cfg.min;slider.max=cfg.max;slider.step=cfg.step;slider.value=cfg.value;
  if(labType==="surface3d"){labRotationY=Number(cfg.value)*Math.PI/180;updateSurfaceMeta()}
@@ -327,6 +356,7 @@ function drawLab(){
  if(labType==="sequence"){xmin=0;xmax=Math.round(+$("#labSlider").value)+1;ymin=.75;ymax=2.15}
  else if(labType==="derivative"){xmin=-2.5;xmax=2.5;ymin=-1;ymax=6.5}
  else if(labType==="integral"){xmin=0;xmax=3.1;ymin=0;ymax=9}
+ else if(labType==="determinant"){xmin=-1;xmax=5.2;ymin=-3.5;ymax=3.5}
  else if(labType==="trig"){xmin=-1.5;xmax=1.5;ymin=-1.5;ymax=1.5}
  else if(labType==="limit"||labType==="continuity"){xmin=-0.5;xmax=2.5;ymin=-0.6;ymax=5.4}
  else{xmin=-3;xmax=3;ymin=-3;ymax=3}
@@ -355,16 +385,25 @@ function drawLab(){
  }else{
   const v=+$("#labSlider").value;
   if(labType==="integral"){
-    const b=v,N=14,dx=b/N,area=b*b*b/3;
-    for(let k=0;k<N;k++){const x0=k*dx,x1=(k+1)*dx,mid=(x0+x1)/2,height=mid*mid;ctx.fillStyle=k%2?"rgba(235,177,91,.22)":"rgba(235,177,91,.32)";ctx.fillRect(X(x0),Y(height),Math.max(1,X(x1)-X(x0)),Y(0)-Y(height));ctx.strokeStyle="rgba(235,177,91,.72)";ctx.lineWidth=1;ctx.strokeRect(X(x0),Y(height),X(x1)-X(x0),Y(0)-Y(height))}
+    const b=v,N=Math.max(2,Math.round(Number($("#labExtraSlider")?.value||20))),dx=b/N,area=b*b*b/3;let riemann=0;
+    for(let k=0;k<N;k++){const x0=k*dx,x1=(k+1)*dx,mid=(x0+x1)/2,height=mid*mid;riemann+=height*dx;ctx.fillStyle=k%2?"rgba(235,177,91,.20)":"rgba(235,177,91,.34)";ctx.fillRect(X(x0),Y(height),Math.max(1,X(x1)-X(x0)),Y(0)-Y(height));ctx.strokeStyle="rgba(235,177,91,.72)";ctx.lineWidth=1;ctx.strokeRect(X(x0),Y(height),X(x1)-X(x0),Y(0)-Y(height))}
     ctx.beginPath();ctx.moveTo(X(0),Y(0));for(let k=0;k<=400;k++){const x=b*k/400;ctx.lineTo(X(x),Y(x*x))}ctx.lineTo(X(b),Y(0));ctx.closePath();
     const grad=ctx.createLinearGradient(0,Y(b*b),0,Y(0));grad.addColorStop(0,"rgba(76,145,235,.28)");grad.addColorStop(1,"rgba(76,145,235,.08)");ctx.fillStyle=grad;ctx.fill();
     curve(x=>x*x,0,3.02,"#80b8f4",3.5);segment(b,0,b,b*b,"#e0b86d",2,[6,4]);point(b,b*b,"#e0b86d",6);point(b,0,"#e0b86d",4);
-    ctx.fillStyle="#e8edf5";ctx.font="bold 14px system-ui";ctx.textAlign="left";ctx.fillText("A(b) = b³/3 ≈ "+area.toFixed(2).replace(".",","),m.l+12,m.t+19);
+    ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText("Intégrale = "+area.toFixed(4).replace(".",","),m.l+12,m.t+18);ctx.fillStyle="#e0b86d";ctx.font="12px system-ui";ctx.fillText("Riemann = "+riemann.toFixed(4).replace(".",",")+" · erreur = "+Math.abs(area-riemann).toFixed(4).replace(".",","),m.l+12,m.t+37);$("#labExtraValue").textContent=N+" rectangles";
     ctx.fillStyle="#f0c77c";ctx.font="bold 12px system-ui";ctx.fillText("b = "+b.toFixed(2).replace(".",","),X(b)+8,Y(0)+18);
-    $("#labLegend").innerHTML='<span style="color:#80b8f4">● f(x)=x² et aire exacte</span><span style="color:#e0b86d">▧ Rectangles : somme de Riemann</span><span style="color:#e0b86d">┆ Borne b</span>';
+    $("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe f(x)=x²</span><span style="color:#e0b86d">▧ Somme de Riemann (points milieux)</span><span style="color:#54cbb2">● Aire exacte</span>';
    }
-  else if(labType==="trig"){const theta=v*Math.PI/180,cx=X(0),cy=Y(0),rx=Math.abs(X(1)-X(0)),ry=Math.abs(Y(1)-Y(0));ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.strokeStyle="#526a8a";ctx.lineWidth=2;ctx.stroke();segment(0,0,Math.cos(theta),0,"#80b8f4",2,[4,4]);segment(Math.cos(theta),0,Math.cos(theta),Math.sin(theta),"#e0b86d",2,[4,4]);segment(0,0,Math.cos(theta),Math.sin(theta),"#54cbb2",3);point(Math.cos(theta),Math.sin(theta),"#54cbb2",6);ctx.fillStyle="#e8edf5";ctx.font="12px system-ui";ctx.textAlign="left";ctx.fillText("("+Math.cos(theta).toFixed(2)+", "+Math.sin(theta).toFixed(2)+")",X(Math.cos(theta))+(Math.cos(theta)>=0?9:-75),Y(Math.sin(theta))-10);$("#labLegend").innerHTML='<span style="color:#54cbb2">● Point (cos θ, sin θ)</span><span style="color:#80b8f4">┆ cos θ</span><span style="color:#e0b86d">┆ sin θ</span>'}
+  else if(labType==="trig"){
+   const theta=v*Math.PI/180,c=Math.cos(theta),sn=Math.sin(theta),cx=X(0),cy=Y(0),r=Math.abs(X(1)-X(0));
+   ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle="#526a8a";ctx.lineWidth=2;ctx.stroke();
+   ctx.beginPath();ctx.arc(cx,cy,r*.28,-theta,0);ctx.strokeStyle="#f0c77c";ctx.lineWidth=2;ctx.stroke();
+   segment(0,0,c,0,"#80b8f4",2,[4,4]);segment(c,0,c,sn,"#e0b86d",2,[4,4]);segment(0,0,c,sn,"#54cbb2",3);point(c,sn,"#54cbb2",6);
+   ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText("θ = "+v+"°",m.l+10,m.t+18);ctx.font="12px system-ui";ctx.fillText("cos θ = "+c.toFixed(4),m.l+10,m.t+39);ctx.fillText("sin θ = "+sn.toFixed(4),m.l+10,m.t+57);
+   const exact={0:["1","0"],30:["√3/2","1/2"],45:["√2/2","√2/2"],60:["1/2","√3/2"],90:["0","1"],120:["−1/2","√3/2"],135:["−√2/2","√2/2"],150:["−√3/2","1/2"],180:["−1","0"],210:["−√3/2","−1/2"],225:["−√2/2","−√2/2"],240:["−1/2","−√3/2"],270:["0","−1"],300:["1/2","−√3/2"],315:["√2/2","−√2/2"],330:["√3/2","−1/2"],360:["1","0"]};
+   const angle=((v%360)+360)%360,exactValues=exact[angle];$("#labTrigValues").innerHTML=exactValues?'<b>Valeurs exactes :</b> cos θ = '+exactValues[0]+' · sin θ = '+exactValues[1]:'<b>Valeurs remarquables :</b> angle non remarquable — valeurs décimales affichées.';
+   $("#labLegend").innerHTML='<span style="color:#54cbb2">● Point mobile</span><span style="color:#80b8f4">┆ cos θ : abscisse</span><span style="color:#e0b86d">┆ sin θ : ordonnée</span>';
+  }
   else if(labType==="taylor"){const n=Math.round(v);curve(Math.exp,xmin,xmax,"#80b8f4",3);curve(x=>{let s=0,p=1,f=1;for(let k=0;k<=n;k++){if(k){p*=x;f*=k}s+=p/f}return s},xmin,xmax,"#e0b86d",2.5)}
   else if(labType==="injectivity"){curve(x=>x*x,-2.5,2.5,"#80b8f4",3);point(v,v*v,"#80b8f4");point(-v,v*v,"#e0b86d")}
   else if(labType==="limit"){
@@ -403,7 +442,16 @@ function drawLab(){
   }
   else if(labType==="fourier"){curve(x=>{let s=0;for(let k=1;k<=Math.round(v);k+=2)s+=Math.sin(k*x)/k;return 4/Math.PI*s},-Math.PI,Math.PI,"#80b8f4",3)}
   else if(labType==="eigen"){curve(x=>.55*x,xmin,xmax,"#80b8f4",2);curve(x=>v*x,xmin,xmax,"#e0b86d",3)}
-  else if(labType==="determinant"){const t=v*Math.PI/180;segment(0,0,2.1,0,"#80b8f4",3);segment(0,0,2.1*Math.cos(t),2.1*Math.sin(t),"#e0b86d",3)}
+  else if(labType==="determinant"){
+    const t=v*Math.PI/180,u=[2,0],len=Number($("#labExtraSlider")?.value||2),w=[len*Math.cos(t),len*Math.sin(t)],cross=u[0]*w[1]-u[1]*w[0],area=Math.abs(cross);
+    ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(u[0]),Y(u[1]));ctx.lineTo(X(u[0]+w[0]),Y(u[1]+w[1]));ctx.lineTo(X(w[0]),Y(w[1]));ctx.closePath();ctx.fillStyle="rgba(84,203,178,.20)";ctx.fill();ctx.strokeStyle="#54cbb2";ctx.lineWidth=2;ctx.stroke();
+    segment(0,0,u[0],u[1],"#80b8f4",4);segment(0,0,w[0],w[1],"#e0b86d",4);segment(u[0],u[1],u[0]+w[0],u[1]+w[1],"#80b8f466",1.5,[5,4]);segment(w[0],w[1],u[0]+w[0],u[1]+w[1],"#e0b86d66",1.5,[5,4]);
+    point(u[0],u[1],"#80b8f4",5);point(w[0],w[1],"#e0b86d",5);
+    ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText("det(u,v) = "+cross.toFixed(3).replace(".",","),m.l+10,m.t+18);ctx.fillText("Aire = |det| = "+area.toFixed(3).replace(".",","),m.l+10,m.t+38);
+    ctx.fillStyle="#80b8f4";ctx.fillText("u",X(u[0])+7,Y(u[1])-8);ctx.fillStyle="#e0b86d";ctx.fillText("v",X(w[0])+7,Y(w[1])-8);
+    $("#labExtraValue").textContent=len.toLocaleString("fr-FR",{maximumFractionDigits:1});
+    $("#labLegend").innerHTML='<span style="color:#80b8f4">→ u : premier vecteur</span><span style="color:#e0b86d">→ v : second vecteur</span><span style="color:#54cbb2">▧ Parallélogramme : aire |det(u,v)|</span>';
+   }
    else if(labType==="schmidt"){
     const theta=v*Math.PI/180,base=-Math.PI/7,v1=[2.05*Math.cos(base),2.05*Math.sin(base)],v2=[2.55*Math.cos(base+theta),2.55*Math.sin(base+theta)];
     const coeff=(v2[0]*v1[0]+v2[1]*v1[1])/(v1[0]*v1[0]+v1[1]*v1[1]),p=[coeff*v1[0],coeff*v1[1]],w=[v2[0]-p[0],v2[1]-p[1]];
@@ -415,7 +463,7 @@ function drawLab(){
     $("#labLegend").innerHTML='<span style="color:#80b8f4">→ v₁ : direction initiale</span><span style="color:#f2a45b">→ v₂ : vecteur à décomposer</span><span style="color:#e0b86d">→ projection parallèle</span><span style="color:#54c99b">→ w₂ : composante orthogonale</span>';
    }
   else curve(x=>x,xmin,xmax,"#80b8f4",3);
-  if(!["integral","schmidt","trig","limit","continuity"].includes(labType))$("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
+  if(!["integral","schmidt","trig","determinant","limit","continuity"].includes(labType))$("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
  }
  typeset($("#labLegend"));$("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
 }
@@ -449,7 +497,11 @@ function init(){
  };
  $("#courseSearch").addEventListener("input",()=>{activeTopic=null;renderCourses()});
  $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeTopic=null;renderCourses()}));
- $("#courseBackThemes").onclick=()=>{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses()};["exerciseSearch","exerciseCategory","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
+ $("#courseBackThemes").onclick=()=>{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses()};
+ $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseTopic=null;activeExercise=null;renderExercises()};
+ $("#exerciseThemes [data-ex-category]").forEach(b=>b.addEventListener("click",()=>{activeExerciseCategory=b.dataset.exCategory;activeExerciseTopic=null;activeExercise=null;renderExercises()}));
+ $("#exerciseTopicBack").onclick=()=>{activeExerciseTopic=null;activeExercise=null;renderExercises()};
+ ["exerciseSearch","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
  $("#clearChat").onclick=()=>{chatHistory=[];$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};

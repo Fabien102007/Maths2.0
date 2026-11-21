@@ -214,3 +214,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .subscription-card .btn:disabled{opacity:.65;cursor:not-allowed}
 .subscription-note{font-size:10px;color:#a4b2c8;line-height:1.6;margin:12px 0 0}
 @media(max-width:650px){.subscription-grid{grid-template-columns:1fr}.subscription-card ul{min-height:0}.account-dialog{max-height:94vh;padding:20px}}
+
+#exerciseTopicsView[hidden],#exerciseThemes[hidden],#exerciseWorkspace[hidden]{display:none!important}
+#exerciseWorkspace{min-width:0}
+#exerciseWorkspace .filters{display:flex;gap:10px;margin:14px 0}
+#exerciseWorkspace .filters input{flex:1;min-width:0}
+.exercise-topic-heading{font:750 23px Manrope,sans-serif;margin:10px 0;color:#eef3ff}
+#exerciseTopicList{max-height:calc(100vh - 220px);overflow:auto}
+@media(max-width:800px){#exerciseWorkspace .filters{flex-wrap:wrap}#exerciseWorkspace .filters input{flex-basis:100%}}
+.lab-extra-controls{margin-top:15px;padding:14px 16px;border:1px solid rgba(117,145,190,.2);border-radius:13px;background:rgba(8,18,32,.65)}
+.lab-extra-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:9px;color:#dce8fa;font-size:12px}
+.lab-extra-head span{color:#9cc8fa;font:700 12px 'DM Mono',monospace}
+.lab-extra-controls input[type=range]{width:100%;accent-color:#83b5ec}
+.lab-extra-controls p{margin:8px 0 0;color:#aabbd1;font-size:11px;line-height:1.6}
+.lab-angle-presets{display:flex;flex-wrap:wrap;gap:6px}
+.lab-angle-presets button{border:1px solid #354a68;background:#14243a;color:#dce8fa;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer}
+.lab-angle-presets button:hover{border-color:#8b80f3;background:#25284a}
+.lab-trig-values{margin-top:11px;padding:10px 12px;border-radius:9px;background:#132b38;color:#aee7d6;font-size:12px}
