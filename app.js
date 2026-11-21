@@ -175,6 +175,7 @@ function renderCourses(){
 function openTopic(id){activeTopic=id;renderCourses()}
 function renderTopic(id){
  const t=topic(id);if(!t)return;
+ const linkedExercise=EXERCISES.find(e=>e.topic===id);
  const level=courseLevelOf(t);
  const visualByTopic={limits:"limit",continuity:"continuity",derivative:"derivative",integrals:"integral",basis:"schmidt",matrices:"determinant",eigenvalues:"eigen","term-sequences":"sequence","term-functions":"derivative","term-complex":"complex3d"};
  const visual=visualByTopic[id]||null;
@@ -182,7 +183,7 @@ function renderTopic(id){
  const methods=(t.methods||[]).map(x=>`<li>${x}</li>`).join("");
  const errors=(t.commonErrors||[]).map(x=>`<li>${x}</li>`).join("");
  $("#courseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(t.category)} · ${esc(level)}</span>${mastered(id)?'<span class="mastered-label">✓ Maîtrisée</span>':''}</div><h2>${esc(t.title)}</h2><p class="lead">${esc(t.summary)}</p><p class="course-meta">${esc(t.chapter||t.category)} · ${esc(level)} · ${EXERCISES.filter(e=>e.topic===id).length} exercice(s)</p><h3>Définitions essentielles</h3>${t.definitions.map(d=>`<div class="definition"><b>${d[0]}</b><p>${d[1]}</p></div>`).join("")}<h3>Propriétés à connaître</h3><ul class="property-list">${t.properties.map(p=>`<li>${p}</li>`).join("")}</ul>${theorems?'<h3>Théorèmes et démonstrations</h3>'+theorems:''}<h3>Exemple détaillé</h3><div class="example-box">${t.example}</div>${methods?'<h3>Méthode de travail</h3><ul class="property-list">'+methods+'</ul>':''}${errors?'<h3>Erreurs classiques à éviter</h3><ul class="common-errors">'+errors+'</ul>':''}<div class="detail-actions"><button class="btn primary" id="topicExercise">S'entraîner sur cette notion →</button><button class="btn ghost" id="topicReview">Ajouter aux révisions</button>${visual?'<button class="btn ghost" id="topicVisual">Explorer visuellement →</button>':""}</div>`;
- $("#topicExercise").onclick=()=>{go("exercises");openExercise(t.exerciseId)};$("#topicReview").onclick=()=>scheduleReview(id,1);if(visual)$("#topicVisual").onclick=()=>{labType=visual;$("#labType").value=visual;go("visuals")};typeset($("#courseDetail"));
+ $("#topicExercise").onclick=()=>{if(linkedExercise){go("exercises");openExercise(linkedExercise.id)}else toast("Aucun exercice n’est encore associé à cette notion.")};$("#topicReview").onclick=()=>scheduleReview(id,1);if(visual)$("#topicVisual").onclick=()=>{labType=visual;$("#labType").value=visual;go("visuals")};typeset($("#courseDetail"));
 }
 function exerciseLevelOf(e){return e.level||courseLevelOf(topic(e.topic)||{});}
 function renderExercises(){
