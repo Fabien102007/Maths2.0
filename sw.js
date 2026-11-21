@@ -1,5 +1,5 @@
-const CACHE = "maths2-runtime-v41";
-const CORE = ["./", "./index.html", "./app.html", "./landing.html", "./style.css", "./app.js", "./account.js", "./config.js", "./data.js", "./curriculum.js", "./account.js", "./privacy.html", "./legal.html", "./manifest.webmanifest", "./assets/icon.svg"];
+const CACHE = "maths2-runtime-v42";
+const CORE = ["./", "./index.html", "./app.html", "./landing.html", "./style.css", "./app.js", "./account.js", "./config.js", "./data.js", "./curriculum.js", "./privacy.html", "./legal.html", "./manifest.webmanifest", "./assets/icon.svg"];
 
 self.addEventListener("install", event => {
   self.skipWaiting();
