@@ -1,55 +1,57 @@
 # Maths2.0 — Learning Studio
 
-## Présentation publique
-- `landing.html` est la page de présentation destinée aux visiteurs venant des réseaux sociaux.
-- Elle présente les parcours lycée / L1, les fonctionnalités existantes et les quatre animations Manim.
-- La bêta est gratuite ; l'offre Premium et ses tarifs affichés sont indicatifs et aucun paiement n'est activé.
+## Présentation
+Maths2.0 est une application web progressive (PWA) en français pour apprendre, pratiquer et visualiser les mathématiques du lycée à l'université.
 
+- La racine du site (\`index.html\`) présente le produit.
+- \`app.html\` ouvre directement l'espace de travail.
+- \`landing.html\` est la copie de la page de présentation.
+- Le manifeste PWA ouvre l'espace de travail lorsqu'un utilisateur lance l'application installée.
 
-Maths2.0 est une application web progressive (PWA) en français, publiée sur GitHub Pages. Cette version est une bêta pédagogique : elle vise à structurer l'apprentissage des mathématiques, l'entraînement et la mémorisation.
+## Contenu pédagogique actuel
+- **26 notions** réparties en Analyse et Algèbre, du lycée à L2 et avec des prolongements d'approfondissement.
+- **117 exercices** classés par thème et difficulté, avec énoncés, indices et corrections affichées en étapes.
+- **64 flashcards** pour le rappel actif.
+- **14 visualisations interactives** : suites, limites, continuité, dérivation, intégrales, développements limités, injectivité, déterminants, Gram–Schmidt, Fourier, trigonométrie, valeurs propres, surfaces 3D et exponentielle complexe.
+- **4 vidéos Manim** : formule d'Euler, tangente et dérivée, série de Fourier et intégrale de Riemann.
+- Parcours de révision espacée, suivi de progression, sauvegarde locale, import et export JSON, tuteur IA facultatif.
+
+Les corrections sont structurées dans l'interface à partir des réponses rédigées ; leur exactitude mathématique et leur niveau de détail doivent encore faire l'objet d'une relecture pédagogique indépendante avant une commercialisation.
+
+## Navigation et expérience
+- Les cours sont organisés par domaine, niveau et notion.
+- Chaque fiche de cours distingue définitions, propriétés, théorèmes/démonstrations, exemple, méthodes et erreurs classiques.
+- Les prérequis permettent de naviguer directement vers les notions nécessaires.
+- Les exercices proposent deux indices ou plus et une correction découpée en étapes.
+- Les niveaux Terminale, L1, L2 et approfondissement sont accessibles dans les sélecteurs lorsqu'ils contiennent du contenu.
 
 ## Déploiement GitHub Pages
-1. Le dépôt doit publier la branche principale à la racine.
-2. Tous les fichiers du dépôt doivent rester accessibles à la racine, notamment `data.js`, `curriculum.js`, `app.js`, `style.css` et `sw.js`.
-3. Après un déploiement, effectuer un rechargement forcé (Ctrl+F5). Le service worker utilise une version de cache dédiée et vérifie le réseau avant de servir les fichiers.
-
-## Fonctionnalités pédagogiques
-- 20 chapitres regroupés par domaine : lycée, L1 et L2 (les intitulés « Prépa » trop généraux ont été retirés).
-- 91 exercices avec filtres par thème et difficulté, indices et corrections enrichies.
-- Parcours initial avec 10 questions diagnostiques et recommandations tenant compte des résultats, des notions fragiles et des prérequis.
-- Sauvegarde locale des démarches saisies dans les exercices.
-- Export et import d’un fichier JSON pour sauvegarder ou transférer manuellement la progression entre appareils.
-- Validation d'une notion après plusieurs réussites autonomes consécutives.
-- Révisions espacées dont les intervalles progressent selon la qualité du rappel.
-- 20 flashcards environ, avec retournement animé.
-- 14 expériences visuelles interactives : convergence, limites, continuité, dérivation, intégrales, développements limités, Fourier, trigonométrie, injectivité, déterminants, Gram–Schmidt, valeurs propres, surfaces 3D et exponentielle complexe en hélice.
-- Installation PWA et cache hors ligne des ressources essentielles.
-
-## Navigation et pédagogie
-- Bibliothèque des cours en trois temps : choix Analyse / Algèbre, sélection du chapitre, puis affichage du cours.
-- Visualisations de limite et de continuité recentrées sur les notions de voisinage, de limite et de contrôle de Δx / Δy.
-- Les 30 exercices complémentaires disposent désormais de corrections en étapes distinctes.
+1. Publier la branche principale à la racine du dépôt.
+2. Conserver à la racine les ressources \`data.js\`, \`curriculum.js\`, \`app.js\`, \`style.css\`, \`config.js\` et \`sw.js\`.
+3. Après déploiement, recharger avec Ctrl+F5 si une ancienne version reste en cache.
+4. Vérifier le workflow GitHub Actions et tester les parcours sur ordinateur et mobile.
 
 ## Comptes, synchronisation et paiements
-- Interface de compte et pont Supabase Auth préparés, désactivés tant que les paramètres du projet ne sont pas renseignés.
-- Synchronisation de progression préparée via Supabase et règles RLS.
-- Cloudflare Worker préparé pour Stripe Checkout, portail client, webhooks et retours bêta.
-- Voir `backend/README.md` pour le déploiement. Aucun compte ni paiement n'est actif tant que les services ne sont pas configurés et déployés.
+L'interface de compte et le pont Supabase/Cloudflare sont préparés dans le dépôt, mais les comptes et la synchronisation restent désactivés dans \`config.js\`. Aucun paiement ni abonnement n'est actif. Les offres et tarifs visibles sont des propositions, pas une vente disponible.
+
+Ne jamais placer une clé service-role Supabase, une clé secrète Stripe ou un secret webhook dans le code client ou dans le dépôt.
 
 ## Données et confidentialité
-La progression, les tentatives, les révisions et les brouillons sont stockés dans le navigateur via `localStorage`. Ils ne sont pas synchronisés entre appareils et peuvent être perdus si le stockage du navigateur est effacé.
+La progression, les tentatives, les révisions et les brouillons sont stockés dans le navigateur via \`localStorage\`. Ils ne sont pas synchronisés entre appareils et peuvent être perdus si le stockage du navigateur est effacé.
 
-Le tuteur IA existant n'a pas été retravaillé dans cette mise à jour. Lorsqu'il est utilisé, les messages et images sont transmis au Worker Cloudflare configuré. La politique de confidentialité décrit les flux connus et les points qui restent à préciser à partir de la configuration réelle du Worker et du fournisseur IA.
+Le tuteur IA transmet les messages et, le cas échéant, les images au Worker Cloudflare configuré. Le fournisseur de modèle, les durées de conservation et les modalités de traitement doivent être confirmés dans la configuration réelle et dans les conditions des prestataires.
 
 Consulter :
 - [Politique de confidentialité](privacy.html)
 - [Mentions légales](legal.html)
 
-## Limites à résoudre avant commercialisation
-- Tester chaque parcours dans les navigateurs et sur les appareils cibles.
-- Faire relire et valider l'intégralité des cours, exercices, solutions et visualisations par un enseignant ou un spécialiste.
-- Compléter les mentions légales et la politique de confidentialité avec l'identité de l'éditeur, ses coordonnées et les informations exactes sur les sous-traitants.
-- Mettre en place une infrastructure de comptes et de synchronisation uniquement si elle devient nécessaire.
-- Définir les conditions commerciales, le support utilisateur et le dispositif de paiement avant toute offre payante.
+## Conditions à satisfaire avant commercialisation
+- Tester chaque parcours et chaque bouton dans les navigateurs et appareils cibles.
+- Faire relire les cours, exercices, corrections et animations par un enseignant ou un spécialiste.
+- Vérifier les quatre fichiers vidéo avec ffprobe (résolution, fréquence d'images, durée, poids) avant toute mention de qualité 4K/60 FPS.
+- Compléter les mentions légales, la politique de confidentialité, les coordonnées de contact et les informations relatives aux sous-traitants.
+- Définir le support utilisateur, les conditions d'utilisation et les modalités de traitement des demandes de suppression.
+- Configurer et tester comptes/synchronisation si ces fonctions sont proposées au lancement.
+- Définir les offres et le paiement seulement après validation du produit et de ses obligations.
 
-Cette version ne comporte pas encore de compte utilisateur, de paiement intégré, ni de synchronisation cloud de la progression.
+Cette version est une bêta avancée. Le déploiement technique ne vaut pas validation pédagogique, juridique ou commerciale.
