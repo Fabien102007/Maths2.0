@@ -2,7 +2,7 @@
 "use strict";
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const KEY="maths4_studio_v1";
-const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,diagnostic:null});
+const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
 let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 let progressSyncTimer=null;
@@ -98,7 +98,7 @@ const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
 const mastered=id=>state.attempts[id]?.independent>=2 && state.attempts[id]?.lastScore>=0.8;
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
-function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",path:"Mon parcours",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="path")renderPath();if(view==="progress")renderProgress();if(view==="visuals")drawVisuals();if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
+function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals")drawVisuals();if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
 function renderDashboard(){
  const count=TOPICS.filter(t=>mastered(t.id)).length,solved=state.solved.length,due=dueTopics().length,pct=Math.round(100*count/TOPICS.length);
  $("#statMastered").textContent=count+"/"+TOPICS.length;$("#masteryRate").textContent=pct+" %";$("#statSolved").textContent=solved;$("#statDue").textContent=due;$("#statSessions").textContent=state.sessions;$("#streak").textContent=state.streak;
@@ -316,7 +316,7 @@ const LABS={
  injectivity:{label:"Valeur x",min:0.25,max:2.5,step:0.05,value:1.4,caption:"Pour x² sur ℝ, x et −x ont la même image : la fonction n'est pas injective.",formula:"\\\\(f(x)=x^2=f(-x),\\quad x\\ne0\\\\)"},
  determinant:{label:"Angle orienté entre les vecteurs",min:0,max:360,step:1,value:55,caption:"L'aire du parallélogramme est la valeur absolue du déterminant des deux vecteurs.",formula:"\\\\(\\det(u,v)=\\|u\\|\\,\\|v\\|\\sin(\\theta)\\\\)"},
  schmidt:{label:"Angle entre v₁ et v₂",min:10,max:170,step:1,value:55,caption:"La projection de v₂ sur v₁ est retirée : le résidu obtenu est orthogonal à v₁.",formula:"\\\\(w_2=v_2-\\frac{\\langle v_2,v_1\\rangle}{\\|v_1\\|^2}v_1,\\quad \\langle w_2,v_1\\rangle=0\\\\)"},
- fourier:{label:"Nombre d'harmoniques impaires",min:1,max:11,step:1,value:5,caption:"La somme des N premières harmoniques impaires approche une onde carrée. Observe les oscillations près des discontinuités.",formula:"\\\\(S_N(x)=\\frac4\\pi\\sum_{k=0}^{N-1}\\frac{\\sin((2k+1)x)}{2k+1}\\\\)"},
+ fourier:{label:"Nombre d'harmoniques impaires",min:1,max:21,step:1,value:7,caption:"La somme des N premières harmoniques impaires approche une onde carrée. Observe les oscillations autour des sauts du signal carré.",formula:"\\\\(S_N(x)=\\frac4\\pi\\sum_{k=0}^{N-1}\\frac{\\sin((2k+1)x)}{2k+1}\\\\)"},
  trig:{label:"Angle θ (degrés)",min:0,max:360,step:1,value:45,caption:"Le point mobile parcourt le cercle unité. Ses coordonnées sont le cosinus et le sinus de l'angle.",formula:"\\\\((\\cos\\theta,\\sin\\theta),\\quad \\cos^2\\theta+\\sin^2\\theta=1\\\\)"},
  eigen:{label:"Valeur propre λ",min:-2,max:4,step:0.1,value:2,caption:"Une direction propre reste stable par l'application : le vecteur est simplement multiplié par λ.",formula:"\\\\(Av=\\lambda v,\\quad v\\ne0\\\\)"},
  surface3d:{label:"Angle de vue",min:-180,max:180,step:1,value:-38,caption:"Explore une surface z=f(x,y). Fais glisser le curseur ou déplace directement la vue à la souris pour observer les reliefs.",formula:"\\\\(z=f(x,y)\\\\)"},
@@ -337,7 +337,7 @@ function renderLabGuide(){
   taylor:{title:"Comparer exp et son polynôme",text:"La courbe bleue représente exp(x), la courbe dorée son polynôme de Taylor à l'ordre choisi. L'approximation est particulièrement bonne près de 0.",question:"Que se passe-t-il lorsque l'ordre du développement augmente ?",steps:["Compare les deux courbes près de 0.","Augmente l'ordre avec le curseur.","Observe l'amélioration locale de l'approximation."]},
   injectivity:{title:"Détecter une fonction non injective",text:"Pour f(x)=x², deux antécédents opposés ont la même image.",question:"Pourquoi x et −x ont-ils la même image ?",steps:["Observe les deux points symétriques.","Compare leurs ordonnées.","Une même image pour deux antécédents distincts empêche l'injectivité."]},
   determinant:{title:"Le déterminant comme aire orientée",text:"Les deux vecteurs forment un parallélogramme. La valeur absolue du déterminant est son aire.",question:"Que devient l'aire lorsque les vecteurs deviennent presque colinéaires ?",steps:["Fais varier l'angle.","Observe l'ouverture du parallélogramme.","L'aire vaut ||u|| ||v|| |sin θ|."]},
-  fourier:{title:"Reconstruire un signal par Fourier",text:"La somme de sinus harmoniques impairs approche un signal en créneaux.",question:"Pourquoi la courbe se rapproche-t-elle d'un signal carré quand le nombre d'harmoniques augmente ?",steps:["Observe la première harmonique.","Augmente le nombre d'harmoniques.","Repère les oscillations près des discontinuités."]},
+  fourier:{title:"Reconstruire un signal par Fourier",text:"La somme de sinus harmoniques impairs approche un signal carré périodique de période 2π.",question:"Pourquoi la courbe se rapproche-t-elle d'un signal carré quand le nombre d'harmoniques augmente ?",steps:["Observe la première harmonique.","Augmente le nombre d'harmoniques.","Repère le dépassement de Gibbs de part et d’autre des sauts en 0 et ±π."]},
   trig:{title:"Explorer le cercle trigonométrique",text:"Le point mobile reste sur le cercle unité. Ses coordonnées sont cos θ et sin θ.",question:"Pourquoi la somme des carrés des coordonnées vaut-elle toujours 1 ?",steps:["Fais varier θ.","Lis les projections horizontale et verticale.","Utilise cos² θ + sin² θ = 1."]},
   eigen:{title:"Comprendre une direction propre",text:"Une direction propre reste inchangée par l'application : seul le facteur d'échelle varie.",question:"Qu'est-ce qui change lorsque la valeur propre varie : la direction ou la longueur ?",steps:["Compare les deux pentes.","Fais varier λ.","Le vecteur propre conserve sa direction et est multiplié par λ."]},
  };
@@ -460,7 +460,7 @@ function drawLab(){
     $("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe f(x)=x²</span><span style="color:#e0b86d">▧ Somme de Riemann (points milieux)</span><span style="color:#54cbb2">● Aire exacte</span>';
    }
   else if(labType==="trig"){
-   const theta=v*Math.PI/180,c=Math.cos(theta),sn=Math.sin(theta),cx=X(0),cy=Y(0),r=Math.abs(X(1)-X(0));
+   const theta=v*Math.PI/180,clean=n=>Math.abs(n)<1e-10?0:n,c=clean(Math.cos(theta)),sn=clean(Math.sin(theta)),cx=X(0),cy=Y(0),r=Math.abs(X(1)-X(0));
    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle="#526a8a";ctx.lineWidth=2;ctx.stroke();
    ctx.beginPath();ctx.arc(cx,cy,r*.28,0,-theta,true);ctx.strokeStyle="#f0c77c";ctx.lineWidth=2;ctx.stroke();
    segment(0,0,c,0,"#80b8f4",2,[4,4]);segment(c,0,c,sn,"#e0b86d",2,[4,4]);segment(0,0,c,sn,"#54cbb2",3);point(c,sn,"#54cbb2",6);
@@ -471,8 +471,8 @@ function drawLab(){
    ctx.save();ctx.font="bold 11px system-ui";ctx.fillStyle="#dce8fa";ctx.textAlign="center";
    Object.entries(labels).forEach(([deg,label])=>{const a=Number(deg)*Math.PI/180,rr=1.13;let tx=X(rr*Math.cos(a)),ty=Y(rr*Math.sin(a));if(deg==="0")ctx.textAlign="left";else if(deg==="180")ctx.textAlign="right";else ctx.textAlign="center";ctx.fillText(label,tx,ty+3)});
    ctx.restore();
-   const angle=((v%360)+360)%360,exactValues=exact[angle];$("#labTrigValues").innerHTML=exactValues?'<b>Valeurs exactes :</b> cos θ = '+exactValues[0]+' · sin θ = '+exactValues[1]:'<b>Valeurs remarquables :</b> angle non remarquable — valeurs décimales affichées.';
-   $("#labLegend").innerHTML='<span style="color:#54cbb2">● Point mobile</span><span style="color:#80b8f4">┆ cos θ : abscisse</span><span style="color:#e0b86d">┆ sin θ : ordonnée</span>';
+   const angle=((v%360)+360)%360,exactValues=exact[angle];$("#labTrigValues").innerHTML=(exactValues?'<b>Valeurs exactes :</b> cos θ = '+exactValues[0]+' · sin θ = '+exactValues[1]:'<b>Valeurs approchées :</b> angle non remarquable')+'<br><span>Point M = ('+c.toFixed(4)+'; '+sn.toFixed(4)+') · θ = '+v+'°</span>';
+   $("#labLegend").innerHTML='<span style="color:#54cbb2">● M = (cos θ, sin θ)</span><span style="color:#80b8f4">┆ Projection horizontale : cos θ</span><span style="color:#e0b86d">┆ Projection verticale : sin θ</span>';
   }
   else if(labType==="taylor"){const n=Math.round(v);curve(Math.exp,xmin,xmax,"#80b8f4",3);curve(x=>{let s=0,p=1,f=1;for(let k=0;k<=n;k++){if(k){p*=x;f*=k}s+=p/f}return s},xmin,xmax,"#e0b86d",2.5)}
   else if(labType==="injectivity"){curve(x=>x*x,-2.5,2.5,"#80b8f4",3);point(v,v*v,"#80b8f4");point(-v,v*v,"#e0b86d")}
@@ -513,11 +513,11 @@ function drawLab(){
   else if(labType==="fourier"){
    const N=Math.max(1,Math.round(v)),sum=x=>{let s=0;for(let k=0;k<N;k++){const odd=2*k+1;s+=Math.sin(odd*x)/odd}return 4/Math.PI*s};
    // Le signal carré de référence est discontinu en ±π ; l'intervalle complet rend visibles les oscillations de Gibbs.
-   ctx.save();ctx.setLineDash([7,5]);ctx.strokeStyle="#e0b86d";ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(X(-Math.PI),Y(-1));ctx.lineTo(X(0),Y(-1));ctx.moveTo(X(0),Y(1));ctx.lineTo(X(Math.PI),Y(1));ctx.stroke();ctx.restore();
+   ctx.save();ctx.setLineDash([7,5]);ctx.strokeStyle="#e0b86d";ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(X(-Math.PI),Y(-1));ctx.lineTo(X(0),Y(-1));ctx.moveTo(X(0),Y(1));ctx.lineTo(X(Math.PI),Y(1));[-Math.PI,0,Math.PI].forEach(x=>{ctx.moveTo(X(x),Y(-1.42));ctx.lineTo(X(x),Y(1.42))});ctx.stroke();ctx.restore();
    curve(sum,-Math.PI,Math.PI,"#80b8f4",3);
    ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText(N+" harmonique"+(N>1?"s":"")+" impaire"+(N>1?"s":""),m.l+10,m.t+18);
    ctx.fillStyle="#e0b86d";ctx.font="11px system-ui";ctx.fillText("Signal carré de référence",m.l+10,m.t+36);
-   $("#labLegend").innerHTML='<span style="color:#80b8f4">━ Somme de Fourier</span><span style="color:#e0b86d">┄ Signal carré de référence</span><span style="color:#9eb2c9">Oscillations de Gibbs près de ±π</span>';
+   $("#labLegend").innerHTML='<span style="color:#80b8f4">━ Somme de Fourier</span><span style="color:#e0b86d">┄ Signal carré de référence</span><span style="color:#9eb2c9">Phénomène de Gibbs près de 0 et ±π</span>';
   }
   else if(labType==="eigen"){curve(x=>.55*x,xmin,xmax,"#80b8f4",2);curve(x=>v*x,xmin,xmax,"#e0b86d",3)}
   else if(labType==="determinant"){
@@ -568,7 +568,7 @@ function init(){
    if(!incoming||typeof incoming!=="object"||Array.isArray(incoming)||!Array.isArray(incoming.solved)||!incoming.attempts||typeof incoming.attempts!=="object"||!incoming.reviews||typeof incoming.reviews!=="object")throw new Error("Format de sauvegarde non reconnu.");
    if(!confirm("Importer cette sauvegarde et remplacer la progression actuellement enregistrée sur cet appareil ?"))return;
    state={...blank(),...incoming,drafts:incoming.drafts&&typeof incoming.drafts==="object"?incoming.drafts:{}};
-   localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();renderPath();renderCourses();renderExercises();renderProgress();go("home");
+   localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();renderCourses();renderExercises();renderProgress();go("home");
    toast("Progression restaurée.");
   }catch(err){toast("Import impossible : "+err.message)}
   finally{e.target.value=""}
@@ -588,7 +588,7 @@ function init(){
  const labCanvas=$("#labCanvas");labCanvas.addEventListener("pointerdown",e=>{if(labType!=="surface3d"&&labType!=="complex3d")return;labDragging={x:e.clientX,y:e.clientY};labCanvas.setPointerCapture(e.pointerId)});labCanvas.addEventListener("pointermove",e=>{if(!labDragging)return;const dx=e.clientX-labDragging.x,dy=e.clientY-labDragging.y;labDragging={x:e.clientX,y:e.clientY};labRotationY+=dx*.009;labRotationX=Math.max(.15,Math.min(1.45,labRotationX+dy*.007));if(labType==="surface3d")$("#labSlider").value=Math.round(labRotationY*180/Math.PI);drawLab()});["pointerup","pointercancel","lostpointercapture"].forEach(ev=>labCanvas.addEventListener(ev,()=>{labDragging=null}));
  window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
  if(state.lastDay!==new Date().toDateString()){const yesterday=new Date(Date.now()-86400000).toDateString();state.streak=state.lastDay===yesterday?state.streak+1:1;state.lastDay=new Date().toDateString();save()}
- renderDashboard();renderPath();renderCourses();renderExercises();renderProgress();typeset(document.body);
+ renderDashboard();renderCourses();renderExercises();renderProgress();typeset(document.body);
  if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>reg.update()).catch(()=>{});}
 }
 // Délégation globale pour les cartes Analyse / Algèbre.
