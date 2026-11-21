@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Maths2.0 : cours, exercices corrigés, flashcards et animations mathématiques pour le lycée et la L1.">
+  <meta property="og:title" content="Maths2.0 — Comprendre les maths autrement">
+  <meta property="og:description" content="Apprends, entraîne-toi et visualise les mathématiques du lycée à l'université.">
+  <title>Maths2.0 — Comprendre les maths autrement</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <style>
+    :root{color-scheme:dark;--bg:#0b1020;--panel:#121d31;--line:#293a58;--text:#edf2ff;--muted:#a6b4cc;--violet:#9b91ff;--cyan:#58c9e8;--green:#70dcb2}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 75% 0,#20234b 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.65 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+    a{color:inherit;text-decoration:none}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}.top{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff14}.brand{display:flex;gap:11px;align-items:center;font-weight:800;letter-spacing:-.4px}.mark{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:linear-gradient(135deg,#8879f4,#39b8d8);font:28px Georgia}.brand small{display:block;font-size:9px;letter-spacing:1.7px;color:#94a4c2}.top nav{display:flex;align-items:center;gap:24px;color:#bac6db;font-size:12px}.top nav a:hover{color:white}.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;border-radius:11px;font-weight:750;font-size:12px;transition:.2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}.primary{background:linear-gradient(110deg,#8174f1,#42afd2);color:white;box-shadow:0 10px 28px #635bd533}.secondary{border:1px solid #3a4b69;background:#17243a;color:#e4ebfa}.hero{padding:86px 0 72px;display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:55px}.eyebrow{color:#b8afff;font-size:10px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}.hero h1{font-size:clamp(42px,6vw,68px);line-height:1.04;letter-spacing:-3px;margin:18px 0}.hero h1 em{font-style:normal;background:linear-gradient(90deg,#aaa0ff,#5bd5e8);color:transparent;background-clip:text}.hero p{max-width:570px;color:var(--muted);font-size:16px;line-height:1.8}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.proof{display:flex;gap:18px;flex-wrap:wrap;margin-top:27px;color:#9baac4;font-size:11px}.proof b{color:#e5eaff}.visual{position:relative;padding:14px;border:1px solid #39466b;border-radius:23px;background:linear-gradient(145deg,#1a2540,#101a2c);box-shadow:0 30px 80px #0006;transform:rotate(1.5deg)}.visual video{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#080e1a;border-radius:14px}.visual-label{display:flex;justify-content:space-between;gap:10px;padding:13px 5px 3px;font-size:11px;color:#bac7df}.visual-label b{color:#e8edff}.float-card{position:absolute;right:-22px;bottom:44px;padding:12px 16px;border:1px solid #4d5d80;border-radius:13px;background:#1a2941;box-shadow:0 15px 35px #0005;font-size:11px}.float-card strong{display:block;color:#9ce8c9;font-size:17px}
+    .strip{border-block:1px solid #ffffff14;background:#ffffff05}.strip .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:20px 0}.metric{text-align:center}.metric b{display:block;font-size:21px}.metric span{color:#9eacc4;font-size:10px}
+    section{padding:76px 0}.section-head{max-width:680px;margin-bottom:30px}.section-head h2{font-size:clamp(28px,4vw,39px);line-height:1.15;letter-spacing:-1.2px;margin:10px 0}.section-head p{color:var(--muted);margin:0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card{padding:23px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#16243a,#111b2e)}.ico{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#302e58;color:#c1baff;font-size:20px;margin-bottom:16px}.card h3{font-size:16px;margin:0 0 7px}.card p{color:var(--muted);font-size:12px;line-height:1.75;margin:0}.audiences{display:grid;grid-template-columns:1fr 1fr;gap:16px}.audience{padding:27px;border:1px solid #3b4b6a;border-radius:18px;background:radial-gradient(circle at 100% 0,#30325c 0,transparent 45%),#142137}.audience:nth-child(2){background:radial-gradient(circle at 100% 0,#17465a 0,transparent 45%),#142137}.audience h3{font-size:22px;margin:9px 0}.audience p{color:var(--muted);font-size:13px}.audience ul{padding-left:18px;color:#c8d4e8;font-size:12px;line-height:2}
+    .videos{display:grid;grid-template-columns:repeat(2,1fr);gap:17px}.video-card{overflow:hidden;border:1px solid var(--line);border-radius:17px;background:#111c30}.video-card video{display:block;width:100%;aspect-ratio:16/9;background:#080e1a;object-fit:cover}.video-copy{padding:16px 18px}.video-copy small{color:#a99fff;font-size:9px;font-weight:800;letter-spacing:1px}.video-copy h3{font-size:15px;margin:5px 0}.video-copy p{font-size:11px;color:var(--muted);margin:0}
+    .pricing{display:grid;grid-template-columns:1fr 1fr;gap:16px}.price-card{padding:27px;border:1px solid var(--line);border-radius:18px;background:#121e32}.price-card.featured{border-color:#756bd0;background:linear-gradient(145deg,#24264b,#142139)}.price-card h3{font-size:19px;margin:5px 0}.price{font-size:34px;font-weight:850;letter-spacing:-1.4px}.price small{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:0}.price-card p,.price-card li{font-size:12px;color:var(--muted)}.price-card ul{padding-left:18px;line-height:2}.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#302e58;color:#c5beff;font-size:9px;font-weight:800;letter-spacing:1px}.note{font-size:10px;color:#9aa9c2;margin-top:16px}
+    .cta{padding:38px;border:1px solid #46527d;border-radius:22px;background:radial-gradient(circle at 80% 0,#39346e,transparent 42%),linear-gradient(110deg,#192641,#17233b);display:flex;align-items:center;justify-content:space-between;gap:25px}.cta h2{font-size:27px;line-height:1.2;margin:7px 0}.cta p{color:var(--muted);font-size:12px;margin:0}.faq{display:grid;grid-template-columns:1fr 1fr;gap:12px}.faq details{padding:17px 19px;border:1px solid var(--line);border-radius:13px;background:#121e32}.faq summary{cursor:pointer;font-size:12px;font-weight:750}.faq p{font-size:11px;color:var(--muted);line-height:1.7;margin:10px 0 0}.footer{padding:30px 0;border-top:1px solid #ffffff14;color:#8594af;font-size:10px}.footer .wrap{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.footer a{color:#b7b0ff}
+    @media(max-width:800px){.hero{grid-template-columns:1fr;padding:60px 0;gap:35px}.visual{max-width:600px}.float-card{right:0}.grid{grid-template-columns:1fr 1fr}.strip .wrap{grid-template-columns:1fr 1fr}.top nav a:not(.btn){display:none}.top nav{gap:8px}.cta{align-items:flex-start;flex-direction:column}}
+    @media(max-width:560px){.wrap{width:min(100% - 28px,1120px)}.hero h1{font-size:43px;letter-spacing:-2px}.grid,.audiences,.videos,.pricing,.faq{grid-template-columns:1fr}section{padding:55px 0}.card{padding:19px}.cta{padding:25px}.top{height:66px}.top nav .btn{padding:10px 12px;font-size:10px}}
+  </style>
+</head>
+<body>
+<header class="top wrap">
+  <a class="brand" href="landing.html"><span class="mark">∑</span><span>Maths2.0<small>COMPRENDRE · S'ENTRAÎNER · PROGRESSER</small></span></a>
+  <nav><a href="#methode">La méthode</a><a href="#animations">Animations</a><a href="#offres">Offres</a><a class="btn secondary" href="index.html">Ouvrir l'application →</a></nav>
+</header>
+<main>
+  <div class="wrap hero">
+    <div>
+      <div class="eyebrow">Du lycée à l'université</div>
+      <h1>Les maths ne se devinent pas.<br><em>Elles se comprennent.</em></h1>
+      <p>Cours structurés, exercices corrigés, flashcards et visualisations interactives : un espace de travail pour comprendre les notions et construire un raisonnement solide.</p>
+      <div class="actions"><a class="btn primary" href="index.html">Essayer gratuitement <span>→</span></a><a class="btn secondary" href="#animations">Voir les animations</a></div>
+      <div class="proof"><span>✓ <b>Accès gratuit</b> à la bêta</span><span>✓ Lycée & L1</span><span>✓ Sans carte bancaire</span></div>
+    </div>
+    <div class="visual">
+      <video controls muted playsinline preload="none" poster="assets/icon.svg">
+        <source src="assets/manim/euler_helix.mp4" type="video/mp4">
+      </video>
+      <div class="visual-label"><b>Exponentielle complexe</b><span>Animation Manim · 4K</span></div>
+      <div class="float-card"><strong>4 animations</strong>pour rendre les idées visibles</div>
+    </div>
+  </div>
+  <div class="strip"><div class="wrap">
+    <div class="metric"><b>20</b><span>chapitres structurés</span></div>
+    <div class="metric"><b>91</b><span>exercices annoncés dans la bêta</span></div>
+    <div class="metric"><b>14</b><span>expériences visuelles interactives</span></div>
+    <div class="metric"><b>4</b><span>animations mathématiques Manim</span></div>
+  </div></div>
+  <section id="methode" class="wrap">
+    <div class="section-head"><div class="eyebrow">Une méthode complète</div><h2>Un seul espace pour passer de la compréhension à la maîtrise.</h2><p>Maths2.0 rassemble les outils essentiels du travail mathématique, sans remplacer le raisonnement personnel.</p></div>
+    <div class="grid">
+      <article class="card"><div class="ico">▤</div><h3>Comprendre les cours</h3><p>Des chapitres organisés, des définitions, propriétés et exemples pour construire des bases solides.</p></article>
+      <article class="card"><div class="ico">⌘</div><h3>S'entraîner vraiment</h3><p>Des exercices classés par thème et difficulté, avec indices et corrections détaillées pour progresser.</p></article>
+      <article class="card"><div class="ico">⌁</div><h3>Voir les concepts</h3><p>Des visualisations interactives et animations pour donner une intuition géométrique aux notions abstraites.</p></article>
+      <article class="card"><div class="ico">⟳</div><h3>Réviser au bon moment</h3><p>Des flashcards et des révisions espacées pour consolider les connaissances dans la durée.</p></article>
+      <article class="card"><div class="ico">✳</div><h3>Être accompagné par l'IA</h3><p>Un tuteur facultatif pour poser des questions, demander des indices et examiner une démarche.</p></article>
+      <article class="card"><div class="ico">▥</div><h3>Suivre sa progression</h3><p>Un tableau de bord local, des notions maîtrisées et des sauvegardes exportables pour garder le fil.</p></article>
+    </div>
+  </section>
+  <section class="wrap">
+    <div class="section-head"><div class="eyebrow">Deux parcours</div><h2>Du lycée aux premières années du supérieur.</h2><p>Choisis ton niveau et travaille les notions qui correspondent à ton programme.</p></div>
+    <div class="audiences">
+      <article class="audience"><span class="tag">LYCÉE</span><h3>Terminale spécialité maths</h3><p>Consolider les fondamentaux, s'entraîner et préparer les évaluations.</p><ul><li>Révisions par chapitre</li><li>Exercices progressifs</li><li>Visualisations de notions clés</li></ul></article>
+      <article class="audience"><span class="tag">SUPÉRIEUR</span><h3>L1 mathématiques</h3><p>Approfondir l'analyse et l'algèbre, comprendre les démonstrations et s'exercer avec rigueur.</p><ul><li>Analyse et algèbre</li><li>Définitions et propriétés</li><li>Exercices et raisonnements</li></ul></article>
+    </div>
+  </section>
+  <section id="animations" class="wrap">
+    <div class="section-head"><div class="eyebrow">La signature Maths2.0</div><h2>Les mathématiques prennent vie.</h2><p>Quatre animations Manim conçues pour montrer les étapes d'une idée, et pas seulement afficher une formule.</p></div>
+    <div class="videos">
+      <article class="video-card"><video controls playsinline preload="none"><source src="assets/manim/derivative_tangent.mp4" type="video/mp4"></video><div class="video-copy"><small>ANALYSE · DÉRIVATION</small><h3>De la sécante à la tangente</h3><p>Observer le taux d'accroissement lorsque le point mobile se rapproche du point fixe.</p></div></article>
+      <article class="video-card"><video controls playsinline preload="none"><source src="assets/manim/fourier_square.mp4" type="video/mp4"></video><div class="video-copy"><small>ANALYSE · SÉRIES</small><h3>La naissance d'un signal</h3><p>Voir les harmoniques s'additionner pour approcher un signal carré.</p></div></article>
+      <article class="video-card"><video controls playsinline preload="none"><source src="assets/manim/riemann_integral.mp4" type="video/mp4"></video><div class="video-copy"><small>ANALYSE · INTÉGRATION</small><h3>Approcher une aire</h3><p>Les rectangles de Riemann se raffinent pour approcher l'intégrale.</p></div></article>
+      <article class="video-card"><video controls playsinline preload="none"><source src="assets/manim/euler_helix.mp4" type="video/mp4"></video><div class="video-copy"><small>ALGÈBRE · COMPLEXES</small><h3>L'exponentielle complexe</h3><p>Relier rotation, cercle trigonométrique et parties réelle et imaginaire.</p></div></article>
+    </div>
+  </section>
+  <section id="offres" class="wrap">
+    <div class="section-head"><div class="eyebrow">Les offres</div><h2>Commence gratuitement. La suite se construit avec les utilisateurs.</h2><p>La bêta actuelle est accessible gratuitement. L'offre payante est en préparation et ne sera ouverte qu'après validation du produit et des conditions de vente.</p></div>
+    <div class="pricing">
+      <article class="price-card"><span class="tag">DISPONIBLE</span><h3>Gratuit · Bêta</h3><div class="price">0 € <small>/ aujourd'hui</small></div><p>Découvrir Maths2.0 et tester les outils pédagogiques disponibles.</p><ul><li>Cours et chapitres disponibles</li><li>Exercices, indices et corrections</li><li>Flashcards et progression locale</li><li>Visualisations interactives</li><li>Animations Manim</li></ul><a class="btn primary" href="index.html">Essayer l'application →</a></article>
+      <article class="price-card featured"><span class="tag">EN PRÉPARATION</span><h3>Premium</h3><div class="price">5,99 € <small>/ mois envisagés</small></div><p>Un tarif indicatif soumis aux retours des premiers utilisateurs. Aucun abonnement n'est actuellement vendu.</p><ul><li>Parcours de progression avancés</li><li>Collections d'exercices enrichies</li><li>Accompagnement pédagogique approfondi</li><li>Synchronisation multi-appareils</li></ul><p class="note">Le prix annuel envisagé est de 49,99 €. Les fonctionnalités et tarifs définitifs seront annoncés avant toute souscription.</p></article>
+    </div>
+  </section>
+  <section class="wrap">
+    <div class="cta"><div><div class="eyebrow">Découvrir la bêta</div><h2>Travaille les maths avec méthode.</h2><p>Teste l'application, explore les animations et aide à construire la prochaine version.</p></div><a class="btn primary" href="index.html">Ouvrir Maths2.0 →</a></div>
+  </section>
+  <section class="wrap">
+    <div class="section-head"><div class="eyebrow">Questions fréquentes</div><h2>Avant de commencer</h2></div>
+    <div class="faq">
+      <details><summary>Maths2.0 est-il vraiment gratuit ?</summary><p>Oui. La version bêta actuelle est accessible gratuitement. Aucun paiement ni abonnement n'est activé.</p></details>
+      <details><summary>À quels niveaux s'adresse l'application ?</summary><p>La bêta propose des contenus pour le lycée et le supérieur, avec un accent sur la Terminale et la L1. Vérifie le niveau de chaque chapitre dans l'application.</p></details>
+      <details><summary>Ma progression est-elle synchronisée ?</summary><p>Pour l'instant, la progression est enregistrée dans le navigateur utilisé. Tu peux l'exporter pour la sauvegarder ou la transférer manuellement.</p></details>
+      <details><summary>Le tuteur IA est-il obligatoire ?</summary><p>Non. Il est facultatif. Les messages et images envoyés au tuteur sont transmis au service IA ; consulte la politique de confidentialité avant de l'utiliser.</p></details>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="wrap"><span>© Maths2.0 · Apprendre avec exigence, progresser avec méthode.</span><span><a href="index.html">Application</a> · <a href="privacy.html">Confidentialité</a> · <a href="legal.html">Mentions légales</a></span></div></footer>
+</body>
+</html>
