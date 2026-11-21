@@ -341,3 +341,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 /* Renforcer le gras des notions et formules sur les flashcards */
 .flashcard-face strong,.flashcard-face strong *{font-weight:800!important}
+
+/* Contraste des flashcards : contenu principal en blanc franc */
+.flashcard-face strong,.flashcard-face strong *{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 1px 12px rgba(255,255,255,.12)}
+.flashcard-face strong mjx-container,.flashcard-face strong .katex{color:#fff!important}
+.flashcard-face>span{color:#8999b5}
