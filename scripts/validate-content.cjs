@@ -40,6 +40,12 @@ for (const t of topics) {
   }
 }
 
+for (const t of topics) {
+  assert.ok(exercises.some(e => e.topic === t.id), "Aucun exercice associé à la notion : " + t.id);
+}
+assert.ok(exercises.filter(e => e.level === "L2").length >= 5, "Le parcours L2 doit proposer au moins cinq exercices.");
+assert.ok(topics.some(t => t.level === "Prépa") && exercises.some(e => topics.find(t => t.id === e.topic)?.level === "Prépa"), "Le parcours approfondissement doit contenir cours et exercices.");
+
 for (const e of exercises) {
   assert.ok(topicIds.has(e.topic), "Exercice sans notion associée : " + e.id);
   assert.ok(e.title && e.question, "Énoncé incomplet : " + e.id);
