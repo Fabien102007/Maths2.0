@@ -13,7 +13,7 @@
  const close=document.getElementById("accountClose");
  if(!modal||!open)return;
  let client=null,session=null,syncTimer=null;
- const ready=()=>!!(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase?.createClient);
+ const ready=()=>cfg.accountsEnabled===true&&!!(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase?.createClient);
  const message=t=>{if(status)status.textContent=t};
  const show=()=>{modal.hidden=false;document.getElementById("accountEmail")?.focus()};
  const hide=()=>{modal.hidden=true};
