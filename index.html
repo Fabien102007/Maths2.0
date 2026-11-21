@@ -103,9 +103,18 @@ window.__mathJaxReady = new Promise(resolve => {
     </section>
 
     <section class="view" id="view-exercises">
-      <div class="page-intro"><div class="eyebrow">ENTRAÎNEMENT ACTIF</div><h1>Les exercices</h1><p>Travaille la méthode, pas seulement le résultat. Les indices sont progressifs et les corrections détaillées.</p></div>
-      <div class="filters"><input id="exerciseSearch" placeholder="Rechercher un exercice…"><select id="exerciseCategory"><option value="all">Tous les thèmes</option><option>Analyse</option><option>Algèbre</option></select><select id="exerciseDifficulty"><option value="all">Toutes difficultés</option><option>Facile</option><option>Intermédiaire</option><option>Avancé</option></select></div>
-      <div class="exercise-layout"><div class="exercise-list" id="exerciseList"></div><article class="panel exercise-detail" id="exerciseDetail"><div class="empty-state"><span>⌘</span><h3>À toi de jouer</h3><p>Sélectionne un exercice pour commencer.</p></div></article></div>
+      <div class="page-intro"><div class="eyebrow">ENTRAÎNEMENT ACTIF</div><h1>Les exercices</h1><p>Choisis d'abord un domaine, puis un chapitre pour retrouver des exercices organisés et progressifs.</p></div>
+      <div id="exerciseThemes" class="course-themes">
+        <button class="course-theme-card" data-ex-category="Analyse"><span class="course-theme-symbol">∫</span><span><b>Analyse</b><small>Limites, continuité, dérivation, intégration, suites, séries et probabilités…</small></span><i>→</i></button>
+        <button class="course-theme-card" data-ex-category="Algèbre"><span class="course-theme-symbol">∑</span><span><b>Algèbre</b><small>Espaces vectoriels, matrices, déterminants, polynômes, systèmes et géométrie…</small></span><i>→</i></button>
+      </div>
+      <div id="exerciseTopicsView" hidden><button class="course-back" id="exerciseBackThemes">← Analyse et Algèbre</button>
+        <div class="course-layout"><div class="course-list" id="exerciseTopicList"></div><section id="exerciseWorkspace" hidden>
+          <button class="course-back" id="exerciseTopicBack">← Tous les chapitres</button><h2 id="exerciseTopicHeading" class="exercise-topic-heading"></h2>
+          <div class="filters"><input id="exerciseSearch" placeholder="Rechercher dans ce chapitre…"><select id="exerciseDifficulty"><option value="all">Toutes difficultés</option><option>Facile</option><option>Intermédiaire</option><option>Avancé</option></select></div>
+          <div class="exercise-layout"><div class="exercise-list" id="exerciseList"></div><article class="panel exercise-detail" id="exerciseDetail"><div class="empty-state"><span>⌘</span><h3>À toi de jouer</h3><p>Sélectionne un exercice pour commencer.</p></div></article></div>
+        </section></div>
+      </div>
     </section>
 
     <section class="view" id="view-tutor">
@@ -122,7 +131,7 @@ window.__mathJaxReady = new Promise(resolve => {
           <button class="btn primary lab-animate" id="labAnimate" type="button" hidden>▶ Animer</button>
         </div>
         <div class="lab-canvas-wrap"><canvas id="labCanvas" width="1100" height="560" aria-label="Visualisation mathématique interactive"></canvas><div class="lab-legend" id="labLegend"></div></div>
-        <div class="lab-controls"><div class="lab-control-label"><label id="labSliderLabel" for="labSlider">Paramètre</label><strong id="labValue">0,70</strong></div><input type="range" id="labSlider" min="-2" max="2" step="0.05" value="0.7"><p id="labCaption" class="lab-caption"></p></div>
+        <div class="lab-controls"><div class="lab-control-label"><label id="labSliderLabel" for="labSlider">Paramètre</label><strong id="labValue">0,70</strong></div><input type="range" id="labSlider" min="-2" max="2" step="0.05" value="0.7"><p id="labCaption" class="lab-caption"></p><div id="labExtraControls" class="lab-extra-controls"></div></div>
         <div class="lab-formula" id="labFormula"></div>
         <div class="lab-learning panel" id="labLearning" aria-live="polite">
           <div class="eyebrow">POUR COMPRENDRE, PAS SEULEMENT REGARDER</div>
