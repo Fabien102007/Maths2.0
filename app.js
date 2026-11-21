@@ -4,7 +4,7 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 const KEY="maths4_studio_v1";
 const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,diagnostic:null});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
-let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
+let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 let progressSyncTimer=null;
 const save=()=>{state.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();if(window.Maths2Account?.sync){clearTimeout(progressSyncTimer);progressSyncTimer=setTimeout(()=>window.Maths2Account.sync(),1200);}};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -145,7 +145,7 @@ function renderPath(){
  rec.innerHTML=next?`<div class="recommendation"><span class="eyebrow">PROCHAINE NOTION CONSEILLÉE</span><h3>${esc(next.title)}</h3><p>${esc(next.summary)}</p><button class="btn primary" id="startRecommended">Ouvrir le cours →</button><button class="btn ghost" id="startExercise">Faire un exercice</button></div>`:"";
  $("#startRecommended")?.addEventListener("click",()=>{go("courses");openTopic(next.id)});$("#startExercise")?.addEventListener("click",()=>{go("exercises");openExercise(next.exerciseId)});typeset(host);typeset(rec);
 }
-function courseLevelOf(t){return t.level==="Lycée"||t.level==="Terminale"?"Terminale":t.level==="L1"?"L1":t.level||"Autre";}
+function courseLevelOf(t){return t.level==="Lycée"||t.level==="Terminale"?"Terminale":t.level==="L1"||t.level==="Prépa"?"L1":t.level||"Autre";}
 function renderCourses(){
  const q=$("#courseSearch").value.trim().toLowerCase();
  const themes=$("#courseThemes"),topicsView=$("#courseTopicsView"),listHost=$("#courseList"),detail=$("#courseDetail"),back=$("#courseBackThemes");
@@ -174,39 +174,53 @@ function renderCourses(){
 }
 function openTopic(id){activeTopic=id;renderCourses()}
 function renderTopic(id){
- const t=topic(id);if(!t)return;const ex=EXERCISES.find(e=>e.id===t.exerciseId);
- $("#courseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(t.category)} · ${esc(t.level)}</span>${mastered(id)?'<span class="mastered-label">✓ Maîtrisée</span>':''}</div><h2>${esc(t.title)}</h2><p class="lead">${esc(t.summary)}</p><p class="course-meta">${esc(t.chapter||t.category)} · ${esc(t.level)} · ${EXERCISES.filter(e=>e.topic===id).length} exercice(s)</p><h3>Définitions essentielles</h3>${t.definitions.map(d=>`<div class="definition"><b>${d[0]}</b><p>${d[1]}</p></div>`).join("")}<h3>Propriétés à connaître</h3><ul class="property-list">${t.properties.map(p=>`<li>${p}</li>`).join("")}</ul><h3>Exemple détaillé</h3><div class="example-box">${t.example}</div><div class="detail-actions"><button class="btn primary" id="topicExercise">S'entraîner sur cette notion →</button><button class="btn ghost" id="topicReview">Ajouter aux révisions</button></div>`;
+ const t=topic(id);if(!t)return;
+ const level=courseLevelOf(t);
+ const theorems=(t.theorems||[]).map((th,i)=>`<div class="theorem-card"><b>Théorème ${i+1} — ${esc(th.title)}</b><p>${th.statement}</p><details><summary>Voir la démonstration</summary><p>${th.proof}</p></details></div>`).join("");
+ const methods=(t.methods||[]).map(x=>`<li>${x}</li>`).join("");
+ const errors=(t.commonErrors||[]).map(x=>`<li>${x}</li>`).join("");
+ $("#courseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(t.category)} · ${esc(level)}</span>${mastered(id)?'<span class="mastered-label">✓ Maîtrisée</span>':''}</div><h2>${esc(t.title)}</h2><p class="lead">${esc(t.summary)}</p><p class="course-meta">${esc(t.chapter||t.category)} · ${esc(level)} · ${EXERCISES.filter(e=>e.topic===id).length} exercice(s)</p><h3>Définitions essentielles</h3>${t.definitions.map(d=>`<div class="definition"><b>${d[0]}</b><p>${d[1]}</p></div>`).join("")}<h3>Propriétés à connaître</h3><ul class="property-list">${t.properties.map(p=>`<li>${p}</li>`).join("")}</ul>${theorems?'<h3>Théorèmes et démonstrations</h3>'+theorems:''}<h3>Exemple détaillé</h3><div class="example-box">${t.example}</div>${methods?'<h3>Méthode de travail</h3><ul class="property-list">'+methods+'</ul>':''}${errors?'<h3>Erreurs classiques à éviter</h3><ul class="common-errors">'+errors+'</ul>':''}<div class="detail-actions"><button class="btn primary" id="topicExercise">S'entraîner sur cette notion →</button><button class="btn ghost" id="topicReview">Ajouter aux révisions</button></div>`;
  $("#topicExercise").onclick=()=>{go("exercises");openExercise(t.exerciseId)};$("#topicReview").onclick=()=>scheduleReview(id,1);typeset($("#courseDetail"));
 }
+function exerciseLevelOf(e){return e.level||courseLevelOf(topic(e.topic)||{});}
 function renderExercises(){
  const q=$("#exerciseSearch").value.toLowerCase(),diff=activeExerciseDifficulty;
  const themes=$("#exerciseThemes"),topicsView=$("#exerciseTopicsView"),detail=$("#exerciseWorkspace"),levelList=$("#exerciseTopicList");
- const showLevels=!!activeExerciseCategory;
- themes.hidden=showLevels;topicsView.hidden=!showLevels;
- if(!showLevels){levelList.innerHTML="";levelList.hidden=false;detail.hidden=true;topicsView.classList.remove("exercise-level-selected");return;}
- const levels=[
-  {name:"Facile",desc:"Consolider les méthodes et les notions fondamentales",icon:"Ⅰ"},
-  {name:"Intermédiaire",desc:"Combiner plusieurs propriétés et structurer le raisonnement",icon:"Ⅱ"},
-  {name:"Avancé",desc:"Résoudre des problèmes plus exigeants et approfondir",icon:"Ⅲ"}
- ];
- levelList.hidden=!!diff;
- topicsView.classList.toggle("exercise-level-selected",!!diff);
- levelList.innerHTML='<div class="exercise-level-intro"><b>Choisis ton niveau</b><span>'+esc(activeExerciseCategory)+'</span></div>'+levels.map(l=>{
-  const count=EXERCISES.filter(e=>e.category===activeExerciseCategory&&e.difficulty===l.name).length;
-  return `<button type="button" class="course-theme-card exercise-level-card ${diff===l.name?"selected":""}" data-ex-level="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count} exos →</i></button>`;
- }).join("");
- $$("[data-ex-level]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exLevel;activeExercise=null;$("#exerciseSearch").value="";renderExercises()});
- if(!diff){detail.hidden=true;return;}
- detail.hidden=false;
- $("#exerciseTopicHeading").textContent=activeExerciseCategory+" · Niveau "+diff;
- const list=EXERCISES.filter(e=>e.category===activeExerciseCategory&&e.difficulty===diff&&(!q||(e.title+" "+e.question).toLowerCase().includes(q)));
+ const show=!!activeExerciseCategory;
+ themes.hidden=show;topicsView.hidden=!show;
+ if(!show){levelList.innerHTML="";levelList.hidden=false;detail.hidden=true;topicsView.classList.remove("exercise-level-selected");return;}
+ const inCategory=EXERCISES.filter(e=>e.category===activeExerciseCategory);
+ if(!activeExerciseLevel){
+  levelList.hidden=false;detail.hidden=true;topicsView.classList.remove("exercise-level-selected");
+  const levels=[{name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},{name:"L1",desc:"Université · Licence 1",icon:"∑"}];
+  levelList.innerHTML='<div class="exercise-level-intro"><b>Choisis ton niveau d\'études</b><span>'+esc(activeExerciseCategory)+'</span></div>'+levels.map(l=>{
+   const count=inCategory.filter(e=>exerciseLevelOf(e)===l.name).length;
+   return `<button type="button" class="course-theme-card exercise-level-card" data-ex-level="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count?count+" exercices":"Contenu à venir"} →</i></button>`;
+  }).join("");
+  $$("[data-ex-level]").forEach(b=>b.onclick=()=>{activeExerciseLevel=b.dataset.exLevel;activeExerciseDifficulty=null;activeExercise=null;$("#exerciseSearch").value="";renderExercises()});
+  return;
+ }
+ if(!diff){
+  levelList.hidden=false;detail.hidden=true;topicsView.classList.remove("exercise-level-selected");
+  const levels=[{name:"Facile",desc:"Consolider les méthodes et les notions fondamentales",icon:"Ⅰ"},{name:"Intermédiaire",desc:"Combiner plusieurs propriétés et structurer le raisonnement",icon:"Ⅱ"},{name:"Avancé",desc:"Résoudre des problèmes plus exigeants et approfondir",icon:"Ⅲ"}];
+  levelList.innerHTML='<button type="button" class="course-back" data-ex-level-back>← Choisir Terminale / L1</button><div class="exercise-level-intro"><b>Choisis la difficulté</b><span>'+esc(activeExerciseCategory)+' · '+esc(activeExerciseLevel)+'</span></div>'+levels.map(l=>{
+   const count=inCategory.filter(e=>exerciseLevelOf(e)===activeExerciseLevel&&e.difficulty===l.name).length;
+   return `<button type="button" class="course-theme-card exercise-level-card" data-ex-diff="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count} exercices →</i></button>`;
+  }).join("");
+  const back=levelList.querySelector("[data-ex-level-back]");back.onclick=()=>{activeExerciseLevel=null;activeExercise=null;renderExercises()};
+  $$("[data-ex-diff]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exDiff;activeExercise=null;$("#exerciseSearch").value="";renderExercises()});
+  return;
+ }
+ levelList.hidden=true;detail.hidden=false;topicsView.classList.add("exercise-level-selected");
+ $("#exerciseTopicHeading").textContent=activeExerciseCategory+" · "+activeExerciseLevel+" · "+diff;
+ const list=inCategory.filter(e=>exerciseLevelOf(e)===activeExerciseLevel&&e.difficulty===diff&&(!q||(e.title+" "+e.question+" "+(topic(e.topic)?.title||"")).toLowerCase().includes(q)));
  $("#exerciseList").innerHTML=list.map(e=>`<button class="exercise-item ${activeExercise===e.id?"selected":""}" data-ex="${e.id}"><span class="difficulty ${e.difficulty.toLowerCase()}">${e.difficulty}</span><b>${esc(e.title)}</b><small>${esc(topic(e.topic)?.title||"")}</small><i>${state.solved.includes(e.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucun exercice disponible à ce niveau pour le moment.</p>';
  $(".exercise-layout").classList.toggle("exercise-open",!!activeExercise);
  $$("#exerciseList [data-ex]").forEach(b=>b.onclick=()=>openExercise(b.dataset.ex));
- if(activeExercise&&EXERCISES.some(e=>e.id===activeExercise&&e.category===activeExerciseCategory&&e.difficulty===diff))renderExercise(activeExercise);
+ if(activeExercise&&list.some(e=>e.id===activeExercise))renderExercise(activeExercise);
  else if(!activeExercise)$("#exerciseDetail").innerHTML='<div class="empty-state"><span>⌘</span><h3>Choisis un exercice</h3><p>Les exercices de niveau '+esc(diff.toLowerCase())+' apparaissent ici.</p></div>';
 }
-function openExercise(id){const e=EXERCISES.find(x=>x.id===id);if(e){activeExerciseCategory=e.category;activeExerciseDifficulty=e.difficulty;activeExerciseTopic=null;activeExercise=id;}renderExercises()}
+function openExercise(id){const e=EXERCISES.find(x=>x.id===id);if(e){activeExerciseCategory=e.category;activeExerciseLevel=exerciseLevelOf(e);activeExerciseDifficulty=e.difficulty;activeExerciseTopic=null;activeExercise=id;}renderExercises()}
 function renderExercise(id){
  const e=EXERCISES.find(x=>x.id===id);if(!e)return;
  $("#exerciseDetail").innerHTML=`<button class="exercise-back" id="exerciseBack" type="button">← Tous les exercices</button><div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${exerciseRichText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…">${esc(state.drafts?.[id]||"")}</textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
@@ -243,9 +257,9 @@ function renderProgress(){
 function renderReviewStart(){
  const due=dueTopics();$("#reviewCard").innerHTML=`<div class="eyebrow">RÉPÉTITION ESPACÉE</div><h2>${due.length?due.length+" notion(s) à revoir":"Aucune révision en retard"}</h2><p>${due.length?"Essaie de retrouver les idées essentielles avant de retourner chaque carte.":"Tu peux tout de même lancer une session libre pour entretenir tes acquis."}</p><button class="btn primary" id="startReview">Démarrer une session →</button>`;$("#startReview").onclick=startReview;
 }
-function startReview(){reviewQueue=dueTopics().map(t=>t.id);if(!reviewQueue.length)reviewQueue=TOPICS.filter(t=>state.reviews[t.id]).slice(0,5).map(t=>t.id);if(!reviewQueue.length)reviewQueue=TOPICS.slice(0,5).map(t=>t.id);reviewIndex=0;reviewFlipped=false;renderReviewCard()}
+function startReview(){const selected=dueTopics().length?dueTopics():TOPICS.filter(t=>state.reviews[t.id]).slice(0,5).length?TOPICS.filter(t=>state.reviews[t.id]).slice(0,5):TOPICS.slice(0,5);reviewQueue=selected.flatMap(t=>{const n=FLASHCARDS.filter(c=>c.topic===t.id).length;return Array(Math.max(1,n)).fill(t.id)});reviewIndex=0;reviewFlipped=false;renderReviewCard()}
 function renderReviewCard(){
- const id=reviewQueue[reviewIndex],t=topic(id);if(!t){renderReviewStart();return}const card=FLASHCARDS.find(c=>c.topic===id)||{front:t.title,back:t.definitions[0][1]};
+ const id=reviewQueue[reviewIndex],t=topic(id);if(!t){renderReviewStart();return}const occurrence=reviewQueue.slice(0,reviewIndex).filter(x=>x===id).length;const cards=FLASHCARDS.filter(c=>c.topic===id);const card=cards[occurrence%Math.max(1,cards.length)]||{front:t.title,back:t.definitions[0][1]};
  $("#reviewCard").innerHTML=`<div class="review-counter">CARTE ${reviewIndex+1} / ${reviewQueue.length}</div><button class="flashcard" id="flipCard" type="button" aria-label="Retourner la carte"><span class="flashcard-inner"><span class="flashcard-face flashcard-front"><small>RAPPEL ACTIF</small><strong>${card.front}</strong><span>Clique pour retourner la carte</span></span><span class="flashcard-face flashcard-back"><small>RÉPONSE</small><strong>${card.back}</strong><span>Clique pour revoir la question</span></span></span></button><p class="subtle center flashcard-prompt">${reviewFlipped?"Voici la réponse. Évalue ton rappel.":"Essaie de retrouver la réponse avant de retourner la carte."}</p><div class="review-rating" ${reviewFlipped?"":"hidden"}><button data-quality="1">Difficile</button><button data-quality="2">Moyen</button><button data-quality="3">Facile</button></div>`;
  const flip=$("#flipCard");if(reviewFlipped)flip.classList.add("flipped");
  flip.onclick=()=>{reviewFlipped=!reviewFlipped;flip.classList.toggle("flipped",reviewFlipped);$("#reviewCard .review-rating").hidden=!reviewFlipped;$("#reviewCard .flashcard-prompt").textContent=reviewFlipped?"Voici la réponse. Évalue ton rappel.":"Essaie de retrouver la réponse avant de retourner la carte.";typeset($("#reviewCard"))};
@@ -559,7 +573,7 @@ function init(){
  $("#courseSearch").addEventListener("input",()=>{activeTopic=null;activeCourseLevel=null;renderCourses()});
  $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeCourseLevel=null;activeTopic=null;renderCourses()}));
  $("#courseBackThemes").onclick=()=>{if(activeCourseLevel){activeCourseLevel=null;activeTopic=null;}else{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";}renderCourses()};
- $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseDifficulty=null;activeExerciseTopic=null;activeExercise=null;$("#exerciseSearch").value="";$(".exercise-layout").classList.remove("exercise-open");renderExercises()};
+ $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseLevel=null;activeExerciseDifficulty=null;activeExerciseTopic=null;activeExercise=null;$("#exerciseSearch").value="";$(".exercise-layout").classList.remove("exercise-open");renderExercises()};
   // Les catégories sont gérées par délégation globale pour rester actives après les rerendus.
  $("#exerciseTopicBack").onclick=()=>{activeExerciseDifficulty=null;activeExercise=null;$(".exercise-layout").classList.remove("exercise-open");renderExercises()};
  ["exerciseSearch","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
@@ -579,6 +593,7 @@ document.addEventListener("click",event=>{
  const card=event.target.closest("#exerciseThemes [data-ex-category]");
  if(!card)return;
  activeExerciseCategory=card.dataset.exCategory;
+ activeExerciseLevel=null;
  activeExerciseDifficulty=null;
  activeExerciseTopic=null;
  activeExercise=null;
