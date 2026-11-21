@@ -53,8 +53,8 @@ window.__mathJaxReady = new Promise(resolve => {
     <a class="brand" href="#" data-view="home"><span class="brand-mark">∑</span><span><b>Maths2.0</b><small>MATHS WORKSPACE</small></span></a>
     <div class="side-label">ESPACE DE TRAVAIL</div>
     <nav class="nav">
-      <button class="nav-link active" data-view="home"><span>⌂</span> Vue d'ensemble</button>
-      <button class="nav-link" data-view="presentation"><span>✦</span> Découvrir Maths2.0</button>
+      <button class="nav-link" data-view="home"><span>⌂</span> Vue d'ensemble</button>
+      <button class="nav-link active" data-view="presentation"><span>✦</span> Découvrir Maths2.0</button>
       <button class="nav-link" data-view="courses"><span>▤</span> Cours</button>
       <button class="nav-link" data-view="exercises"><span>⌘</span> Exercices</button>
       <button class="nav-link" data-view="tutor"><span>✳</span> Tuteur IA</button>
@@ -76,7 +76,7 @@ window.__mathJaxReady = new Promise(resolve => {
       <div class="top-actions"><button class="account-button" id="accountOpen" type="button">Mon compte</button><span class="streak">✦ <b id="streak">0</b> jour</span><button class="icon-btn" id="exportData" title="Exporter une sauvegarde">⇩</button><label class="icon-btn import-label" for="importData" title="Importer une sauvegarde">⇧</label><input type="file" id="importData" accept="application/json,.json" hidden><button class="icon-btn" id="resetData" title="Réinitialiser la progression">↺</button></div>
     </header>
 
-    <section class="view" id="view-presentation">
+    <section class="view active" id="view-presentation">
       <div class="page-intro"><div class="eyebrow">BIENVENUE DANS MATHS2.0</div><h1>Les maths ne se devinent pas. Elles se comprennent.</h1><p>Cours structurés, exercices corrigés, flashcards et visualisations interactives : découvre tout ce que tu peux faire dans ton espace de travail.</p></div>
       <div class="presentation-hero panel">
         <div><span class="tag">DU LYCÉE À L'UNIVERSITÉ</span><h2>Comprendre. S'entraîner. Progresser.</h2><p>Un environnement de travail conçu pour t'aider à construire un raisonnement mathématique solide, étape après étape.</p><button class="btn primary" type="button" data-go="exercises">Commencer à travailler →</button></div>
@@ -104,7 +104,7 @@ window.__mathJaxReady = new Promise(resolve => {
       <p class="presentation-note">La progression est actuellement enregistrée sur cet appareil. Les comptes, la synchronisation multi-appareils et les paiements ne sont pas encore activés. Le tuteur IA est facultatif ; les messages et images envoyés sont transmis au service IA pour traitement.</p>
     </section>
 
-    <section class="view active" id="view-home">
+    <section class="view" id="view-home">
       <div class="hero">
         <div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> TON ESPACE DE PROGRESSION</div>
           <h1>Comprendre. Raisonner.<br><em>Maîtriser.</em></h1>
