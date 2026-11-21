@@ -91,7 +91,8 @@ const exerciseRichText=value=>{
    return display?"\\["+formula+"\\]":"\\("+formula+"\\)";
   }
   return mathifySegment(esc(part));
- }).join("").replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
+ }).join("").replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>");
+ return html.trim()?`<p>${html.replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ")}</p>`: "");
 };
 
 const topic=id=>TOPICS.find(t=>t.id===id);
