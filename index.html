@@ -45,6 +45,7 @@ window.__mathJaxReady = new Promise(resolve => {
       <button class="nav-link" data-view="exercises"><span>⌘</span> Exercices</button>
       <button class="nav-link" data-view="tutor"><span>✳</span> Tuteur IA</button>
       <button class="nav-link" data-view="visuals"><span>⌁</span> Laboratoire visuel</button>
+      <button class="nav-link" data-view="animations"><span>▶</span> Animations Manim</button>
       <button class="nav-link" data-view="review"><span>⟳</span> Révisions</button>
       <button class="nav-link" data-view="progress"><span>▥</span> Progression</button>
     </nav>
@@ -127,14 +128,6 @@ window.__mathJaxReady = new Promise(resolve => {
         <div class="lab-canvas-wrap"><canvas id="labCanvas" width="1100" height="560" aria-label="Visualisation mathématique interactive"></canvas><div class="lab-legend" id="labLegend"></div></div>
         <div class="lab-controls"><div class="lab-control-label"><label id="labSliderLabel" for="labSlider">Paramètre</label><strong id="labValue">0,70</strong></div><input type="range" id="labSlider" min="-2" max="2" step="0.05" value="0.7"><p id="labCaption" class="lab-caption"></p><div id="labExtraControls" class="lab-extra-controls"></div></div>
         <div class="lab-formula" id="labFormula"></div>
-        <section class="manim-panel" aria-label="Animation mathématique">
-          <div class="manim-stage">
-            <video class="manim-video" controls playsinline preload="metadata" muted loop>
-              <source src="assets/manim/euler_helix.mp4" type="video/mp4">
-            </video>
-          </div>
-          <div class="manim-equations">\(e^{i\theta}=\cos\theta+i\sin\theta\) <span>\(\gamma(t)=(\cos t,\sin t,t)\)</span></div>
-        </section>
         <div class="lab-learning panel" id="labLearning" aria-live="polite">
           <div class="eyebrow">POUR COMPRENDRE, PAS SEULEMENT REGARDER</div>
           <h3 id="labLearningTitle">Ce que tu dois observer</h3>
@@ -147,6 +140,37 @@ window.__mathJaxReady = new Promise(resolve => {
         <article class="panel"><span class="lab-insight-icon">↗</span><h3>Manipule</h3><p>Fais varier un paramètre à la fois pour identifier son effet sur l'objet mathématique.</p></article>
         <article class="panel"><span class="lab-insight-icon">◎</span><h3>Observe</h3><p>Repère les invariants, les limites, les symétries et les changements de comportement.</p></article>
         <article class="panel"><span class="lab-insight-icon">∴</span><h3>Formalise</h3><p>Relie ce que tu vois à une définition, une propriété ou une démonstration.</p></article>
+      </div>
+    </section>
+
+    <section class="view" id="view-animations">
+      <div class="page-intro"><div class="eyebrow">STUDIO VISUEL · MANIM</div><h1>Animations mathématiques</h1><p>Des visualisations cinématiques haute résolution pour rendre visibles les mécanismes derrière les formules. Choisis une expérience, observe, puis relie le mouvement au raisonnement.</p></div>
+      <div class="manim-library-layout">
+        <div class="manim-library-grid">
+          <button class="manim-card active" type="button" data-manim="euler">
+            <span class="manim-card-kicker">ALGÈBRE · NOMBRES COMPLEXES</span><strong>Exponentielle complexe</strong><span class="manim-card-formula">e^{i\theta}=\cos\theta+i\sin\theta</span><small>Du cercle unité à l'hélice : rotation, projections et module constant.</small><i>Explorer l'animation →</i>
+          </button>
+          <button class="manim-card" type="button" data-manim="derivative">
+            <span class="manim-card-kicker">ANALYSE · DÉRIVATION</span><strong>De la sécante à la tangente</strong><span class="manim-card-formula">f'(a)=\lim_{h\to0}\frac{f(a+h)-f(a)}h</span><small>Regarde le taux de variation moyen devenir une pente instantanée.</small><i>Explorer l'animation →</i>
+          </button>
+          <button class="manim-card" type="button" data-manim="fourier">
+            <span class="manim-card-kicker">ANALYSE · SÉRIES</span><strong>La naissance d'un signal</strong><span class="manim-card-formula">S_N(x)=\sum_{n=0}^{N-1}\frac{\sin((2n+1)x)}{2n+1}</span><small>Les harmoniques s'additionnent et reconstruisent progressivement un signal carré.</small><i>Explorer l'animation →</i>
+          </button>
+          <button class="manim-card" type="button" data-manim="integral">
+            <span class="manim-card-kicker">ANALYSE · INTÉGRATION</span><strong>Approcher l'aire</strong><span class="manim-card-formula">\int_0^b x^2\,dx</span><small>Les rectangles de Riemann se raffinent jusqu'à l'aire sous la courbe.</small><i>Explorer l'animation →</i>
+          </button>
+        </div>
+        <article class="manim-viewer panel">
+          <div class="manim-viewer-head"><div><div class="eyebrow" id="manimActiveKicker">ALGÈBRE · NOMBRES COMPLEXES</div><h2 id="manimActiveTitle">Exponentielle complexe</h2></div><span class="manim-quality">4K · 60 FPS</span></div>
+          <div class="manim-stage">
+            <video id="manimVideo" class="manim-video" controls playsinline preload="metadata">
+              <source src="assets/manim/euler_helix.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="manim-viewer-equation" id="manimActiveEquation">\\(e^{i\\theta}=\\cos\\theta+i\\sin\\theta\\)</div>
+          <p class="manim-viewer-description" id="manimActiveDescription">Le mouvement sur le cercle unité donne les parties réelle et imaginaire. L'ajout du temps comme troisième coordonnée transforme la rotation en hélice.</p>
+          <div class="manim-viewer-footer"><span>Animation rendue en 3840 × 2160 · 60 images/s</span><span>Conçue pour observer les étapes, pas seulement le résultat.</span></div>
+        </article>
       </div>
     </section>
 
