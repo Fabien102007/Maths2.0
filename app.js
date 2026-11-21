@@ -164,29 +164,31 @@ function renderTopic(id){
 }
 function renderExercises(){
  const q=$("#exerciseSearch").value.toLowerCase(),diff=activeExerciseDifficulty;
- const themes=$("#exerciseThemes"),topicsView=$("#exerciseTopicsView"),detail=$("#exerciseWorkspace");
+ const themes=$("#exerciseThemes"),topicsView=$("#exerciseTopicsView"),detail=$("#exerciseWorkspace"),levelList=$("#exerciseTopicList");
  const showLevels=!!activeExerciseCategory;
  themes.hidden=showLevels;topicsView.hidden=!showLevels;
- if(!showLevels){$("#exerciseTopicList").innerHTML="";detail.hidden=true;return;}
+ if(!showLevels){levelList.innerHTML="";levelList.hidden=false;detail.hidden=true;topicsView.classList.remove("exercise-level-selected");return;}
  const levels=[
   {name:"Facile",desc:"Consolider les méthodes et les notions fondamentales",icon:"Ⅰ"},
   {name:"Intermédiaire",desc:"Combiner plusieurs propriétés et structurer le raisonnement",icon:"Ⅱ"},
   {name:"Avancé",desc:"Résoudre des problèmes plus exigeants et approfondir",icon:"Ⅲ"}
  ];
- $("#exerciseTopicList").innerHTML='<div class="exercise-level-intro"><b>Choisis ton niveau</b><span>'+esc(activeExerciseCategory)+'</span></div>'+levels.map(l=>{
+ levelList.hidden=!!diff;
+ topicsView.classList.toggle("exercise-level-selected",!!diff);
+ levelList.innerHTML='<div class="exercise-level-intro"><b>Choisis ton niveau</b><span>'+esc(activeExerciseCategory)+'</span></div>'+levels.map(l=>{
   const count=EXERCISES.filter(e=>e.category===activeExerciseCategory&&e.difficulty===l.name).length;
   return `<button type="button" class="course-theme-card exercise-level-card ${diff===l.name?"selected":""}" data-ex-level="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count} exos →</i></button>`;
  }).join("");
- $$("[data-ex-level]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exLevel;activeExercise=null;renderExercises()});
+ $$("[data-ex-level]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exLevel;activeExercise=null;$("#exerciseSearch").value="";renderExercises()});
  if(!diff){detail.hidden=true;return;}
  detail.hidden=false;
- $("#exerciseTopicHeading").textContent="Exercices · "+diff;
+ $("#exerciseTopicHeading").textContent=activeExerciseCategory+" · Niveau "+diff;
  const list=EXERCISES.filter(e=>e.category===activeExerciseCategory&&e.difficulty===diff&&(!q||(e.title+" "+e.question).toLowerCase().includes(q)));
  $("#exerciseList").innerHTML=list.map(e=>`<button class="exercise-item ${activeExercise===e.id?"selected":""}" data-ex="${e.id}"><span class="difficulty ${e.difficulty.toLowerCase()}">${e.difficulty}</span><b>${esc(e.title)}</b><small>${esc(topic(e.topic)?.title||"")}</small><i>${state.solved.includes(e.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucun exercice disponible à ce niveau pour le moment.</p>';
  $(".exercise-layout").classList.toggle("exercise-open",!!activeExercise);
  $$("#exerciseList [data-ex]").forEach(b=>b.onclick=()=>openExercise(b.dataset.ex));
  if(activeExercise&&EXERCISES.some(e=>e.id===activeExercise&&e.category===activeExerciseCategory&&e.difficulty===diff))renderExercise(activeExercise);
- else if(!activeExercise)$("#exerciseDetail").innerHTML='<div class="empty-state"><span>⌘</span><h3>Choisis un exercice</h3><p>Les exercices du niveau '+esc(diff.toLowerCase())+' apparaissent dans cette liste.</p></div>';
+ else if(!activeExercise)$("#exerciseDetail").innerHTML='<div class="empty-state"><span>⌘</span><h3>Choisis un exercice</h3><p>Les exercices de niveau '+esc(diff.toLowerCase())+' apparaissent ici.</p></div>';
 }
 function openExercise(id){const e=EXERCISES.find(x=>x.id===id);if(e){activeExerciseCategory=e.category;activeExerciseDifficulty=e.difficulty;activeExerciseTopic=null;activeExercise=id;}renderExercises()}
 function renderExercise(id){
@@ -411,7 +413,7 @@ function drawLab(){
    // Étiquettes exactes posées autour du cercle, aux angles remarquables.
    const labels={0:"0",30:"π/6",45:"π/4",60:"π/3",90:"π/2",120:"2π/3",135:"3π/4",150:"5π/6",180:"π",210:"7π/6",225:"5π/4",240:"4π/3",270:"3π/2",300:"5π/3",315:"7π/4",330:"11π/6"};
    ctx.save();ctx.font="bold 11px system-ui";ctx.fillStyle="#dce8fa";ctx.textAlign="center";
-   Object.entries(labels).forEach(([deg,label])=>{const a=Number(deg)*Math.PI/180,rr=1.28;let tx=X(rr*Math.cos(a)),ty=Y(rr*Math.sin(a));if(deg==="0")ctx.textAlign="left";else if(deg==="180")ctx.textAlign="right";else ctx.textAlign="center";ctx.fillText(label,tx,ty+3)});
+   Object.entries(labels).forEach(([deg,label])=>{const a=Number(deg)*Math.PI/180,rr=1.13;let tx=X(rr*Math.cos(a)),ty=Y(rr*Math.sin(a));if(deg==="0")ctx.textAlign="left";else if(deg==="180")ctx.textAlign="right";else ctx.textAlign="center";ctx.fillText(label,tx,ty+3)});
    ctx.restore();
    const angle=((v%360)+360)%360,exactValues=exact[angle];$("#labTrigValues").innerHTML=exactValues?'<b>Valeurs exactes :</b> cos θ = '+exactValues[0]+' · sin θ = '+exactValues[1]:'<b>Valeurs remarquables :</b> angle non remarquable — valeurs décimales affichées.';
    $("#labLegend").innerHTML='<span style="color:#54cbb2">● Point mobile</span><span style="color:#80b8f4">┆ cos θ : abscisse</span><span style="color:#e0b86d">┆ sin θ : ordonnée</span>';
@@ -518,9 +520,9 @@ function init(){
  $("#courseSearch").addEventListener("input",()=>{activeTopic=null;renderCourses()});
  $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeTopic=null;renderCourses()}));
  $("#courseBackThemes").onclick=()=>{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses()};
- $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseDifficulty=null;activeExerciseTopic=null;activeExercise=null;renderExercises()};
+ $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseDifficulty=null;activeExerciseTopic=null;activeExercise=null;$("#exerciseSearch").value="";$(".exercise-layout").classList.remove("exercise-open");renderExercises()};
   // Les catégories sont gérées par délégation globale pour rester actives après les rerendus.
- $("#exerciseTopicBack").onclick=()=>{activeExerciseDifficulty=null;activeExercise=null;renderExercises()};
+ $("#exerciseTopicBack").onclick=()=>{activeExerciseDifficulty=null;activeExercise=null;$(".exercise-layout").classList.remove("exercise-open");renderExercises()};
  ["exerciseSearch","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
