@@ -197,7 +197,7 @@ for(const t of window.TOPICS){const extra=courseEnrichment[t.id];if(extra){t.met
 const additionalTheorems={
 "trigonometry":[{title:"Période fondamentale de cos(ax)",statement:"Pour a≠0, la fonction x↦cos(ax) a pour période fondamentale 2π/|a|.",proof:"Une période T>0 doit vérifier cos(a(x+T))=cos(ax) pour tout x. La période fondamentale de cos est 2π ; la plus petite valeur positive de |a|T qui soit une période est 2π. Ainsi T=2π/|a|."}],
 "taylor":[{title:"Formule de Taylor-Young à l'ordre 2",statement:"Si f est deux fois dérivable au voisinage de 0 et si f'' est continue en 0, alors f(x)=f(0)+f'(0)x+f''(0)x²/2+o(x²) lorsque x→0.",proof:"La formule de Taylor avec reste de Peano donne f(x)=Σ_{k=0}² f^{(k)}(0)x^k/k!+o(x²). En écrivant les trois termes, on obtient l'égalité annoncée. Les hypothèses garantissent l'existence des dérivées utilisées."}],
-"compactness":[{title:"Théorème de Heine-Borel dans Rⁿ",statement:"Une partie K de Rⁿ muni de sa topologie usuelle est compacte si et seulement si elle est fermée et bornée.",proof:"C'est le théorème de Heine-Borel. La preuve complète repose sur la propriété de recouvrement fini de les pavés fermés bornés, puis sur le fait qu'un fermé d'un compact est compact. Réciproquement, un compact de Rⁿ est fermé et borné."}],
+"compactness":[{title:"Un fermé d'un compact est compact",statement:"Si K est compact et F est un fermé de K pour la topologie induite, alors F est compact.",proof:"Soit (Uᵢ)ᵢ∈I un recouvrement ouvert de F par des ouverts de K. Comme F est fermé dans K, K\\F est ouvert dans K. La famille formée des Uᵢ et de K\\F recouvre K. Par compacité de K, un nombre fini de ces ouverts suffit à recouvrir K. En retirant éventuellement K\\F, les ouverts Uᵢ retenus recouvrent encore F. On a donc extrait un sous-recouvrement fini de tout recouvrement ouvert de F : F est compact."}],
 "multivariable":[{title:"Condition nécessaire d'extremum local",statement:"Si f est différentiable sur un ouvert de Rⁿ et possède un extremum local en un point intérieur a, alors ∇f(a)=0.",proof:"Pour chaque vecteur h, considérons la fonction d'une variable φ(t)=f(a+th), définie pour t proche de 0. Elle possède un extremum local en 0, donc φ'(0)=0. Par la règle de dérivation, φ'(0)=df(a)(h)=⟨∇f(a),h⟩. Cette égalité vaut pour tout h ; en prenant h=∇f(a), on obtient ||∇f(a)||²=0, donc ∇f(a)=0."}],
 "complex":[{title:"Module d'un produit",statement:"Pour tous z,w∈C, |zw|=|z||w|.",proof:"On utilise |z|²=z\\bar z. Alors |zw|²=(zw)\\overline{(zw)}=zw\\bar z\\bar w=(z\\bar z)(w\\bar w)=|z|²|w|². Les deux membres étant positifs, on prend la racine carrée."}],
 "polynomials":[{title:"Théorème de factorisation",statement:"Pour P∈K[X] et a∈K, P(a)=0 si et seulement si X−a divise P.",proof:"La division euclidienne donne P(X)=(X−a)Q(X)+r, où r est constant. En évaluant en a, P(a)=r. Ainsi P(a)=0 équivaut à r=0, c'est-à-dire à la divisibilité par X−a."}],
@@ -217,6 +217,26 @@ for(const [id,steps] of Object.entries({
 "term-ex-3":["On dérive terme à terme le polynôme : (2x³)'=6x², (−3x²)'=−6x, (4x)'=4 et (−1)'=0.","On additionne les dérivées obtenues : f'(x)=6x²−6x+4.","On peut vérifier que la dérivée est encore un polynôme défini sur tout R."],
 "term-ex-7":["On regroupe les parties réelles : 2+1=3.","On regroupe les parties imaginaires : 3i−5i=−2i.","On obtient la forme algébrique 3−2i. La vérification consiste à retrouver séparément la partie réelle 3 et la partie imaginaire −2."]})){
  const e=byId[id];if(e){e.solutionSteps=steps;e.answer=id==="term-ex-3"?"La dérivée est $\\\\boxed{f'(x)=6x^2-6x+4}$.":"La somme s'écrit $\\\\boxed{3-2i}$.";e.hints=[...(e.hints||[]),id==="term-ex-3"?"Dérive séparément chacun des quatre termes du polynôme.":"Additionne séparément les parties réelles et les parties imaginaires."];}
+}
+
+
+for(const e of window.EXERCISES){
+ if(!Array.isArray(e.solutionSteps)||!e.solutionSteps.length){
+  const raw=String(e.answer||"").trim();
+  if(raw){
+   let blocks=raw.split(/\n\s*\n|(?=\*\*\d+\.\s)/).map(x=>x.trim()).filter(Boolean);
+   blocks=blocks.flatMap(block=>{
+    if(/^\*\*\d+\.\s/.test(block))return [block];
+    const sentences=block.split(/(?<=[.!?])\s+(?=(?:[A-ZÀ-ÖØ-Þ$\\]))/).map(x=>x.trim()).filter(Boolean);
+    return sentences.length>1?sentences:[block];
+   });
+   e.solutionSteps=blocks.length?blocks:[raw];
+  }
+ }
+ const t=window.TOPICS.find(x=>x.id===e.topic);
+ if((!Array.isArray(e.hints)||e.hints.length<2)&&t?.methods?.length){
+  e.hints=[...(e.hints||[]),"Méthode à mobiliser : "+t.methods[0]];
+ }
 }
 
 })();
