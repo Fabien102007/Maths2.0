@@ -517,7 +517,17 @@ function drawLab(){
    ctx.fillStyle="#e0b86d";ctx.font="11px system-ui";ctx.fillText("Signal carré de référence",m.l+10,m.t+36);
    $("#labLegend").innerHTML='<span style="color:#80b8f4">━ Somme de Fourier</span><span style="color:#e0b86d">┄ Signal carré de référence</span><span style="color:#9eb2c9">Phénomène de Gibbs près de 0 et ±π</span>';
   }
-  else if(labType==="eigen"){curve(x=>.55*x,xmin,xmax,"#80b8f4",2);curve(x=>v*x,xmin,xmax,"#e0b86d",3)}
+  else if(labType==="eigen"){
+    const base=[.65,.38],image=[base[0]*v,base[1]*v];
+    segment(-3,-3*base[1]/base[0],3,3*base[1]/base[0],"#526a8a",1.5,[6,5]);
+    const arrow=(x,y,color,width)=>{if(Math.hypot(x,y)<.04){point(0,0,color,5);return}segment(0,0,x,y,color,width);const ex=X(x),ey=Y(y),angle=Math.atan2(Y(y)-Y(0),X(x)-X(0)),len=11;ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-len*Math.cos(angle-.42),ey-len*Math.sin(angle-.42));ctx.lineTo(ex-len*Math.cos(angle+.42),ey-len*Math.sin(angle+.42));ctx.closePath();ctx.fillStyle=color;ctx.fill();point(x,y,color,5)};
+    arrow(base[0],base[1],"#80b8f4",3);
+    arrow(image[0],image[1],"#e0b86d",3.5);
+    ctx.fillStyle="#80b8f4";ctx.font="bold 13px system-ui";ctx.textAlign="left";ctx.fillText("v",X(base[0])+8,Y(base[1])-8);
+    ctx.fillStyle="#e0b86d";ctx.fillText("Av = λv",X(image[0])+8,Y(image[1])-8);
+    ctx.fillStyle="#e8edf5";ctx.font="bold 13px system-ui";ctx.fillText("λ = "+v.toFixed(1).replace(".",","),m.l+10,m.t+18);
+    $("#labLegend").innerHTML='<span style="color:#80b8f4">→ v : vecteur initial</span><span style="color:#e0b86d">→ Av = λv : image par l’application</span><span style="color:#526a8a">┄ Direction propre conservée</span>';
+   }
   else if(labType==="determinant"){
     const t=v*Math.PI/180,u=[2,0],len=Number($("#labExtraSlider")?.value||2),w=[len*Math.cos(t),len*Math.sin(t)],cross=u[0]*w[1]-u[1]*w[0],area=Math.abs(cross);
     ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(u[0]),Y(u[1]));ctx.lineTo(X(u[0]+w[0]),Y(u[1]+w[1]));ctx.lineTo(X(w[0]),Y(w[1]));ctx.closePath();ctx.fillStyle="rgba(84,203,178,.20)";ctx.fill();ctx.strokeStyle="#54cbb2";ctx.lineWidth=2;ctx.stroke();
