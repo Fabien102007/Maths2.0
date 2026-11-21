@@ -96,7 +96,7 @@ class EulerHelix(ThreeDScene):
             )
         )
 
-        self.play(Create(axes), FadeIn(x_label, y_label), Create(circle), Write(formula))
+        self.play(Create(axes), FadeIn(VGroup(x_label, y_label)), Create(circle), Write(formula))
         self.play(
             Create(radius),
             FadeIn(point),
