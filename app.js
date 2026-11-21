@@ -132,7 +132,8 @@ function renderCourses(){
   back.textContent="← Analyse et Algèbre";
   listHost.innerHTML='<div class="course-level-intro"><b>Choisis ton niveau d\'études</b><span>'+esc(activeCourseCategory)+'</span></div>'+[
    {name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},
-   {name:"L1",desc:"Université · Première année de licence",icon:"∑"}
+   {name:"L1",desc:"Université · Première année de licence",icon:"∑"},
+   {name:"Approfondissement",desc:"Notions de niveau prépa et prolongements",icon:"↗"}
   ].map(level=>{
    const count=TOPICS.filter(t=>t.category===activeCourseCategory&&courseLevelOf(t)===level.name).length;
    return `<button type="button" class="course-theme-card course-level-card" data-course-level="${level.name}"><span class="course-theme-symbol">${level.icon}</span><span><b>${level.name}</b><small>${level.desc}</small></span><i>${count?count+" notions":"Contenu à venir"} →</i></button>`;
