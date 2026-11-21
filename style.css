@@ -243,3 +243,53 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 #exerciseTopicsView.exercise-level-selected .course-layout{display:block}
 #exerciseTopicsView.exercise-level-selected #exerciseWorkspace{width:100%}
 #exerciseTopicsView.exercise-level-selected #exerciseTopicHeading{margin-top:4px}
+
+/* Refonte visuelle du tuteur IA */
+.tutor-panel{background:linear-gradient(155deg,#151f36 0%,#101a2d 65%,#121d32 100%);border:1px solid #344362;box-shadow:0 18px 55px #050b1680}
+.tutor-header{padding:20px 22px;background:linear-gradient(100deg,#1b2945,#1b2340);border-bottom:1px solid #34425f}
+.tutor-avatar{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#8879ff,#39bdd7);color:white;box-shadow:0 7px 22px #5b69d344;font-size:21px}
+.tutor-header b{font:750 14px Manrope,sans-serif;letter-spacing:.1px}
+.tutor-header small{font-size:10px}
+.tutor-header .text-btn{padding:9px 12px;border:1px solid #465278;border-radius:9px;background:#252d4b;transition:.2s}
+.tutor-header .text-btn:hover{background:#34345f;color:#fff}
+.mode-tabs{padding:13px 16px;background:#111b2f;border-bottom:1px solid #2b3a58;gap:7px}
+.mode{border:1px solid transparent;border-radius:10px;padding:9px 12px;font-size:10px;transition:.2s}
+.mode:hover{background:#202b46;color:#dce5fa}
+.mode.active{background:linear-gradient(120deg,#393565,#253b58);border-color:#655fa1;color:#e2deff;box-shadow:inset 0 0 0 1px #8175e422}
+.chat{height:430px;padding:24px 22px;gap:19px;background:radial-gradient(ellipse at 50% 0,#202c4938,transparent 62%),#0e182a;scroll-behavior:smooth}
+.chat-welcome{max-width:350px;padding:26px 22px;border:1px solid #344361;border-radius:20px;background:linear-gradient(145deg,#1b2942,#141f34);box-shadow:0 12px 35px #050b1640}
+.chat-welcome>span{display:grid;place-items:center;width:54px;height:54px;margin:0 auto 14px;border-radius:17px;background:linear-gradient(145deg,#8b7bff,#40c5dc);color:#fff;font-size:27px;box-shadow:0 8px 25px #6e66d944}
+.chat-welcome h3{font:750 17px Manrope;color:#f0f3ff}
+.chat-welcome p{font-size:12px;line-height:1.75}
+.chat-message{max-width:88%;display:flex;align-items:flex-start;gap:10px;padding:0;background:none;border:0;white-space:normal}
+.chat-message-avatar{flex:0 0 30px;width:30px;height:30px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(145deg,#8879ff,#42b9d5);color:white;font-size:13px;font-weight:800;box-shadow:0 5px 15px #050b1640}
+.chat-message-body{min-width:0;padding:11px 14px 13px;border:1px solid #30405d;border-radius:5px 15px 15px 15px;background:#1a2940;color:#e0e8f8;box-shadow:0 7px 20px #050b1625}
+.chat-message-name{display:block;font:800 9px Manrope,sans-serif;letter-spacing:1.2px;color:#a99fff;margin:0 0 7px}
+.chat-message-content{font-size:12px;line-height:1.8;overflow-wrap:anywhere;white-space:pre-wrap}
+.chat-message-content p:last-child{margin-bottom:0}
+.chat-message-content ul,.chat-message-content ol{padding-left:20px}
+.chat-message.user{align-self:flex-end;flex-direction:row-reverse}
+.chat-message.user .chat-message-avatar{background:linear-gradient(145deg,#3e9bc7,#3974a9)}
+.chat-message.user .chat-message-body{background:linear-gradient(145deg,#2d315b,#25334f);border-color:#4c4c7d;border-radius:15px 5px 15px 15px}
+.chat-message.user .chat-message-name{text-align:right;color:#a9dafa}
+.chat-typing .chat-message-body{min-width:90px}
+.typing-dots{display:flex;gap:5px;align-items:center;height:15px}
+.typing-dots i{width:6px;height:6px;border-radius:50%;background:#a99fff;animation:typingPulse 1s infinite ease-in-out}
+.typing-dots i:nth-child(2){animation-delay:.15s}.typing-dots i:nth-child(3){animation-delay:.3s}
+@keyframes typingPulse{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.chat-composer{padding:13px 16px 10px;background:#111c30;border-top:1px solid #2b3b59}
+.chat-attachment-row{display:flex;align-items:center;gap:10px;min-height:26px;margin-bottom:9px}
+.upload-btn{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid #3b4668;border-radius:8px;background:#202a45;color:#c1baff;font-size:10px;transition:.2s}
+.upload-btn:hover{border-color:#8d82f4;background:#2b3155;color:#fff}
+.attach-icon{font-size:15px;line-height:10px}
+.chat-attachment-row .subtle{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-compose{display:flex;align-items:flex-end;gap:10px;padding:9px 10px 9px 14px;border:1px solid #3b4b6b;border-radius:16px;background:#0d1729;box-shadow:inset 0 1px 4px #050b1640;transition:.2s}
+.chat-compose:focus-within{border-color:#8379ee;box-shadow:0 0 0 3px #8278ed20, inset 0 1px 4px #050b1640}
+.chat-compose textarea{flex:1;min-height:48px;max-height:150px;resize:vertical;padding:12px 2px;border:0;background:transparent;font-size:12px;line-height:1.6}
+.chat-compose textarea:focus{border:0;outline:0}
+.send-button{flex:0 0 40px;width:40px;height:40px;border:0;border-radius:12px;background:linear-gradient(145deg,#8a79ff,#4b9ecb);color:#fff;font-size:24px;font-weight:700;box-shadow:0 6px 17px #655be655;transition:transform .18s,filter .18s}
+.send-button:hover{transform:translateY(-2px);filter:brightness(1.12)}
+.send-button:disabled{opacity:.45;cursor:wait;transform:none}
+.compose-footer{display:flex;justify-content:space-between;padding:7px 3px 0;color:#687b9c;font-size:9px}
+.status-line{padding:0 18px 13px;background:#111c30;color:#7486a5;font-size:9px}
+@media(max-width:480px){.chat{height:390px;padding:17px 13px}.chat-message{max-width:96%}.chat-composer{padding:11px}.chat-compose{flex-direction:row;align-items:flex-end}.chat-compose .send-button{align-self:flex-end}}
