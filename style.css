@@ -363,3 +363,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  .course-level-card i{font-size:10px}
  .course-level-intro{font-size:13px}
 }
+
+#courseTopicsView.course-level-selecting .course-layout{display:block}
+#courseTopicsView.course-level-selecting #courseList{width:100%;max-width:820px;margin:0 auto}
