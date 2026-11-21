@@ -243,10 +243,14 @@ function renderTutorMessage(text,role){
  const content=document.createElement("div");content.className="chat-message-content";content.innerHTML=richText(text);
  body.append(name,content);div.append(avatar,body);return div;
 }
+function scrollChatToBottom(){
+ const host=$("#chat");requestAnimationFrame(()=>host.scrollTo({top:host.scrollHeight,behavior:"smooth"}));
+}
 function addChat(role,text){
  chatHistory.push({role,text});const host=$("#chat");
  if(host.querySelector(".chat-welcome"))host.innerHTML="";
- host.append(renderTutorMessage(text,role));typeset(host.lastElementChild);host.scrollTop=host.scrollHeight;
+ const message=renderTutorMessage(text,role);host.append(message);
+ typeset(message);scrollChatToBottom();
 }
 function showTutorTyping(){
  const host=$("#chat"),row=document.createElement("div");row.className="chat-message assistant chat-typing";row.id="chatTyping";
@@ -254,19 +258,19 @@ function showTutorTyping(){
  const body=document.createElement("div");body.className="chat-message-body";
  const name=document.createElement("b");name.className="chat-message-name";name.textContent="MATHS2.0";
  const dots=document.createElement("div");dots.className="typing-dots";dots.innerHTML="<i></i><i></i><i></i>";
- body.append(name,dots);row.append(avatar,body);host.append(row);host.scrollTop=host.scrollHeight;
+ body.append(name,dots);row.append(avatar,body);host.append(row);scrollChatToBottom();
 }
 async function sendChat(){
  const text=$("#chatInput").value.trim();if(!text&&!chatImage){toast("Écris une question ou joins une photo.");return}
  const endpoint=window.MATHS4_AI_ENDPOINT;if(!endpoint){$("#tutorStatus").textContent="Endpoint du Worker non configuré.";return}
  const outgoing=text||"Voici ma démarche manuscrite. Peux-tu l'analyser ?";
- addChat("user",outgoing);$("#chatInput").value="";const image=chatImage;chatImage=null;$("#tutorImage").value="";$("#uploadName").textContent="Aucune image jointe";$("#sendChat").disabled=true;$("#tutorStatus").textContent="Le tuteur prépare sa réponse…";showTutorTyping();
+ addChat("user",outgoing);$("#chatInput").value="";const image=chatImage;chatImage=null;$("#tutorImage").value="";$("#uploadName").textContent="Aucune image jointe";$("#sendChat").disabled=true;$("#chatComposer")?.classList.add("is-sending");$("#tutorStatus").textContent="Le tuteur prépare sa réponse…";showTutorTyping();
  const modes={tutor:"Accompagne l'étudiant pas à pas. Ne donne pas immédiatement la solution. Pose une seule question utile à la fois et propose des indices progressifs.",concept:"Explique la notion de manière rigoureuse et progressive, avec définition, intuition, exemple et pièges classiques.",exam:"Agis comme un examinateur exigeant. Pose une question à la fois, n'aide pas spontanément et évalue précisément la réponse.",proof_review:"Analyse la démonstration manuscrite : repère la première étape fausse ou non justifiée, distingue le correct de l'incorrect et propose une question pour débloquer."};
  try{
   const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mode:activeMode,exercise:null,messages:chatHistory.slice(-10),text:modes[activeMode]+"\n\nDemande de l'étudiant : "+outgoing,image})});
   const data=await res.json();if(!res.ok||!data.reply)throw new Error(data.error||"Réponse IA indisponible.");$("#chatTyping")?.remove();addChat("assistant",String(data.reply));$("#tutorStatus").textContent="Réponse reçue.";
  }catch(err){$("#chatTyping")?.remove();$("#tutorStatus").textContent="Erreur : "+err.message;addChat("assistant","Je n'ai pas pu joindre le tuteur. Vérifie que le Worker Cloudflare est déployé et que son endpoint est accessible.")}
- finally{$("#sendChat").disabled=false}
+ finally{$("#sendChat").disabled=false;$("#chatComposer")?.classList.remove("is-sending")}
 }
 function resizeImage(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{const scale=Math.min(1,1500/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);resolve(c.toDataURL("image/jpeg",.8))};img.onerror=reject;img.src=url})}
 const LABS={
