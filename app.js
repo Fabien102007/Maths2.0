@@ -4,7 +4,7 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 const KEY="maths4_studio_v1";
 const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,diagnostic:null});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
-let activeTopic=null,activeCourseCategory=null,activeExercise=null,activeExerciseCategory=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
+let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 let progressSyncTimer=null;
 const save=()=>{state.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();if(window.Maths2Account?.sync){clearTimeout(progressSyncTimer);progressSyncTimer=setTimeout(()=>window.Maths2Account.sync(),1200);}};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -145,16 +145,31 @@ function renderPath(){
  rec.innerHTML=next?`<div class="recommendation"><span class="eyebrow">PROCHAINE NOTION CONSEILLÉE</span><h3>${esc(next.title)}</h3><p>${esc(next.summary)}</p><button class="btn primary" id="startRecommended">Ouvrir le cours →</button><button class="btn ghost" id="startExercise">Faire un exercice</button></div>`:"";
  $("#startRecommended")?.addEventListener("click",()=>{go("courses");openTopic(next.id)});$("#startExercise")?.addEventListener("click",()=>{go("exercises");openExercise(next.exerciseId)});typeset(host);typeset(rec);
 }
+function courseLevelOf(t){return t.level==="Lycée"||t.level==="Terminale"?"Terminale":t.level==="L1"?"L1":t.level||"Autre";}
 function renderCourses(){
  const q=$("#courseSearch").value.trim().toLowerCase();
- const themes=$("#courseThemes"),topicsView=$("#courseTopicsView"),listHost=$("#courseList"),detail=$("#courseDetail");
- const filtered=TOPICS.filter(t=>(!q||(t.title+" "+t.summary+" "+(t.chapter||"")).toLowerCase().includes(q))&&(!activeCourseCategory||t.category===activeCourseCategory));
+ const themes=$("#courseThemes"),topicsView=$("#courseTopicsView"),listHost=$("#courseList"),detail=$("#courseDetail"),back=$("#courseBackThemes");
  const showTopics=!!activeCourseCategory||!!q||!!activeTopic;
  themes.hidden=showTopics;topicsView.hidden=!showTopics;
  if(!showTopics){activeTopic=null;detail.hidden=true;return;}
- listHost.innerHTML=filtered.map(t=>`<button class="course-item ${activeTopic===t.id?"selected":""}" data-topic="${t.id}"><span class="course-symbol">${t.category==="Analyse"?"∫":"∑"}</span><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${esc(t.level)}</small></span><i>${mastered(t.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucune notion trouvée.</p>';
+ if(activeCourseCategory&&!q&&!activeCourseLevel&&!activeTopic){
+  back.textContent="← Analyse et Algèbre";
+  listHost.innerHTML='<div class="course-level-intro"><b>Choisis ton niveau d\'études</b><span>'+esc(activeCourseCategory)+'</span></div>'+[
+   {name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},
+   {name:"L1",desc:"Université · Première année de licence",icon:"∑"}
+  ].map(level=>{
+   const count=TOPICS.filter(t=>t.category===activeCourseCategory&&courseLevelOf(t)===level.name).length;
+   return `<button type="button" class="course-theme-card course-level-card" data-course-level="${level.name}"><span class="course-theme-symbol">${level.icon}</span><span><b>${level.name}</b><small>${level.desc}</small></span><i>${count} notions →</i></button>`;
+  }).join("");
+  detail.hidden=true;detail.innerHTML="";
+  $$("[data-course-level]").forEach(b=>b.onclick=()=>{activeCourseLevel=b.dataset.courseLevel;activeTopic=null;renderCourses()});
+  return;
+ }
+ back.textContent=activeCourseLevel&&!q?"← Choisir Terminale / L1":"← Analyse et Algèbre";
+ const filtered=TOPICS.filter(t=>(!q||(t.title+" "+t.summary+" "+(t.chapter||"")).toLowerCase().includes(q))&&(!activeCourseCategory||t.category===activeCourseCategory)&&(!activeCourseLevel||q||courseLevelOf(t)===activeCourseLevel));
+ listHost.innerHTML=filtered.map(t=>`<button class="course-item ${activeTopic===t.id?"selected":""}" data-topic="${t.id}"><span class="course-symbol">${t.category==="Analyse"?"∫":"∑"}</span><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${esc(courseLevelOf(t))}</small></span><i>${mastered(t.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucune notion disponible à ce niveau pour le moment.</p>';
  $$("#courseList [data-topic]").forEach(b=>b.onclick=()=>openTopic(b.dataset.topic));
- if(activeTopic&&topic(activeTopic)){detail.hidden=false;renderTopic(activeTopic);}else{detail.hidden=true;detail.innerHTML="";}
+ if(activeTopic&&filtered.some(t=>t.id===activeTopic)){detail.hidden=false;renderTopic(activeTopic);}else{activeTopic=null;detail.hidden=true;detail.innerHTML="";}
 }
 function openTopic(id){activeTopic=id;renderCourses()}
 function renderTopic(id){
@@ -540,9 +555,9 @@ function init(){
   }catch(err){toast("Import impossible : "+err.message)}
   finally{e.target.value=""}
  };
- $("#courseSearch").addEventListener("input",()=>{activeTopic=null;renderCourses()});
- $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeTopic=null;renderCourses()}));
- $("#courseBackThemes").onclick=()=>{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses()};
+ $("#courseSearch").addEventListener("input",()=>{activeTopic=null;activeCourseLevel=null;renderCourses()});
+ $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeCourseLevel=null;activeTopic=null;renderCourses()}));
+ $("#courseBackThemes").onclick=()=>{if(activeCourseLevel){activeCourseLevel=null;activeTopic=null;}else{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";}renderCourses()};
  $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseDifficulty=null;activeExerciseTopic=null;activeExercise=null;$("#exerciseSearch").value="";$(".exercise-layout").classList.remove("exercise-open");renderExercises()};
   // Les catégories sont gérées par délégation globale pour rester actives après les rerendus.
  $("#exerciseTopicBack").onclick=()=>{activeExerciseDifficulty=null;activeExercise=null;$(".exercise-layout").classList.remove("exercise-open");renderExercises()};
