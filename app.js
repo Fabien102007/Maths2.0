@@ -533,14 +533,14 @@ function selectManimAnimation(key){
  const wasPlaying=!video.paused;
  if(source.getAttribute("src")!==item.src){video.pause();source.setAttribute("src",item.src);video.load()}
  $("#manimActiveKicker").textContent=item.kicker;$("#manimActiveTitle").textContent=item.title;$("#manimActiveEquation").textContent=item.equation;$("#manimActiveDescription").textContent=item.description;
- $("[data-manim]").forEach(b=>b.classList.toggle("active",b.dataset.manim===key));
+ document.querySelectorAll("[data-manim]").forEach(b=>b.classList.toggle("active",b.dataset.manim===key));
  typeset($("#manimActiveEquation"));
  if(wasPlaying)video.play().catch(()=>{});
 }
 function initManimLibrary(){
  if(!window.__maths20ManimBound){
   window.__maths20ManimBound=true;
-  $("[data-manim]").forEach(b=>b.addEventListener("click",()=>selectManimAnimation(b.dataset.manim)));
+  document.querySelectorAll("[data-manim]").forEach(b=>b.addEventListener("click",()=>selectManimAnimation(b.dataset.manim)));
  }
  if(!$("#manimVideo")?.dataset.initialized){selectManimAnimation("euler");if($("#manimVideo"))$("#manimVideo").dataset.initialized="1"}
 }
