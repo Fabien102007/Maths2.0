@@ -239,4 +239,7 @@ for(const e of window.EXERCISES){
  }
 }
 
+
+// The multivariable chapter and its exercises belong to the L2 track.
+if(byId["m4-36"])byId["m4-36"].level="L2";
 })();
