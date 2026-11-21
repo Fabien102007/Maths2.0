@@ -10,7 +10,7 @@ Maths2.0 est une application web progressive (PWA) en français pour apprendre, 
 
 ## Contenu pédagogique actuel
 - **26 notions** réparties en Analyse et Algèbre, du lycée à L2 et avec des prolongements d'approfondissement.
-- **117 exercices** classés par thème et difficulté, avec énoncés, indices et corrections affichées en étapes.
+- **121 exercices** classés par thème et difficulté, avec énoncés, indices et corrections affichées en étapes.
 - **64 flashcards** pour le rappel actif.
 - **14 visualisations interactives** : suites, limites, continuité, dérivation, intégrales, développements limités, injectivité, déterminants, Gram–Schmidt, Fourier, trigonométrie, valeurs propres, surfaces 3D et exponentielle complexe.
 - **6 vidéos Manim** : formule d'Euler, tangente et dérivée, série de Fourier, intégrale de Riemann, convergence ε-N et orthogonalisation de Gram–Schmidt.
