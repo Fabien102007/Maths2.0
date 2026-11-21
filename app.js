@@ -283,7 +283,7 @@ function showTutorTyping(){
  const dots=document.createElement("div");dots.className="typing-dots";dots.innerHTML="<i></i><i></i><i></i>";
  body.append(name,dots);row.append(avatar,body);host.append(row);scrollChatToBottom();
 }
-async function openTutorWithContext(message){
+function openTutorWithContext(message){
  activeMode="tutor";
  go("tutor");
  $("#tutorModes .mode").forEach(b=>b.classList.toggle("active",b.dataset.mode==="tutor"));
@@ -291,7 +291,7 @@ async function openTutorWithContext(message){
  $("#chatInput").focus();
  $("#tutorStatus").textContent="Contexte préparé : tu peux préciser ta question avant l'envoi.";
 }
-function sendChat(){
+async function sendChat(){
  const text=$("#chatInput").value.trim();if(!text&&!chatImage){toast("Écris une question ou joins une photo.");return}
  const endpoint=window.MATHS4_AI_ENDPOINT;if(!endpoint){$("#tutorStatus").textContent="Endpoint du Worker non configuré.";return}
  const outgoing=text||"Voici ma démarche manuscrite. Peux-tu l'analyser ?";
