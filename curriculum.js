@@ -216,7 +216,7 @@ for(const t of window.TOPICS){if(additionalTheorems[t.id]&&!t.theorems?.length)t
 for(const [id,steps] of Object.entries({
 "term-ex-3":["On dérive terme à terme le polynôme : (2x³)'=6x², (−3x²)'=−6x, (4x)'=4 et (−1)'=0.","On additionne les dérivées obtenues : f'(x)=6x²−6x+4.","On peut vérifier que la dérivée est encore un polynôme défini sur tout R."],
 "term-ex-7":["On regroupe les parties réelles : 2+1=3.","On regroupe les parties imaginaires : 3i−5i=−2i.","On obtient la forme algébrique 3−2i. La vérification consiste à retrouver séparément la partie réelle 3 et la partie imaginaire −2."]})){
- const e=byId[id];if(e){e.solutionSteps=steps;e.answer=id==="term-ex-3"?"La dérivée est $\\\\boxed{f'(x)=6x^2-6x+4}$.":"La somme s'écrit $\\\\boxed{3-2i}$.";e.hints=[...(e.hints||[]),id==="term-ex-3"?"Dérive séparément chacun des quatre termes du polynôme.":"Additionne séparément les parties réelles et les parties imaginaires."];}
+ const e=byId[id];if(e){e.solutionSteps=steps;e.answer=id==="term-ex-3"?"La dérivée est $\\boxed{f'(x)=6x^2-6x+4}$.":"La somme s'écrit $\\boxed{3-2i}$.";e.hints=[...(e.hints||[]),id==="term-ex-3"?"Dérive séparément chacun des quatre termes du polynôme.":"Additionne séparément les parties réelles et les parties imaginaires."];}
 }
 
 
