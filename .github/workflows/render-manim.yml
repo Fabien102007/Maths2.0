@@ -49,7 +49,14 @@ jobs:
             duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${video}")
             echo "${slug}: ${duration}s"
             awk -v duration="${duration}" 'BEGIN { exit !(duration > 8) }'
-            ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of csv=p=0 "${video}"
+            metadata=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of csv=p=0 "${video}")
+            echo "${slug}: ${metadata}"
+            IFS=, read -r width height fps <<< "${metadata}"
+            test "${width}" = "3840"
+            test "${height}" = "2160"
+            test "${fps}" = "60/1"
+            size=$(stat -c%s "${video}")
+            test "${size}" -lt 125829120
             cp "${video}" "assets/manim/${slug}.mp4"
             test -s "assets/manim/${slug}.mp4"
           }
@@ -57,6 +64,8 @@ jobs:
           render_and_publish concepts DerivativeTangent derivative_tangent
           render_and_publish concepts FourierSquareWave fourier_square
           render_and_publish concepts RiemannIntegral riemann_integral
+          render_and_publish concepts EpsilonNConvergence epsilon_n_convergence
+          render_and_publish concepts GramSchmidtGeometry gram_schmidt_geometry
 
       - name: Publish rendered videos to Pages source
         run: |
