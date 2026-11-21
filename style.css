@@ -449,3 +449,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+.manim-playback{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:10px 2px 2px;color:#93a5c2;font-size:10px}
+.manim-playback>div{display:flex;gap:5px;flex-wrap:wrap}
+.manim-playback button{padding:6px 9px;border:1px solid #344461;border-radius:7px;background:#142137;color:#b9c7dc;font-size:10px;font-weight:750;cursor:pointer}
+.manim-playback button:hover,.manim-playback button.active{border-color:#8c81ed;background:#29274d;color:#eeeaff}
+@media(max-width:560px){.manim-playback{justify-content:space-between;gap:7px}.manim-playback button{padding:6px 8px}}
