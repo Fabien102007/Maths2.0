@@ -472,3 +472,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 #courseTopicsView.course-detail-open .course-layout{grid-template-columns:minmax(0,1fr)}
 #courseList[hidden]{display:none!important}
 .course-back-list{display:inline-flex;margin:0 0 18px;}
+
+/* Transition de navigation entre la page de présentation et l'espace Maths2.0. */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:maths-page-out .22s ease both}
+::view-transition-new(root){animation:maths-page-in .42s cubic-bezier(.2,.75,.25,1) both}
+@keyframes maths-page-out{to{opacity:0;transform:scale(.992);filter:blur(2px)}}
+@keyframes maths-page-in{from{opacity:0;transform:translateY(12px) scale(.992);filter:blur(3px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation-duration:.01ms}}
