@@ -5,7 +5,7 @@ window.TOPICS = [
 {id:"integrals",title:"Intégration",category:"Analyse",level:"L1",chapter:"Analyse",summary:"Construire une aire algébrique et relier intégrale et primitive.",definitions:[["Intégrale","Pour une fonction continue $f$ sur $[a,b]$, $\\int_a^b f(x)\\,dx$ représente son aire algébrique sous la courbe."],["Primitive","Une primitive de $f$ sur un intervalle est une fonction $F$ dérivable telle que $F'=f$."]],properties:["Relation de Chasles : $\\int_a^b f=\\int_a^c f+\\int_c^b f$.","Théorème fondamental : $\\int_a^b f(x)dx=F(b)-F(a)$."],example:"Comme une primitive de $x^2$ est $x^3/3$, on a $\\int_0^1x^2dx=1/3$.",exerciseId:"e4",prerequisites:["derivative"]},
 {id:"series",title:"Séries numériques",category:"Analyse",level:"Prépa",chapter:"Analyse",summary:"Étudier la convergence d'une somme infinie.",definitions:[["Série","La série $\\sum u_n$ converge si la suite des sommes partielles $S_N=\\sum_{n=0}^N u_n$ converge." ]],properties:["La convergence de $\\sum u_n$ implique $u_n\\to0$ (condition nécessaire).","Une série géométrique $\\sum q^n$ converge si et seulement si $|q|<1$."],example:"Pour $|q|<1$, $\\sum_{n=0}^{N}q^n=(1-q^{N+1})/(1-q)\\to1/(1-q)$.",exerciseId:"e5",prerequisites:["limits"]},
 {id:"vector-spaces",title:"Espaces vectoriels",category:"Algèbre",level:"L1",chapter:"Algèbre",summary:"Étudier les ensembles munis d'une addition et d'une multiplication scalaire.",definitions:[["Sous-espace vectoriel","Une partie $F$ d'un espace vectoriel $E$ est un sous-espace si elle est non vide, stable par combinaison linéaire : $\\forall x,y\\in F,\\forall\\lambda,\\mu,\\lambda x+\\mu y\\in F$."]],properties:["Une intersection de sous-espaces est un sous-espace.","L'ensemble des solutions d'un système linéaire homogène est un sous-espace."],example:"Dans $\\mathbb R^2$, la droite $F=\\{(x,2x):x\\in\\mathbb R\\}$ est le sous-espace engendré par $(1,2)$.",exerciseId:"e6",prerequisites:[]},
-{id:"basis",title:"Bases et dimension",category:"Algèbre",level:"L1",chapter:"Algèbre",summary:"Décrire un espace à l'aide d'une famille libre et génératrice.",definitions:[["Base","Une famille est une base si elle est libre et génératrice."],["Dimension","La dimension d'un espace de dimension finie est le nombre de vecteurs d'une base."]],properties:["Dans un espace de dimension $n$, toute famille libre de $n$ vecteurs est une base.","Toute famille génératrice de $n$ vecteurs est une base."],example:"La famille canonique $((1,0),(0,1))$ est une base de $\\mathbb R^2$, donc sa dimension vaut 2.",exerciseId:"e7",prerequisites:["vector-spaces"]},
+{id:"basis",title:"Bases et dimension",category:"Algèbre",level:"L1",chapter:"Algèbre",summary:"Décrire un espace à l'aide d'une famille libre et génératrice.",definitions:[["Base","Une famille est une base si elle est libre et génératrice."],["Dimension","La dimension d'un espace de dimension finie est le nombre de vecteurs d'une base."]],properties:["Dans un espace de dimension $n$, toute famille libre de $n$ vecteurs est une base.","Toute famille génératrice de $n$ vecteurs est une base."],example:"La famille canonique $\\left(\\binom{1}{0},\\binom{0}{1}\\right)$ est une base de $\\mathbb R^2$, donc sa dimension vaut 2.",exerciseId:"e7",prerequisites:["vector-spaces"]},
 {id:"linear-maps",title:"Applications linéaires",category:"Algèbre",level:"L1",chapter:"Algèbre",summary:"Étudier les transformations qui préservent les combinaisons linéaires.",definitions:[["Linéarité","$f:E\\to F$ est linéaire si $f(\\lambda x+\\mu y)=\\lambda f(x)+\\mu f(y)$."]],properties:["Une application linéaire est entièrement déterminée par l'image d'une base.","Le noyau et l'image sont des sous-espaces vectoriels."],example:"L'application $f(x,y)=(2x-y,x+3y)$ est linéaire.",exerciseId:"e8",prerequisites:["vector-spaces","basis"]},
 {id:"matrices",title:"Matrices et déterminants",category:"Algèbre",level:"L1",chapter:"Algèbre",summary:"Représenter les applications linéaires et tester l'inversibilité.",definitions:[["Déterminant en dimension 2","Pour $A=\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}$, $\\det(A)=ad-bc$."]],properties:["Une matrice carrée est inversible si et seulement si son déterminant est non nul.","$\\det(AB)=\\det(A)\\det(B)$."],example:"Pour $A=\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$, $\\det(A)=4-6=-2$, donc $A$ est inversible.",exerciseId:"e9",prerequisites:["linear-maps"]},
 {id:"eigenvalues",title:"Valeurs propres",category:"Algèbre",level:"Prépa",chapter:"Algèbre",summary:"Identifier les directions invariantes d'un endomorphisme.",definitions:[["Valeur propre","$\\lambda$ est valeur propre de $u$ s'il existe $x\\ne0$ tel que $u(x)=\\lambda x$."]],properties:["Les valeurs propres sont les racines du polynôme caractéristique.","Des vecteurs propres associés à des valeurs propres distinctes sont linéairement indépendants."],example:"Une matrice diagonale a pour valeurs propres ses coefficients diagonaux.",exerciseId:"e10",prerequisites:["linear-maps","matrices"]}
@@ -270,7 +270,7 @@ window.EXERCISES = [
     "category": "Algèbre",
     "difficulty": "Facile",
     "title": "Espaces vectoriels — Facile · Exercice 19",
-    "question": "La famille \\(\\big((1,0),(0,1)\\big)\\) est-elle libre dans \\(\\mathbb R^2\\) ?",
+    "question": "La famille \\(\\left(\\binom{1}{0},\\binom{0}{1}\\right)\\) est-elle libre dans \\(\\mathbb R^2\\) ?",
     "hints": [
       "Écrire une combinaison linéaire nulle."
     ],
@@ -284,7 +284,7 @@ window.EXERCISES = [
     "category": "Algèbre",
     "difficulty": "Intermédiaire",
     "title": "Espaces vectoriels — Intermédiaire · Exercice 20",
-    "question": "La famille \\(\\big((1,1),(2,2)\\big)\\) est-elle libre dans \\(\\mathbb R^2\\) ?",
+    "question": "La famille \\(\\left(\\binom{1}{1},\\binom{2}{2}\\right)\\) est-elle libre dans \\(\\mathbb R^2\\) ?",
     "hints": [
       "Chercher une relation non triviale."
     ],
@@ -368,7 +368,7 @@ window.EXERCISES = [
     "category": "Algèbre",
     "difficulty": "Facile",
     "title": "Espaces vectoriels — Facile · Exercice 26",
-    "question": "Calculer le produit scalaire usuel des vecteurs \\((1,2)\\) et \\((3,-1)\\) de \\(\\mathbb R^2\\).",
+    "question": "Calculer le produit scalaire usuel des vecteurs \\(\\begin{pmatrix}1\\\\2\\end{pmatrix}\\) et \\(\\begin{pmatrix}3\\\\-1\\end{pmatrix}\\) de \\(\\mathbb R^2\\).",
     "hints": [
       "Multiplier les coordonnées puis additionner."
     ],
@@ -382,7 +382,7 @@ window.EXERCISES = [
     "category": "Algèbre",
     "difficulty": "Intermédiaire",
     "title": "Espaces vectoriels — Intermédiaire · Exercice 27",
-    "question": "Vérifier que les vecteurs \\((1,1)\\) et \\((1,-1)\\) sont orthogonaux, puis appliquer le théorème de Pythagore.",
+    "question": "Vérifier que les vecteurs \\(\\begin{pmatrix}1\\\\1\\end{pmatrix}\\) et \\(\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\) sont orthogonaux, puis appliquer le théorème de Pythagore.",
     "hints": [
       "Calculer le produit scalaire et les normes."
     ],
@@ -666,7 +666,7 @@ window.EXERCISES = [
     "hints": [
       "Paramétrer avec x et y."
     ],
-    "answer": "F=Ker(φ), φ(x,y,z)=x+y+z, donc F est un sous-espace. (x,y,z)=(x,y,−x−y)=x(1,0,−1)+y(0,1,−1). Une base est ((1,0,−1),(0,1,−1)).",
+    "answer": "F=Ker(φ), φ(x,y,z)=x+y+z, donc F est un sous-espace. (x,y,z)=(x,y,−x−y)=x(1,0,−1)+y(0,1,−1). Une base est \\(\\left(\\begin{pmatrix}1\\\\0\\\\-1\\end{pmatrix},\\begin{pmatrix}0\\\\1\\\\-1\\end{pmatrix}\\right)\\).",
     "solutionSteps": [],
     "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
   },
@@ -736,7 +736,7 @@ window.EXERCISES = [
     "hints": [
       "Calculer les espaces propres associés à 2 et 3."
     ],
-    "answer": "Les valeurs propres sont 2 et 3. E₂=Vect((1,0)) et E₃=Vect((1,1)). P=[[1,1],[0,1]], D=diag(2,3), et A=PDP⁻¹.",
+    "answer": "Les valeurs propres sont 2 et 3. E₂=\\(\\operatorname{Vect}\\!\\left(\\begin{pmatrix}1\\\\0\\end{pmatrix}\\right)\\) et E₃=\\(\\operatorname{Vect}\\!\\left(\\begin{pmatrix}1\\\\1\\end{pmatrix}\\right)\\). P=[[1,1],[0,1]], D=diag(2,3), et A=PDP⁻¹.",
     "solutionSteps": [],
     "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
   },
