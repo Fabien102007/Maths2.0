@@ -463,7 +463,7 @@ function drawLab(){
     $("#labLegend").innerHTML='<span style="color:#80b8f4">→ v₁ : direction initiale</span><span style="color:#f2a45b">→ v₂ : vecteur à décomposer</span><span style="color:#e0b86d">→ projection parallèle</span><span style="color:#54c99b">→ w₂ : composante orthogonale</span>';
    }
   else curve(x=>x,xmin,xmax,"#80b8f4",3);
-  if(!["integral","schmidt","trig","limit","continuity"].includes(labType))$("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
+  if(!["integral","schmidt","trig","determinant","limit","continuity"].includes(labType))$("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
  }
  typeset($("#labLegend"));$("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
 }
