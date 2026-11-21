@@ -231,3 +231,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .lab-angle-presets button{border:1px solid #354a68;background:#14243a;color:#dce8fa;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer}
 .lab-angle-presets button:hover{border-color:#8b80f3;background:#25284a}
 .lab-trig-values{margin-top:11px;padding:10px 12px;border-radius:9px;background:#132b38;color:#aee7d6;font-size:12px}
+
+/* Navigation des exercices par niveaux */
+.exercise-level-intro{display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px;color:#eef3ff;font-size:14px}.exercise-level-intro span{color:#9fafff;font-size:11px;font-weight:700}.exercise-level-card{width:100%;min-height:92px;margin:0 0 10px;padding:15px 17px}.exercise-level-card b{font-size:16px}.exercise-level-card small{max-width:390px}.exercise-level-card i{white-space:nowrap;font-size:11px}.exercise-level-card.selected{border-color:#9186ff;box-shadow:0 0 0 1px #9186ff33}
