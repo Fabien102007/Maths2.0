@@ -172,7 +172,7 @@ function renderTopic(id){
  if(visual)$("#topicVisual").onclick=()=>{labType=visual;$("#labType").value=visual;go("visuals")};
  typeset($("#courseDetail"));
 }
-function exerciseLevelOf(e){const raw=e.level||courseLevelOf(topic(e.topic)||{});return raw==="Prépa"?"Approfondissement":raw;}
+function exerciseLevelOf(e){const raw=e.level||courseLevelOf(topic(e.topic)||{});return raw==="Prépa"?"Approfondissement":raw==="Lycée"?"Terminale":raw;}
 function renderExercises(){
  const q=$("#exerciseSearch").value.toLowerCase(),diff=activeExerciseDifficulty;
  const themes=$("#exerciseThemes"),topicsView=$("#exerciseTopicsView"),detail=$("#exerciseWorkspace"),levelList=$("#exerciseTopicList");
