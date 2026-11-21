@@ -134,6 +134,7 @@ function renderCourses(){
   listHost.innerHTML='<div class="course-level-intro"><b>Choisis ton niveau d\'études</b><span>'+esc(activeCourseCategory)+'</span></div>'+[
    {name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},
    {name:"L1",desc:"Université · Première année de licence",icon:"∑"},
+   {name:"L2",desc:"Université · Deuxième année de licence",icon:"∂"},
    {name:"Approfondissement",desc:"Notions de niveau prépa et prolongements",icon:"↗"}
   ].map(level=>{
    const count=TOPICS.filter(t=>t.category===activeCourseCategory&&courseLevelOf(t)===level.name).length;
@@ -143,7 +144,7 @@ function renderCourses(){
   $$("[data-course-level]").forEach(b=>b.onclick=()=>{activeCourseLevel=b.dataset.courseLevel;activeTopic=null;renderCourses()});
   return;
  }
- back.textContent=activeCourseLevel&&!q?"← Choisir Terminale / L1":"← Analyse et Algèbre";
+ back.textContent=activeCourseLevel&&!q?"← Choisir un niveau":"← Analyse et Algèbre";
  const filtered=TOPICS.filter(t=>(!q||(t.title+" "+t.summary+" "+(t.chapter||"")).toLowerCase().includes(q))&&(!activeCourseCategory||t.category===activeCourseCategory)&&(!activeCourseLevel||q||courseLevelOf(t)===activeCourseLevel));
  listHost.innerHTML=filtered.map(t=>`<button class="course-item ${activeTopic===t.id?"selected":""}" data-topic="${t.id}"><span class="course-symbol">${t.category==="Analyse"?"∫":"∑"}</span><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${esc(courseLevelOf(t))}</small></span><i>${mastered(t.id)?"✓":"→"}</i></button>`).join("")||'<p class="subtle">Aucune notion disponible à ce niveau pour le moment.</p>';
  $$("#courseList [data-topic]").forEach(b=>b.onclick=()=>openTopic(b.dataset.topic));
@@ -181,7 +182,7 @@ function renderExercises(){
  const inCategory=EXERCISES.filter(e=>e.category===activeExerciseCategory);
  if(!activeExerciseLevel){
   levelList.hidden=false;detail.hidden=true;topicsView.classList.remove("exercise-level-selected");
-  const levels=[{name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},{name:"L1",desc:"Université · Licence 1",icon:"∑"},{name:"Approfondissement",desc:"Notions de niveau prépa et prolongements",icon:"↗"}];
+  const levels=[{name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},{name:"L1",desc:"Université · Licence 1",icon:"∑"},{name:"L2",desc:"Université · Licence 2",icon:"∂"},{name:"Approfondissement",desc:"Notions de niveau prépa et prolongements",icon:"↗"}];
   levelList.innerHTML='<div class="exercise-level-intro"><b>Choisis ton niveau d\'études</b><span>'+esc(activeExerciseCategory)+'</span></div>'+levels.map(l=>{
    const count=inCategory.filter(e=>exerciseLevelOf(e)===l.name).length;
    return `<button type="button" class="course-theme-card exercise-level-card" data-ex-level="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count?count+" exercices":"Contenu à venir"} →</i></button>`;
@@ -192,7 +193,7 @@ function renderExercises(){
  if(!diff){
   levelList.hidden=false;detail.hidden=true;topicsView.classList.remove("exercise-level-selected");
   const levels=[{name:"Facile",desc:"Consolider les méthodes et les notions fondamentales",icon:"Ⅰ"},{name:"Intermédiaire",desc:"Combiner plusieurs propriétés et structurer le raisonnement",icon:"Ⅱ"},{name:"Avancé",desc:"Résoudre des problèmes plus exigeants et approfondir",icon:"Ⅲ"}];
-  levelList.innerHTML='<button type="button" class="course-back" data-ex-level-back>← Choisir Terminale / L1</button><div class="exercise-level-intro"><b>Choisis la difficulté</b><span>'+esc(activeExerciseCategory)+' · '+esc(activeExerciseLevel)+'</span></div>'+levels.map(l=>{
+  levelList.innerHTML='<button type="button" class="course-back" data-ex-level-back>← Choisir un niveau</button><div class="exercise-level-intro"><b>Choisis la difficulté</b><span>'+esc(activeExerciseCategory)+' · '+esc(activeExerciseLevel)+'</span></div>'+levels.map(l=>{
    const count=inCategory.filter(e=>exerciseLevelOf(e)===activeExerciseLevel&&e.difficulty===l.name).length;
    return `<button type="button" class="course-theme-card exercise-level-card" data-ex-diff="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count} exercices →</i></button>`;
   }).join("");
