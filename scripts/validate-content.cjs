@@ -77,6 +77,8 @@ assert.ok(appScript.includes("rating.sum/rating.count"), "Une session ne doit pa
 assert.ok(appScript.includes('go("home");typeset(document.body);'), "L'application doit s'ouvrir sur la vue d'ensemble.");
 assert.ok(appScript.includes('listHost.hidden=!!activeTopic') && appScript.includes('course-detail-open'), "La fiche d'un cours doit s'afficher seule après sélection.");
 assert.ok(appScript.includes('id="courseBackList"'), "La fiche de cours doit proposer un retour à la liste.");
+assert.ok(appScript.includes('<b>Correction rédigée</b>'), "Les corrections doivent être présentées sans étiquettes Étape 1, Étape 2, etc.");
+assert.ok(!appScript.includes('<b>Étape ${i+1}</b>'), "Le rendu des corrections ne doit plus générer de numérotation par étapes.");
 assert.ok(appScript.includes('$("#courseDetail [data-course-anchor]").forEach'), "Le sommaire des cours doit utiliser une sélection multiple.");
 assert.ok(appScript.includes('typeset($("#courseDetail"))'), "Les formules LaTeX des fiches cours doivent être composées.");
 
