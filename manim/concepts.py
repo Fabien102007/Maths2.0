@@ -23,8 +23,8 @@ class DerivativeTangent(MovingCameraScene):
         q = always_redraw(lambda: Dot(axes.c2p(a+h.get_value(), (a+h.get_value())**2), color="#F4B95F", radius=0.09))
         p_dot = Dot(p, color="#F4B95F", radius=0.095)
         secant = always_redraw(lambda: Line(
-            axes.c2p(a-0.15, a*a-0.3*h.get_value()),
-            axes.c2p(a+h.get_value()+0.2, (a+h.get_value())**2 + (2*(a+h.get_value())+0.2)*h.get_value()),
+            axes.c2p(a-0.7, a*a-(2*a+h.get_value())*0.7),
+            axes.c2p(a+h.get_value()+0.7, a*a+(2*a+h.get_value())*(h.get_value()+0.7)),
             color="#F4B95F", stroke_width=5
         ))
         tangent = axes.plot(lambda x: 2*a*x-a*a, x_range=[0.0, 3.1], color="#65D6B0", stroke_width=5)
@@ -120,6 +120,7 @@ class RiemannIntegral(Scene):
         self.wait(0.8)
         for n in [8, 16, 32, 64]:
             refined=rectangles(n)
-            self.play(Transform(current, refined), run_time=1.4, rate_func=smooth)
+            self.play(ReplacementTransform(current, refined), run_time=1.4, rate_func=smooth)
+            current=refined
         self.play(FadeIn(exact), run_time=1)
         self.wait(2)
