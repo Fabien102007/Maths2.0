@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: manim-render
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   render:
@@ -77,5 +77,7 @@ jobs:
             echo "No video changes."
             exit 0
           fi
-          git commit -m "Publish 4K Manim learning animations [skip ci]"
+          git commit -m "Publish verified 4K Manim learning animations [skip ci]"
+          git fetch origin main
+          git rebase origin/main
           git push origin HEAD:main
