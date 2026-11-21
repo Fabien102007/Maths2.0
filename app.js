@@ -75,7 +75,7 @@ const typesetExercise=el=>{
   return mj.typesetPromise([el]);
  }).catch(error=>console.error("Erreur MathJax dans un exercice :",error));
 };
-const richText=value=>esc(value).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
+const richText=value=>esc(value).replace(/^#{1,6}[ \t]+(.+)$/gm,'<h3 class="chat-response-heading">$1</h3>').replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
 // Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
 const exerciseRichText=value=>{
  const raw=String(value??"").replace(/(?:\\){2,}(?=[()[\]])/g,"\\");
