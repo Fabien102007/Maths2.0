@@ -366,3 +366,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 #courseTopicsView.course-level-selecting .course-layout{display:block}
 #courseTopicsView.course-level-selecting #courseList{width:100%;max-width:820px;margin:0 auto}
+
+.theorem-card{margin:11px 0;padding:14px 16px;border:1px solid rgba(132,123,238,.28);border-radius:12px;background:linear-gradient(145deg,rgba(43,40,83,.38),rgba(17,29,48,.72))}
+.theorem-card>b{display:block;color:#c9c2ff;font-size:12px;margin-bottom:8px}
+.theorem-card>p{margin:0;color:#e1e8f6;font-size:12px;line-height:1.8}
+.theorem-card details{margin-top:10px;padding-top:9px;border-top:1px solid rgba(132,123,238,.18)}
+.theorem-card summary{color:#a99fff;font-size:11px;font-weight:750;cursor:pointer}
+.theorem-card details p{margin:9px 0 0;color:#c2cde0;font-size:11px;line-height:1.85}
+.common-errors{padding:12px 15px 12px 30px;border:1px solid rgba(234,154,116,.2);border-radius:11px;background:rgba(75,38,32,.16);color:#e2c5b8;font-size:12px;line-height:1.8}
+#exerciseTopicList .exercise-level-intro{margin-top:14px}
+#exerciseTopicList .course-back{margin-bottom:13px}
+#exerciseWorkspace .exercise-topic-heading{margin-bottom:12px}
+@media(max-width:560px){.theorem-card{padding:12px}.theorem-card>p,.theorem-card details p{font-size:11px}}
