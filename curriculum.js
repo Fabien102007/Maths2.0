@@ -193,7 +193,7 @@ const courseEnrichment={
 "differential-equations":{methods:["Identifier l'ordre et le type de l'équation avant de choisir une méthode.","Pour y'=ay, reconnaître la famille Ce^{ax}.","Appliquer la condition initiale après avoir déterminé la solution générale."],errors:["Oublier la constante d'intégration.","Donner une solution particulière comme solution générale.","Ne pas vérifier la solution en la substituant dans l'équation."]},
 "euclidean":{methods:["Vérifier les axiomes du produit scalaire ou utiliser celui déjà défini.","Pour projeter sur une droite engendrée par u non nul, utiliser (<v,u>/||u||²)u.","Pour une famille orthogonale de vecteurs non nuls, conclure à la liberté puis normaliser si nécessaire."],errors:["Projeter sur le vecteur nul.","Confondre orthogonalité et orthonormalité.","Oublier que la norme est la racine carrée de <x,x>."]}
 };
-for(const t of topics){const extra=courseEnrichment[t.id];if(extra){t.methods=extra.methods;t.commonErrors=extra.errors;}}
+for(const t of window.TOPICS){const extra=courseEnrichment[t.id];if(extra){t.methods=extra.methods;t.commonErrors=extra.errors;}}
 const additionalTheorems={
 "trigonometry":[{title:"Période fondamentale de cos(ax)",statement:"Pour a≠0, la fonction x↦cos(ax) a pour période fondamentale 2π/|a|.",proof:"Une période T>0 doit vérifier cos(a(x+T))=cos(ax) pour tout x. La période fondamentale de cos est 2π ; la plus petite valeur positive de |a|T qui soit une période est 2π. Ainsi T=2π/|a|."}],
 "taylor":[{title:"Formule de Taylor-Young à l'ordre 2",statement:"Si f est deux fois dérivable au voisinage de 0 et si f'' est continue en 0, alors f(x)=f(0)+f'(0)x+f''(0)x²/2+o(x²) lorsque x→0.",proof:"La formule de Taylor avec reste de Peano donne f(x)=Σ_{k=0}² f^{(k)}(0)x^k/k!+o(x²). En écrivant les trois termes, on obtient l'égalité annoncée. Les hypothèses garantissent l'existence des dérivées utilisées."}],
@@ -212,7 +212,7 @@ const additionalTheorems={
 "term-vectors":[{title:"Relation de Chasles",statement:"Pour tous points A,B,C d'un espace affine, AB⃗+BC⃗=AC⃗.",proof:"En choisissant une origine O, on a AB⃗=OB⃗−OA⃗ et BC⃗=OC⃗−OB⃗. En additionnant, les termes OB⃗ s'annulent et il reste OC⃗−OA⃗=AC⃗."}],
 "term-equations":[{title:"Discriminant d'un trinôme",statement:"Pour ax²+bx+c=0 avec a≠0, poser Δ=b²−4ac. Si Δ>0, les racines sont (−b±√Δ)/(2a) ; si Δ=0, la racine double est −b/(2a) ; si Δ<0, il n'y a pas de racine réelle.",proof:"On divise l'équation par a puis on complète le carré : (x+b/(2a))²=Δ/(4a²). Le signe de Δ détermine l'existence de solutions réelles et la formule découle en prenant les racines carrées."}]
 };
-for(const t of topics){if(additionalTheorems[t.id]&&!t.theorems?.length)t.theorems=additionalTheorems[t.id];}
+for(const t of window.TOPICS){if(additionalTheorems[t.id]&&!t.theorems?.length)t.theorems=additionalTheorems[t.id];}
 for(const [id,steps] of Object.entries({
 "term-ex-3":["On dérive terme à terme le polynôme : (2x³)'=6x², (−3x²)'=−6x, (4x)'=4 et (−1)'=0.","On additionne les dérivées obtenues : f'(x)=6x²−6x+4.","On peut vérifier que la dérivée est encore un polynôme défini sur tout R."],
 "term-ex-7":["On regroupe les parties réelles : 2+1=3.","On regroupe les parties imaginaires : 3i−5i=−2i.","On obtient la forme algébrique 3−2i. La vérification consiste à retrouver séparément la partie réelle 3 et la partie imaginaire −2."]})){
