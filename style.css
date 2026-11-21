@@ -317,3 +317,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(prefers-reduced-motion:reduce){
  .chat-message,.chat-message-body,.chat-typing .chat-message-body,.chat-composer.is-sending .chat-compose,.send-button{animation:none!important;transition:none!important;transform:none!important;filter:none!important}
 }
+
+/* Titres Markdown dans les réponses du tuteur IA */
+.chat-message-content .chat-response-heading{display:block;margin:1.05em 0 .42em;padding-bottom:.28em;border-bottom:1px solid #7770c233;color:var(--text,#edf1ff);font-size:1.02em;font-weight:750;line-height:1.35;letter-spacing:.005em}
+.chat-message-content .chat-response-heading:first-child{margin-top:.15em}
