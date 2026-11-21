@@ -41,7 +41,6 @@ window.__mathJaxReady = new Promise(resolve => {
     <div class="side-label">ESPACE DE TRAVAIL</div>
     <nav class="nav">
       <button class="nav-link active" data-view="home"><span>⌂</span> Vue d'ensemble</button>
-      <button class="nav-link" data-view="path"><span>◈</span> Mon parcours</button>
       <button class="nav-link" data-view="courses"><span>▤</span> Cours</button>
       <button class="nav-link" data-view="exercises"><span>⌘</span> Exercices</button>
       <button class="nav-link" data-view="tutor"><span>✳</span> Tuteur IA</button>
@@ -67,7 +66,7 @@ window.__mathJaxReady = new Promise(resolve => {
         <div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> TON ESPACE DE PROGRESSION</div>
           <h1>Comprendre. Raisonner.<br><em>Maîtriser.</em></h1>
           <p>Un environnement de travail conçu pour faire progresser ton raisonnement mathématique, étape après étape.</p>
-          <div class="hero-actions"><button class="btn primary" data-go="path">Continuer mon parcours <span>→</span></button><button class="btn ghost" data-go="courses">Explorer les cours</button></div>
+          <div class="hero-actions"><button class="btn primary" data-go="exercises">Reprendre les exercices <span>→</span></button><button class="btn ghost" data-go="courses">Explorer les cours</button></div>
         </div>
         <div class="hero-art"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="math-symbol">∫</div><span class="float f1">lim</span><span class="float f2">∇</span><span class="float f3">∑</span><span class="float f4">π</span></div>
       </div>
@@ -79,14 +78,9 @@ window.__mathJaxReady = new Promise(resolve => {
         <article class="stat-card"><span class="stat-icon amber">◷</span><small>Séances réalisées</small><strong id="statSessions">0</strong><div class="stat-foot">Depuis ton démarrage</div></article>
       </div>
       <div class="home-grid">
-        <article class="panel daily-panel"><div class="panel-head"><div><div class="eyebrow">RECOMMANDATION DU JOUR</div><h3 id="dailyTitle">Construis ta prochaine réussite</h3></div><span class="tag">PERSONNALISÉ</span></div><p id="dailyDescription">Ton parcours s'adaptera à tes résultats.</p><div class="daily-meta"><span>◷ 15–25 min</span><span>◈ Une notion ciblée</span></div><button class="btn primary" data-go="path">Démarrer la séance <span>→</span></button></article>
+        <article class="panel daily-panel"><div class="panel-head"><div><div class="eyebrow">RECOMMANDATION DU JOUR</div><h3 id="dailyTitle">Construis ta prochaine réussite</h3></div><span class="tag">PERSONNALISÉ</span></div><p id="dailyDescription">Ton parcours s'adaptera à tes résultats.</p><div class="daily-meta"><span>◷ 15–25 min</span><span>◈ Une notion ciblée</span></div><button class="btn primary" data-go="exercises">Commencer les exercices <span>→</span></button></article>
         <article class="panel quick-panel"><div class="panel-head"><div><div class="eyebrow">ACCÈS RAPIDE</div><h3>Que souhaites-tu faire ?</h3></div></div><button class="quick-link" data-go="exercises"><span class="quick-icon">⌘</span><span><b>Résoudre un exercice</b><small>Choisir un thème et un niveau</small></span><i>→</i></button><button class="quick-link" data-go="tutor"><span class="quick-icon">✳</span><span><b>Demander au tuteur IA</b><small>Débloquer un raisonnement</small></span><i>→</i></button><button class="quick-link" data-go="review"><span class="quick-icon">⟳</span><span><b>Faire mes révisions</b><small>Entretenir les acquis</small></span><i>→</i></button></article>
       </div>
-    </section>
-
-    <section class="view" id="view-path">
-      <div class="page-intro"><div class="eyebrow">APPRENTISSAGE ADAPTATIF</div><h1>Ton parcours</h1><p>Un chemin clair, ajusté à ce que tu sais déjà faire — et à ce qu'il te reste à consolider.</p></div>
-      <div class="path-layout"><div class="panel path-main"><div class="panel-head"><div><div class="eyebrow">PROCHAINE ÉTAPE</div><h3 id="pathTitle">Ton diagnostic de départ</h3></div><span class="tag">ÉTAPE ACTIVE</span></div><p id="pathText">Quelques questions permettent de repérer tes points d'appui et de choisir une première notion.</p><div id="diagnosticArea"></div><div id="pathRecommendation"></div></div><aside class="panel path-aside"><div class="eyebrow">LES 4 TEMPS D'UNE SÉANCE</div><div class="step-list"><div class="step"><b>01</b><span><strong>Comprendre</strong><small>Une définition et ses idées clés</small></span></div><div class="step"><b>02</b><span><strong>Observer</strong><small>Un exemple guidé</small></span></div><div class="step"><b>03</b><span><strong>Pratiquer</strong><small>Un exercice adapté</small></span></div><div class="step"><b>04</b><span><strong>Consolider</strong><small>Une révision au bon moment</small></span></div></div></aside></div>
     </section>
 
     <section class="view" id="view-courses">
