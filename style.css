@@ -467,3 +467,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .exercise-actions,.detail-actions{flex-wrap:wrap}
 .exercise-actions .btn,.detail-actions .btn{min-height:38px}
 @media(max-width:560px){.exercise-actions .btn,.detail-actions .btn{flex:1 1 100%}}
+
+/* Course pages are displayed alone after selecting a chapter. */
+#courseTopicsView.course-detail-open .course-layout{grid-template-columns:minmax(0,1fr)}
+#courseList[hidden]{display:none!important}
+.course-back-list{display:inline-flex;margin:0 0 18px;}
