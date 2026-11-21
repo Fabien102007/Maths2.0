@@ -234,3 +234,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Navigation des exercices par niveaux */
 .exercise-level-intro{display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px;color:#eef3ff;font-size:14px}.exercise-level-intro span{color:#9fafff;font-size:11px;font-weight:700}.exercise-level-card{width:100%;min-height:92px;margin:0 0 10px;padding:15px 17px}.exercise-level-card b{font-size:16px}.exercise-level-card small{max-width:390px}.exercise-level-card i{white-space:nowrap;font-size:11px}.exercise-level-card.selected{border-color:#9186ff;box-shadow:0 0 0 1px #9186ff33}
+
+/* Le niveau est choisi dans les cartes Facile / Intermédiaire / Avancé. */
+#exerciseDifficulty{display:none!important}
