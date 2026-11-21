@@ -1,7 +1,7 @@
 {
   "name": "Maths2.0 — Maths Workspace",
   "short_name": "Maths2.0",
-  "start_url": "./",
+  "start_url": "./app.html",
   "display": "standalone",
   "background_color": "#0b1020",
   "theme_color": "#0b1020",
@@ -12,5 +12,8 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "./app.html",
+  "description": "Cours structurés, exercices corrigés, révisions et visualisations mathématiques interactives.",
+  "scope": "./"
 }
