@@ -120,7 +120,7 @@ function chooseNextTopic(){
  };
  return remaining.sort((a,b)=>priority(a)-priority(b))[0];
 }
-function courseLevelOf(t){return t.level==="Lycée"||t.level==="Terminale"?"Terminale":t.level==="L1"||t.level==="Prépa"?"L1":t.level||"Autre";}
+function courseLevelOf(t){return t.level==="Lycée"||t.level==="Terminale"?"Terminale":t.level==="Prépa"?"Approfondissement":t.level||"Autre";}
 function renderCourses(){
  const q=$("#courseSearch").value.trim().toLowerCase();
  const themes=$("#courseThemes"),topicsView=$("#courseTopicsView"),listHost=$("#courseList"),detail=$("#courseDetail"),back=$("#courseBackThemes");
@@ -154,13 +154,22 @@ function renderTopic(id){
  const level=courseLevelOf(t);
  const visualByTopic={limits:"limit",continuity:"continuity",derivative:"derivative",integrals:"integral",basis:"schmidt",matrices:"determinant",eigenvalues:"eigen","term-sequences":"sequence","term-functions":"derivative","term-complex":"complex3d"};
  const visual=visualByTopic[id]||null;
+ const prerequisites=(t.prerequisites||[]).map(topic).filter(Boolean);
  const theorems=(t.theorems||[]).map((th,i)=>`<div class="theorem-card"><b>Théorème ${i+1} — ${esc(th.title)}</b><p>${th.statement}</p><details><summary>Voir la démonstration</summary><p>${th.proof}</p></details></div>`).join("");
  const methods=(t.methods||[]).map(x=>`<li>${x}</li>`).join("");
  const errors=(t.commonErrors||[]).map(x=>`<li>${x}</li>`).join("");
- $("#courseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(t.category)} · ${esc(level)}</span>${mastered(id)?'<span class="mastered-label">✓ Maîtrisée</span>':''}</div><h2>${esc(t.title)}</h2><p class="lead">${esc(t.summary)}</p><p class="course-meta">${esc(t.chapter||t.category)} · ${esc(level)} · ${EXERCISES.filter(e=>e.topic===id).length} exercice(s)</p><h3>Définitions essentielles</h3>${t.definitions.map(d=>`<div class="definition"><b>${d[0]}</b><p>${d[1]}</p></div>`).join("")}<h3>Propriétés à connaître</h3><ul class="property-list">${t.properties.map(p=>`<li>${p}</li>`).join("")}</ul>${theorems?'<h3>Théorèmes et démonstrations</h3>'+theorems:''}<h3>Exemple détaillé</h3><div class="example-box">${t.example}</div>${methods?'<h3>Méthode de travail</h3><ul class="property-list">'+methods+'</ul>':''}${errors?'<h3>Erreurs classiques à éviter</h3><ul class="common-errors">'+errors+'</ul>':''}<div class="detail-actions"><button class="btn primary" id="topicExercise">S'entraîner sur cette notion →</button><button class="btn ghost" id="topicReview">Ajouter aux révisions</button>${visual?'<button class="btn ghost" id="topicVisual">Explorer visuellement →</button>':""}</div>`;
- $("#topicExercise").onclick=()=>{if(linkedExercise){go("exercises");openExercise(linkedExercise.id)}else toast("Aucun exercice n’est encore associé à cette notion.")};$("#topicReview").onclick=()=>scheduleReview(id,1);if(visual)$("#topicVisual").onclick=()=>{labType=visual;$("#labType").value=visual;go("visuals")};typeset($("#courseDetail"));
+ const outline=[["course-definitions","Définitions"],["course-properties","Propriétés"],...(theorems?[["course-theorems","Démonstrations"]]:[]),["course-example","Exemple"],...(methods?[["course-methods","Méthodes"]]:[])];
+ const outlineMarkup=outline.map(([target,label],i)=>`<button type="button" class="course-outline-link" data-course-anchor="${target}"><span>${String(i+1).padStart(2,"0")}</span>${label}</button>`).join("");
+ const prerequisiteMarkup=prerequisites.length?`<div class="course-prerequisites"><b>À connaître avant ce chapitre</b><div>${prerequisites.map(p=>`<button type="button" data-prerequisite="${p.id}">${esc(p.title)} <span>↗</span></button>`).join("")}</div></div>`:"";
+ $("#courseDetail").innerHTML=`<div class="detail-top"><span class="tag">${esc(t.category)} · ${esc(level)}</span>${mastered(id)?'<span class="mastered-label">✓ Maîtrisée</span>':''}</div><h2>${esc(t.title)}</h2><p class="lead">${esc(t.summary)}</p><p class="course-meta">${esc(t.chapter||t.category)} · ${esc(level)} · ${EXERCISES.filter(e=>e.topic===id).length} exercice(s)</p><div class="course-roadmap"><div class="course-roadmap-head"><span>PARCOURS DU CHAPITRE</span><small>${outline.length} étapes</small></div><div class="course-outline">${outlineMarkup}</div></div>${prerequisiteMarkup}<h3 id="course-definitions">01 · Définitions essentielles</h3>${(t.definitions||[]).map(d=>`<div class="definition"><b>${d[0]}</b><p>${d[1]}</p></div>`).join("")}<h3 id="course-properties">02 · Propriétés à connaître</h3><ul class="property-list">${(t.properties||[]).map(p=>`<li>${p}</li>`).join("")}</ul>${theorems?'<h3 id="course-theorems">03 · Théorèmes et démonstrations</h3>'+theorems:''}<h3 id="course-example">${theorems?"04":"03"} · Exemple détaillé</h3><div class="example-box">${t.example||"Exemple à compléter."}</div>${methods?'<h3 id="course-methods">Méthodes à maîtriser</h3><ul class="property-list">'+methods+'</ul>':''}${errors?'<h3>Erreurs classiques à éviter</h3><ul class="common-errors">'+errors+'</ul>':''}<div class="detail-actions"><button class="btn primary" id="topicExercise">S'entraîner sur cette notion →</button><button class="btn ghost" id="topicReview">Ajouter aux révisions</button>${visual?'<button class="btn ghost" id="topicVisual">Explorer visuellement →</button>':""}</div>`;
+ $$("#courseDetail [data-course-anchor]").forEach(b=>b.onclick=()=>$("#"+b.dataset.courseAnchor)?.scrollIntoView({behavior:"smooth",block:"start"}));
+ $$("#courseDetail [data-prerequisite]").forEach(b=>b.onclick=()=>openTopic(b.dataset.prerequisite));
+ $("#topicExercise").onclick=()=>{if(linkedExercise){go("exercises");openExercise(linkedExercise.id)}else toast("Aucun exercice n’est encore associé à cette notion.")};
+ $("#topicReview").onclick=()=>scheduleReview(id,1);
+ if(visual)$("#topicVisual").onclick=()=>{labType=visual;$("#labType").value=visual;go("visuals")};
+ typeset($("#courseDetail"));
 }
-function exerciseLevelOf(e){return e.level||courseLevelOf(topic(e.topic)||{});}
+function exerciseLevelOf(e){const raw=e.level||courseLevelOf(topic(e.topic)||{});return raw==="Prépa"?"Approfondissement":raw;}
 function renderExercises(){
  const q=$("#exerciseSearch").value.toLowerCase(),diff=activeExerciseDifficulty;
  const themes=$("#exerciseThemes"),topicsView=$("#exerciseTopicsView"),detail=$("#exerciseWorkspace"),levelList=$("#exerciseTopicList");
@@ -170,7 +179,7 @@ function renderExercises(){
  const inCategory=EXERCISES.filter(e=>e.category===activeExerciseCategory);
  if(!activeExerciseLevel){
   levelList.hidden=false;detail.hidden=true;topicsView.classList.remove("exercise-level-selected");
-  const levels=[{name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},{name:"L1",desc:"Université · Licence 1",icon:"∑"}];
+  const levels=[{name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},{name:"L1",desc:"Université · Licence 1",icon:"∑"},{name:"Approfondissement",desc:"Notions de niveau prépa et prolongements",icon:"↗"}];
   levelList.innerHTML='<div class="exercise-level-intro"><b>Choisis ton niveau d\'études</b><span>'+esc(activeExerciseCategory)+'</span></div>'+levels.map(l=>{
    const count=inCategory.filter(e=>exerciseLevelOf(e)===l.name).length;
    return `<button type="button" class="course-theme-card exercise-level-card" data-ex-level="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count?count+" exercices":"Contenu à venir"} →</i></button>`;
@@ -205,7 +214,7 @@ function renderExercise(id){
  $("#exerciseBack").onclick=()=>{activeExercise=null;renderExercises()};
  $("#selfAnswer").addEventListener("input",()=>{state.drafts=state.drafts||{};state.drafts[id]=$("#selfAnswer").value;state.updatedAt=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(state));window.Maths2Account?.scheduleSync?.()}catch(e){console.warn("Sauvegarde locale indisponible",e)}});
   let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b><p>${exerciseRichText(hints[h++])}</p>`;typesetExercise($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
- $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction détaillée</b><small>Raisonnement et justification étape par étape</small></div></div><div class="solution-content">${(e.solutionSteps||[]).map((s,i)=>`<div class="solution-step"><b>Étape ${i+1}</b><p>${exerciseRichText(s)}</p></div>`).join("")}<div class="solution-conclusion"><b>Conclusion</b><p>${exerciseRichText(e.answer)}</p></div></div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typesetExercise($("#solutionBox"))};
+ $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;const hasSteps=Array.isArray(e.solutionSteps)&&e.solutionSteps.length>0;const body=hasSteps?(e.solutionSteps.map((s,i)=>`<div class="solution-step"><b>Étape ${i+1}</b><p>${exerciseRichText(s)}</p></div>`).join("")+`<div class="solution-conclusion"><b>Conclusion</b><p>${exerciseRichText(e.answer||"")}</p></div>`):`<div class="solution-narrative">${exerciseRichText(e.answer||"Correction à compléter.")}</div>`;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>${hasSteps?"Correction détaillée":"Correction"}</b><small>${hasSteps?"Raisonnement et justification étape par étape":"Réponse rédigée disponible pour cet exercice"}</small></div></div><div class="solution-content">${body}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typesetExercise($("#solutionBox"))};
  $$(".rating-btn").forEach(b=>b.onclick=()=>recordAttempt(e,+b.dataset.score));
  // Attendre que le navigateur ait réellement inséré et peint l’énoncé avant MathJax.
  requestAnimationFrame(()=>{
