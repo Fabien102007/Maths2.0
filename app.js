@@ -586,7 +586,7 @@ function init(){
  const labCanvas=$("#labCanvas");labCanvas.addEventListener("pointerdown",e=>{if(labType!=="surface3d"&&labType!=="complex3d")return;labDragging={x:e.clientX,y:e.clientY};labCanvas.setPointerCapture(e.pointerId)});labCanvas.addEventListener("pointermove",e=>{if(!labDragging)return;const dx=e.clientX-labDragging.x,dy=e.clientY-labDragging.y;labDragging={x:e.clientX,y:e.clientY};labRotationY+=dx*.009;labRotationX=Math.max(.15,Math.min(1.45,labRotationX+dy*.007));if(labType==="surface3d")$("#labSlider").value=Math.round(labRotationY*180/Math.PI);drawLab()});["pointerup","pointercancel","lostpointercapture"].forEach(ev=>labCanvas.addEventListener(ev,()=>{labDragging=null}));
  window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
  if(state.lastDay!==new Date().toDateString()){const yesterday=new Date(Date.now()-86400000).toDateString();state.streak=state.lastDay===yesterday?state.streak+1:1;state.lastDay=new Date().toDateString();save()}
- renderDashboard();renderCourses();renderExercises();renderProgress();typeset(document.body);
+ renderDashboard();renderCourses();renderExercises();renderProgress();go("presentation");typeset(document.body);
  if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>reg.update()).catch(()=>{});}
 }
 // Délégation globale pour les cartes Analyse / Algèbre.
