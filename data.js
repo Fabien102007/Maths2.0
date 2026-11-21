@@ -504,17 +504,16 @@ window.EXERCISES = [
   },
   {
     "id": "m4-36",
-    "topic": "integrals",
+    "topic": "multivariable",
     "category": "Analyse",
     "difficulty": "Intermédiaire",
-    "title": "Intégration — Intermédiaire · Exercice 36",
-    "question": "Décrire les lignes de niveau de la fonction \\(f(x,y)=x^2+y^2\\) correspondant à la valeur \\(1\\).",
-    "hints": [
-      "Résoudre x²+y²=1."
-    ],
-    "answer": "La ligne de niveau est le cercle unité de centre (0,0) et de rayon 1.",
-    "solutionSteps": [],
-    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
+    "title": "Fonctions de plusieurs variables — Ligne de niveau",
+    "question": "Décrire la ligne de niveau de valeur 1 de $f(x,y)=x^2+y^2$.",
+    "hints": ["Écris l'équation $f(x,y)=1$.", "Reconnais l'équation cartésienne d'un cercle."],
+    "answer": "La ligne de niveau est définie par $x^2+y^2=1$. C'est le cercle de centre $(0,0)$ et de rayon 1.",
+    "solutionSteps": ["Par définition, la ligne de niveau de valeur 1 est l'ensemble des points $(x,y)$ tels que $f(x,y)=1$.", "En remplaçant $f(x,y)$ par son expression, on obtient $x^2+y^2=1$.", "Cette équation est celle du cercle unité, de centre $(0,0)$ et de rayon 1."],
+    "check": "Vérifie la définition d'une ligne de niveau puis identifie la courbe obtenue.",
+    "level": "L2"
   },
   {
     "id": "m4-37",
@@ -922,3 +921,11 @@ window.FLASHCARDS.push(...[{"topic":"limits","front":"Unicité de la limite","ba
 /* Éviter de répéter les énoncés des théorèmes dans la liste des propriétés */
 
 for(const t of window.TOPICS){if(t.theorems?.length)t.properties=t.properties.filter(p=>!t.theorems.some(th=>p.startsWith(th.title+" : ")));}
+
+
+window.EXERCISES.push(
+{id:"l2-multi-1",topic:"multivariable",category:"Analyse",level:"L2",difficulty:"Facile",title:"Dérivées partielles d'un polynôme",question:"Soit $f(x,y)=x^2y+3xy^2$. Calculer $\\partial f/\\partial x$ et $\\partial f/\\partial y$.",hints:["Pour $\\partial f/\\partial x$, considère $y$ comme une constante.","Pour $\\partial f/\\partial y$, considère $x$ comme une constante."],answer:"On obtient $\\boxed{\\partial_x f=2xy+3y^2}$ et $\\boxed{\\partial_y f=x^2+6xy}$.",solutionSteps:["Pour dériver par rapport à $x$, on considère $y$ comme constant : $(x^2y)'_x=2xy$ et $(3xy^2)'_x=3y^2$.","Ainsi $\\partial_x f(x,y)=2xy+3y^2$.","Pour dériver par rapport à $y$, on considère $x$ comme constant : $(x^2y)'_y=x^2$ et $(3xy^2)'_y=6xy$.","Ainsi $\\partial_y f(x,y)=x^2+6xy$."],check:"Dans chaque dérivée partielle, vérifie que l'autre variable a bien été traitée comme une constante."},
+{id:"l2-multi-2",topic:"multivariable",category:"Analyse",level:"L2",difficulty:"Intermédiaire",title:"Gradient et point critique",question:"Déterminer les points critiques de $f(x,y)=x^2+2y^2-4x+8y$.",hints:["Calcule les deux dérivées partielles premières.","Résous le système $\\partial_x f=0$ et $\\partial_y f=0$."],answer:"Le gradient s'annule uniquement en $(2,-2)$ : c'est l'unique point critique.",solutionSteps:["On calcule $\\partial_x f=2x-4$ et $\\partial_y f=4y+8$.","Un point critique vérifie $2x-4=0$ et $4y+8=0$.","On obtient $x=2$ et $y=-2$.","Le seul point critique est donc $\\boxed{(2,-2)}$."],check:"Un point critique intérieur doit annuler simultanément toutes les dérivées partielles premières."},
+{id:"l2-multi-3",topic:"multivariable",category:"Analyse",level:"L2",difficulty:"Avancé",title:"Nature d'un point critique",question:"Étudier la nature du point critique de $f(x,y)=x^2-y^2$ en $(0,0)$.",hints:["Vérifie d'abord que le gradient s'annule en $(0,0)$.","Compare les valeurs de $f$ sur les axes $y=0$ et $x=0$."],answer:"L'origine est un point selle : la fonction prend des valeurs positives et négatives arbitrairement près de l'origine.",solutionSteps:["On a $\\partial_x f=2x$ et $\\partial_y f=-2y$, donc le gradient s'annule en $(0,0)$.","Sur l'axe $y=0$, $f(x,0)=x^2>0$ pour $x\\ne0$.","Sur l'axe $x=0$, $f(0,y)=-y^2<0$ pour $y\\ne0$.","Dans tout voisinage de l'origine, la fonction prend donc des valeurs supérieures et inférieures à $f(0,0)=0$. L'origine est un point selle."],check:"Pour exclure un extremum local, trouve des valeurs supérieures et inférieures à la valeur au point dans tout voisinage."},
+{id:"l2-multi-4",topic:"multivariable",category:"Analyse",level:"L2",difficulty:"Intermédiaire",title:"Matrice hessienne",question:"Calculer la matrice hessienne de $f(x,y)=x^2+3xy+2y^2$ et déterminer son déterminant.",hints:["Calcule d'abord les dérivées partielles secondes.","La matrice hessienne est symétrique pour ce polynôme."],answer:"La hessienne est $H_f=\\begin{pmatrix}2&3\\\\3&4\\end{pmatrix}$ et son déterminant vaut $8-9=-1$.",solutionSteps:["Les dérivées premières sont $f_x=2x+3y$ et $f_y=3x+4y$.","Les dérivées secondes sont $f_{xx}=2$, $f_{xy}=3$, $f_{yx}=3$ et $f_{yy}=4$.","La matrice hessienne est donc $H_f=\\begin{pmatrix}2&3\\\\3&4\\end{pmatrix}$.","Son déterminant vaut $2\\times4-3\\times3=8-9=-1$."],check:"Place les dérivées secondes dans le bon ordre et vérifie le déterminant avec la formule ad−bc."}
+);
