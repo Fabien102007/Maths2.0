@@ -286,7 +286,7 @@ function showTutorTyping(){
 function openTutorWithContext(message){
  activeMode="tutor";
  go("tutor");
- $("#tutorModes .mode").forEach(b=>b.classList.toggle("active",b.dataset.mode==="tutor"));
+ $$("#tutorModes .mode").forEach(b=>b.classList.toggle("active",b.dataset.mode==="tutor"));
  $("#chatInput").value=message;
  $("#chatInput").focus();
  $("#tutorStatus").textContent="Contexte préparé : tu peux préciser ta question avant l'envoi.";
