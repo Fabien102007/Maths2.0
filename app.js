@@ -98,7 +98,7 @@ const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
 const mastered=id=>state.attempts[id]?.independent>=2 && state.attempts[id]?.lastScore>=0.8;
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
-function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals")drawVisuals();if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
+function go(view){$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals")drawVisuals();if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
 function renderDashboard(){
  const count=TOPICS.filter(t=>mastered(t.id)).length,solved=state.solved.length,due=dueTopics().length,pct=Math.round(100*count/TOPICS.length);
  $("#statMastered").textContent=count+"/"+TOPICS.length;$("#masteryRate").textContent=pct+" %";$("#statSolved").textContent=solved;$("#statDue").textContent=due;$("#statSessions").textContent=state.sessions;$("#streak").textContent=state.streak;
@@ -521,6 +521,29 @@ function drawLab(){
  typeset($("#labLegend"));$("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
 }
 function drawVisuals(){if($("#labType"))labSetup()}
+const MANIM_LIBRARY={
+ euler:{src:"assets/manim/euler_helix.mp4",kicker:"ALGÈBRE · NOMBRES COMPLEXES",title:"Exponentielle complexe",equation:"\\(e^{i\\theta}=\\cos\\theta+i\\sin\\theta\\)",description:"Le mouvement sur le cercle unité donne les parties réelle et imaginaire. L'ajout du temps comme troisième coordonnée transforme la rotation en hélice."},
+ derivative:{src:"assets/manim/derivative_tangent.mp4",kicker:"ANALYSE · DÉRIVATION",title:"De la sécante à la tangente",equation:"\\(f'(a)=\\lim_{h\\to0}\\frac{f(a+h)-f(a)}h\\)",description:"Le point mobile se rapproche de a : la sécante pivote et sa pente converge vers celle de la tangente. Le taux moyen devient le taux instantané."},
+ fourier:{src:"assets/manim/fourier_square.mp4",kicker:"ANALYSE · SÉRIES",title:"La naissance d'un signal",equation:"\\(S_N(x)=\\frac4\\pi\\sum_{n=0}^{N-1}\\frac{\\sin((2n+1)x)}{2n+1}\\)",description:"Chaque harmonique ajoute une fréquence. Leur superposition reconstruit le signal carré ; près des discontinuités, le dépassement de Gibbs reste visible."},
+ integral:{src:"assets/manim/riemann_integral.mp4",kicker:"ANALYSE · INTÉGRATION",title:"Approcher l'aire",equation:"\\(\\int_0^b x^2\\,dx=\\frac{b^3}{3}\\)",description:"Les rectangles approchent l'aire sous la parabole. Quand leur nombre augmente et leur largeur diminue, les sommes convergent vers l'intégrale."}
+};
+function selectManimAnimation(key){
+ const item=MANIM_LIBRARY[key]||MANIM_LIBRARY.euler,video=$("#manimVideo"),source=video?.querySelector("source");
+ if(!video||!source)return;
+ const wasPlaying=!video.paused;
+ if(source.getAttribute("src")!==item.src){video.pause();source.setAttribute("src",item.src);video.load()}
+ $("#manimActiveKicker").textContent=item.kicker;$("#manimActiveTitle").textContent=item.title;$("#manimActiveEquation").textContent=item.equation;$("#manimActiveDescription").textContent=item.description;
+ $("[data-manim]").forEach(b=>b.classList.toggle("active",b.dataset.manim===key));
+ typeset($("#manimActiveEquation"));
+ if(wasPlaying)video.play().catch(()=>{});
+}
+function initManimLibrary(){
+ if(!window.__maths20ManimBound){
+  window.__maths20ManimBound=true;
+  $("[data-manim]").forEach(b=>b.addEventListener("click",()=>selectManimAnimation(b.dataset.manim)));
+ }
+ if(!$("#manimVideo")?.dataset.initialized){selectManimAnimation("euler");if($("#manimVideo"))$("#manimVideo").dataset.initialized="1"}
+}
 function renderProgressOnHome(){renderDashboard()}
 function init(){
   if(window.__maths20InitDone)return;
@@ -559,7 +582,7 @@ function init(){
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
  $("#clearChat").onclick=()=>{chatHistory=[];$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};
  $("#tutorImage").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>8*1024*1024){toast("Image limitée à 8 Mo.");return}try{chatImage=await resizeImage(f);$("#uploadName").textContent=f.name+" · prête"}catch{toast("Lecture de l'image impossible.")}};
- const labSelect=$("#labType");if(labSelect){const seen=new Set();[...labSelect.options].forEach(option=>{if(seen.has(option.value))option.remove();else seen.add(option.value)});labType=labSelect.value||"derivative";}labSelect.onchange=()=>{labType=labSelect.value;labSetup()};$("#labSlider").oninput=()=>{if(labType==="surface3d")labRotationY=Number($("#labSlider").value)*Math.PI/180;drawLab()};$("#surfaceFunction").onchange=()=>{updateSurfaceMeta();typeset($("#labFormula"));renderLabGuide();drawLab()};$("#labAnimate").onclick=toggleComplexAnimation;
+ const labSelect=$("#labType");if(labSelect){const seen=new Set();[...labSelect.options].forEach(option=>{if(seen.has(option.value))option.remove();else seen.add(option.value)});labType=labSelect.value||"derivative";}labSelect.onchange=()=>{labType=labSelect.value;labSetup()};$("#labSlider").oninput=()=>{if(labType==="surface3d")labRotationY=Number($("#labSlider").value)*Math.PI/180;drawLab()};$("#surfaceFunction").onchange=()=>{updateSurfaceMeta();typeset($("#labFormula"));renderLabGuide();drawLab()};$("#labAnimate").onclick=toggleComplexAnimation;initManimLibrary();
  const labCanvas=$("#labCanvas");labCanvas.addEventListener("pointerdown",e=>{if(labType!=="surface3d"&&labType!=="complex3d")return;labDragging={x:e.clientX,y:e.clientY};labCanvas.setPointerCapture(e.pointerId)});labCanvas.addEventListener("pointermove",e=>{if(!labDragging)return;const dx=e.clientX-labDragging.x,dy=e.clientY-labDragging.y;labDragging={x:e.clientX,y:e.clientY};labRotationY+=dx*.009;labRotationX=Math.max(.15,Math.min(1.45,labRotationX+dy*.007));if(labType==="surface3d")$("#labSlider").value=Math.round(labRotationY*180/Math.PI);drawLab()});["pointerup","pointercancel","lostpointercapture"].forEach(ev=>labCanvas.addEventListener(ev,()=>{labDragging=null}));
  window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
  if(state.lastDay!==new Date().toDateString()){const yesterday=new Date(Date.now()-86400000).toDateString();state.streak=state.lastDay===yesterday?state.streak+1:1;state.lastDay=new Date().toDateString();save()}
