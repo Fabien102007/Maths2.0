@@ -548,6 +548,15 @@ function selectManimAnimation(key){
  if(wasPlaying)video.play().catch(()=>{});
 }
 function initManimLibrary(){
+ if(!window.__maths20ManimSpeedBound){
+  window.__maths20ManimSpeedBound=true;
+  document.querySelectorAll("[data-manim-rate]").forEach(b=>b.addEventListener("click",()=>{
+   const video=$("#manimVideo");if(!video)return;
+   const rate=Number(b.dataset.manimRate);if(!Number.isFinite(rate))return;
+   video.playbackRate=rate;
+   document.querySelectorAll("[data-manim-rate]").forEach(x=>x.classList.toggle("active",x===b));
+  }));
+ }
  if(!window.__maths20ManimBound){
   window.__maths20ManimBound=true;
   document.querySelectorAll("[data-manim]").forEach(b=>b.addEventListener("click",()=>selectManimAnimation(b.dataset.manim)));
