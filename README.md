@@ -1,5 +1,11 @@
 # Maths2.0 — Learning Studio
 
+## Présentation publique
+- `landing.html` est la page de présentation destinée aux visiteurs venant des réseaux sociaux.
+- Elle présente les parcours lycée / L1, les fonctionnalités existantes et les quatre animations Manim.
+- La bêta est gratuite ; l'offre Premium et ses tarifs affichés sont indicatifs et aucun paiement n'est activé.
+
+
 Maths2.0 est une application web progressive (PWA) en français, publiée sur GitHub Pages. Cette version est une bêta pédagogique : elle vise à structurer l'apprentissage des mathématiques, l'entraînement et la mémorisation.
 
 ## Déploiement GitHub Pages
