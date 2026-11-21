@@ -321,3 +321,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* Titres Markdown dans les réponses du tuteur IA */
 .chat-message-content .chat-response-heading{display:block;margin:1.05em 0 .42em;padding-bottom:.28em;border-bottom:1px solid #7770c233;color:var(--text,#edf1ff);font-size:1.02em;font-weight:750;line-height:1.35;letter-spacing:.005em}
 .chat-message-content .chat-response-heading:first-child{margin-top:.15em}
+
+/* Ajustement de l'en-tête sur petits écrans : navigation sur deux lignes */
+@media(max-width:800px){
+ .topbar{height:auto;min-height:76px;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:10px 0;padding:12px 0}
+ .topbar .mobile-menu{flex:0 0 42px;margin-right:12px}
+ .topbar .breadcrumb{flex:1 1 0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .topbar .breadcrumb b{display:inline-block;max-width:58%;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
+ .topbar .top-actions{flex:1 0 100%;width:100%;min-width:0;margin:0;display:flex;align-items:center;justify-content:flex-end;gap:8px}
+ .topbar .account-button{margin-right:auto;white-space:nowrap}
+ .topbar .streak{white-space:nowrap}
+ .topbar .icon-btn{flex:0 0 40px;width:40px;height:40px;display:grid;place-items:center;padding:0}
+}
+@media(max-width:380px){
+ .topbar .top-actions{gap:6px}
+ .topbar .account-button{font-size:10px;padding:7px 8px}
+ .topbar .icon-btn{flex-basis:36px;width:36px;height:36px}
+ .topbar .breadcrumb{font-size:11px}
+}
+/* Renforcer le gras des notions et formules sur les flashcards */
+.flashcard-face strong,.flashcard-face strong *{font-weight:800!important}
