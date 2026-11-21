@@ -33,7 +33,20 @@ window.__mathJaxReady = new Promise(resolve => {
   };
   loadNext();
 });
-</script></head>
+</script>  <style>
+    .presentation-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:clamp(22px,4vw,42px);margin-bottom:28px;background:radial-gradient(circle at 85% 15%,#39346e88,transparent 42%),linear-gradient(120deg,#182641,#111c30)}
+    .presentation-hero h2{font-size:clamp(25px,4vw,38px);line-height:1.15;margin:16px 0 10px}.presentation-hero p{color:var(--muted);max-width:580px}
+    .presentation-equation{padding:28px 16px;border:1px solid #6870a0;border-radius:16px;background:#0d1729;color:#d8d5ff;text-align:center;font:clamp(17px,2.4vw,25px) Georgia,serif;overflow-wrap:anywhere}
+    .presentation-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:34px}
+    .presentation-grid .panel{padding:22px}.presentation-grid h3{margin:10px 0 6px}.presentation-grid p,.presentation-audiences p{color:var(--muted);font-size:13px;line-height:1.7}
+    .presentation-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#302e58;color:#c4bdff;font-size:21px}
+    .presentation-grid .text-btn{margin-top:8px}.presentation-audiences{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}.presentation-audiences .panel{padding:24px}
+    .presentation-audiences h3{font-size:21px;margin:13px 0 5px}.presentation-price{font-size:32px;font-weight:850;margin:6px 0}.presentation-price small{font-size:12px;color:var(--muted);font-weight:500}
+    .presentation-note{font-size:11px;color:var(--muted);line-height:1.7;margin:8px 0 20px}
+    @media(max-width:850px){.presentation-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.presentation-hero{grid-template-columns:1fr}}
+    @media(max-width:560px){.presentation-grid,.presentation-audiences{grid-template-columns:1fr}}
+  </style>
+</head>
 <body>
 <div class="app-shell">
   <aside class="sidebar" id="sidebar">
@@ -41,6 +54,7 @@ window.__mathJaxReady = new Promise(resolve => {
     <div class="side-label">ESPACE DE TRAVAIL</div>
     <nav class="nav">
       <button class="nav-link active" data-view="home"><span>⌂</span> Vue d'ensemble</button>
+      <button class="nav-link" data-view="presentation"><span>✦</span> Découvrir Maths2.0</button>
       <button class="nav-link" data-view="courses"><span>▤</span> Cours</button>
       <button class="nav-link" data-view="exercises"><span>⌘</span> Exercices</button>
       <button class="nav-link" data-view="tutor"><span>✳</span> Tuteur IA</button>
@@ -61,6 +75,34 @@ window.__mathJaxReady = new Promise(resolve => {
       <div class="breadcrumb"><span>Maths2.0</span><i>/</i><b id="crumb">Vue d'ensemble</b></div>
       <div class="top-actions"><button class="account-button" id="accountOpen" type="button">Mon compte</button><span class="streak">✦ <b id="streak">0</b> jour</span><button class="icon-btn" id="exportData" title="Exporter une sauvegarde">⇩</button><label class="icon-btn import-label" for="importData" title="Importer une sauvegarde">⇧</label><input type="file" id="importData" accept="application/json,.json" hidden><button class="icon-btn" id="resetData" title="Réinitialiser la progression">↺</button></div>
     </header>
+
+    <section class="view" id="view-presentation">
+      <div class="page-intro"><div class="eyebrow">BIENVENUE DANS MATHS2.0</div><h1>Les maths ne se devinent pas. Elles se comprennent.</h1><p>Cours structurés, exercices corrigés, flashcards et visualisations interactives : découvre tout ce que tu peux faire dans ton espace de travail.</p></div>
+      <div class="presentation-hero panel">
+        <div><span class="tag">DU LYCÉE À L'UNIVERSITÉ</span><h2>Comprendre. S'entraîner. Progresser.</h2><p>Un environnement de travail conçu pour t'aider à construire un raisonnement mathématique solide, étape après étape.</p><button class="btn primary" type="button" data-go="exercises">Commencer à travailler →</button></div>
+        <div class="presentation-equation">∫ f(x) dx = aire sous la courbe</div>
+      </div>
+      <div class="section-heading"><div><div class="eyebrow">UNE MÉTHODE COMPLÈTE</div><h2>De la compréhension à la maîtrise</h2></div></div>
+      <div class="presentation-grid">
+        <article class="panel"><span class="presentation-icon">▤</span><h3>Comprendre les cours</h3><p>Définitions, propriétés, exemples et démonstrations organisés par thème.</p><button class="text-btn" type="button" data-go="courses">Explorer les cours →</button></article>
+        <article class="panel"><span class="presentation-icon">⌘</span><h3>S'entraîner vraiment</h3><p>Exercices classés par niveau et difficulté, avec indices et corrections détaillées.</p><button class="text-btn" type="button" data-go="exercises">Faire des exercices →</button></article>
+        <article class="panel"><span class="presentation-icon">⌁</span><h3>Visualiser les concepts</h3><p>Expériences interactives pour observer les limites, dérivées, intégrales et objets algébriques.</p><button class="text-btn" type="button" data-go="visuals">Ouvrir le laboratoire →</button></article>
+        <article class="panel"><span class="presentation-icon">▶</span><h3>Voir les maths en mouvement</h3><p>Animations Manim pour rendre visibles les mécanismes derrière les formules.</p><button class="text-btn" type="button" data-go="animations">Voir les animations →</button></article>
+        <article class="panel"><span class="presentation-icon">⟳</span><h3>Mémoriser durablement</h3><p>Flashcards et révisions espacées pour consolider les notions dans le temps.</p><button class="text-btn" type="button" data-go="review">Réviser →</button></article>
+        <article class="panel"><span class="presentation-icon">✳</span><h3>Être accompagné</h3><p>Un tuteur IA facultatif pour demander des indices, clarifier une notion ou examiner une preuve.</p><button class="text-btn" type="button" data-go="tutor">Essayer le tuteur IA →</button></article>
+      </div>
+      <div class="section-heading"><div><div class="eyebrow">DEUX PARCOURS</div><h2>Du lycée aux premières années du supérieur</h2></div></div>
+      <div class="presentation-audiences">
+        <article class="panel"><span class="tag">LYCÉE</span><h3>Terminale spécialité maths</h3><p>Consolider les fondamentaux, s'entraîner et préparer les évaluations.</p></article>
+        <article class="panel"><span class="tag">SUPÉRIEUR</span><h3>L1 mathématiques</h3><p>Approfondir l'analyse et l'algèbre, comprendre les démonstrations et travailler avec rigueur.</p></article>
+      </div>
+      <div class="section-heading"><div><div class="eyebrow">LES OFFRES</div><h2>Commence gratuitement</h2><p>La bêta est accessible sans paiement. Premium est en préparation.</p></div></div>
+      <div class="presentation-audiences">
+        <article class="panel"><span class="tag">DISPONIBLE</span><h3>Gratuit · Bêta</h3><div class="presentation-price">0 €</div><p>Cours, exercices, corrections, flashcards, progression locale, visualisations et animations.</p><button class="btn primary" type="button" data-go="home">Ouvrir mon espace →</button></article>
+        <article class="panel"><span class="tag">EN PRÉPARATION</span><h3>Premium</h3><div class="presentation-price">5,99 € <small>/ mois envisagés</small></div><p>Tarif indicatif. Les fonctionnalités et prix définitifs seront annoncés avant toute souscription. Aucun paiement n'est activé.</p></article>
+      </div>
+      <p class="presentation-note">La progression est actuellement enregistrée sur cet appareil. Les comptes, la synchronisation multi-appareils et les paiements ne sont pas encore activés. Le tuteur IA est facultatif ; les messages et images envoyés sont transmis au service IA pour traitement.</p>
+    </section>
 
     <section class="view active" id="view-home">
       <div class="hero">
