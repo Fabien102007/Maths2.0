@@ -135,7 +135,8 @@ function renderCourses(){
   listHost.innerHTML='<div class="course-level-intro"><b>Choisis ton niveau d\'études</b><span>'+esc(activeCourseCategory)+'</span></div>'+[
    {name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},
    {name:"L1",desc:"Université · Première année de licence",icon:"∑"},
-   {name:"L2",desc:"Université · Deuxième année de licence",icon:"∂"}
+   {name:"L2",desc:"Université · Deuxième année de licence",icon:"∂"},
+   {name:"Approfondissement",desc:"Notions de niveau prépa et prolongements",icon:"↗"}
   ].filter(level=>TOPICS.some(t=>t.category===activeCourseCategory&&courseLevelOf(t)===level.name)).map(level=>{
    const count=TOPICS.filter(t=>t.category===activeCourseCategory&&courseLevelOf(t)===level.name).length;
    return `<button type="button" class="course-theme-card course-level-card" data-course-level="${level.name}"><span class="course-theme-symbol">${level.icon}</span><span><b>${level.name}</b><small>${level.desc}</small></span><i>${count?count+" notions":"Contenu à venir"} →</i></button>`;
@@ -182,7 +183,7 @@ function renderExercises(){
  const inCategory=EXERCISES.filter(e=>e.category===activeExerciseCategory);
  if(!activeExerciseLevel){
   levelList.hidden=false;detail.hidden=true;topicsView.classList.remove("exercise-level-selected");
-  const levels=[{name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},{name:"L1",desc:"Université · Licence 1",icon:"∑"},{name:"L2",desc:"Université · Licence 2",icon:"∂"}].filter(level=>inCategory.some(e=>exerciseLevelOf(e)===level.name));
+  const levels=[{name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},{name:"L1",desc:"Université · Licence 1",icon:"∑"},{name:"L2",desc:"Université · Licence 2",icon:"∂"},{name:"Approfondissement",desc:"Notions de niveau prépa et prolongements",icon:"↗"}].filter(level=>inCategory.some(e=>exerciseLevelOf(e)===level.name));
   levelList.innerHTML='<div class="exercise-level-intro"><b>Choisis ton niveau d\'études</b><span>'+esc(activeExerciseCategory)+'</span></div>'+levels.map(l=>{
    const count=inCategory.filter(e=>exerciseLevelOf(e)===l.name).length;
    return `<button type="button" class="course-theme-card exercise-level-card" data-ex-level="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count?count+" exercices":"Contenu à venir"} →</i></button>`;
