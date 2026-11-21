@@ -110,10 +110,8 @@ function chooseNextTopic(){
  if(due)return due;
  const remaining=TOPICS.filter(t=>!mastered(t.id));
  if(!remaining.length)return TOPICS[0];
- const diagnostic=state.diagnostic?.topics||{};
  const priority=t=>{
   let score=0;
-  if(diagnostic[t.id]===false)score-=5;
   const a=state.attempts[t.id];
   if(a)score+=(a.lastScore??0)*3-Math.log1p(a.total||0);
   const prerequisites=t.prerequisites||[];
