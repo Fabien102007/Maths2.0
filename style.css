@@ -455,3 +455,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .manim-playback button{padding:6px 9px;border:1px solid #344461;border-radius:7px;background:#142137;color:#b9c7dc;font-size:10px;font-weight:750;cursor:pointer}
 .manim-playback button:hover,.manim-playback button.active{border-color:#8c81ed;background:#29274d;color:#eeeaff}
 @media(max-width:560px){.manim-playback{justify-content:space-between;gap:7px}.manim-playback button{padding:6px 8px}}
+
+.question-box p{margin:0 0 12px}
+.question-box p:last-child{margin-bottom:0}
+.solution-narrative p:first-child{margin-top:0}
