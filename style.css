@@ -346,3 +346,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .flashcard-face strong,.flashcard-face strong *{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 1px 12px rgba(255,255,255,.12)}
 .flashcard-face strong mjx-container,.flashcard-face strong .katex{color:#fff!important}
 .flashcard-face>span{color:#8999b5}
+
+
+/* Sélection du niveau scolaire dans la bibliothèque des cours */
+.course-level-intro{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:4px 0 14px;color:#eef3ff;font-size:14px}
+.course-level-intro span{color:#a99fff;font-size:11px;font-weight:750}
+.course-level-card{width:100%;min-height:104px;margin:0 0 11px;padding:18px 20px}
+.course-level-card .course-theme-symbol{font-size:23px}
+.course-level-card b{font-size:18px}
+.course-level-card small{max-width:420px}
+.course-level-card i{white-space:nowrap;font-size:11px}
+@media(max-width:560px){
+ .course-level-card{gap:11px;padding:15px 13px;min-height:94px}
+ .course-level-card .course-theme-symbol{flex-basis:44px;height:44px}
+ .course-level-card b{font-size:16px}
+ .course-level-card i{font-size:10px}
+ .course-level-intro{font-size:13px}
+}
