@@ -291,7 +291,7 @@ function renderLabExtras(){
  }else if(labType==="trig"){
   const angles=[0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330,360];
   host.innerHTML='<div class="lab-extra-head"><b>Angles remarquables</b><span>Accès direct</span></div><div class="lab-angle-presets">'+angles.map(a=>`<button type="button" data-angle="${a}">${a}°</button>`).join("")+'</div><div class="lab-trig-values" id="labTrigValues"></div>';
-  $("[data-angle]").forEach(b=>b.onclick=()=>{$("#labSlider").value=b.dataset.angle;drawLab()});
+  $$("[data-angle]").forEach(b=>b.onclick=()=>{$("#labSlider").value=b.dataset.angle;drawLab()});
  }else if(labType==="determinant"){
   host.innerHTML='<div class="lab-extra-head"><b>Norme du second vecteur</b><span id="labExtraValue">2,0</span></div><input id="labExtraSlider" type="range" min="0.5" max="3" step="0.1" value="2"><p>Le déterminant dépend de la longueur des deux vecteurs et de leur angle.</p>';
   $("#labExtraSlider").oninput=()=>{$("#labExtraValue").textContent=Number($("#labExtraSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:1});drawLab()};
