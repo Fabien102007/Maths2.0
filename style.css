@@ -459,3 +459,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .question-box p{margin:0 0 12px}
 .question-box p:last-child{margin-bottom:0}
 .solution-narrative p:first-child{margin-top:0}
+
+.theorem-proof{margin-top:10px;color:#c4d0e5;font-size:13px;line-height:1.9;overflow-wrap:anywhere}
+.theorem-proof mjx-container[display="true"]{max-width:100%;overflow-x:auto;overflow-y:hidden}
+.theorem-proof p{margin:0 0 10px}
