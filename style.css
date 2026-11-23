@@ -145,6 +145,11 @@ body{background:radial-gradient(ellipse at 78% -18%,rgba(65,88,160,.24),transpar
 .course-detail .definition{padding:13px 15px;margin:9px 0;border:1px solid rgba(123,148,194,.14);border-radius:12px;background:rgba(20,32,52,.55)}
 .course-detail .definition b{color:#c7c0ff;font-size:12px}
 .course-detail .definition p{margin:7px 0 0;color:#c3cde0;font-size:12px;line-height:1.8}
+.course-detail .definition-content p{margin:7px 0 0;color:#c3cde0;font-size:12px;line-height:1.8}
+.course-detail .property-list li p{display:inline;margin:0}
+.course-detail .theorem-statement p{margin:0}
+.course-detail .example-box p{margin:0 0 8px}
+.course-detail .example-box p:last-child{margin-bottom:0}
 .course-detail .property-list{padding-left:22px;color:#c5d1e5;font-size:12px;line-height:1.85}
 .course-detail .example-box{padding:15px 17px;border:1px solid rgba(75,195,190,.22);border-radius:12px;background:rgba(15,54,59,.25);color:#e0f4f4;line-height:1.85}
 .footer a,.privacy-note a{color:#a99fff;text-decoration:none}
