@@ -65,6 +65,13 @@ window.FLASHCARDS.push(
  {topic:"differential-equations",front:"Équation y'=ay",back:"Les solutions sont y(x)=Ce^{ax}, avec C réel."},
  {topic:"euclidean",front:"Projection sur une droite",back:"Pour u≠0 : projᵤ(v)=⟨v,u⟩u/||u||²."}
 );
+window.FLASHCARDS.push(
+ {topic:"multivariable",front:"Dérivée partielle",back:"$\\partial_x f(a,b)$ dérive par rapport à $x$ en considérant $y=b$ comme une constante."},
+ {topic:"multivariable",front:"Gradient d'une fonction de deux variables",back:"$\\nabla f(x,y)=\\left(\\partial_x f(x,y),\\partial_y f(x,y)\\right)$. Il indique la direction de plus forte augmentation locale lorsque $f$ est différentiable."},
+ {topic:"multivariable",front:"Condition nécessaire d'extremum intérieur",back:"Si $f$ est différentiable sur un ouvert et possède un extremum local en un point intérieur $a$, alors $\\nabla f(a)=0$. La réciproque est fausse en général."},
+ {topic:"multivariable",front:"Matrice hessienne",back:"Pour $f(x,y)$ de classe $C^2$, $H_f=\\begin{pmatrix}f_{xx}&f_{xy}\\\\f_{yx}&f_{yy}\\end{pmatrix}$. Elle rassemble les dérivées partielles secondes."},
+ {topic:"multivariable",front:"Critère hessien en dimension 2",back:"Au point critique : si $D=\\det H_f>0$ et $f_{xx}>0$, minimum local ; si $D>0$ et $f_{xx}<0$, maximum local ; si $D<0$, point selle. Si $D=0$, le critère ne conclut pas."}
+);
 /* Repoint the original courses at their real exercise identifiers. */
 const links={limits:"m4-1",continuity:"m4-4",derivative:"m4-7",integrals:"m4-14",series:"m4-89","vector-spaces":"m4-17",basis:"m4-19","linear-maps":"m4-21",matrices:"m4-23",eigenvalues:"m4-34"};
 for(const t of window.TOPICS) if(links[t.id]) t.exerciseId=links[t.id];
