@@ -473,7 +473,7 @@ function toggleComplexAnimation(){if(complexRunning){stopComplexAnimation();retu
 function drawLab(){
  const canvas=$("#labCanvas");if(!canvas)return;
  const rect=canvas.getBoundingClientRect(),W=Math.max(320,rect.width||900),H=Math.max(300,Math.min(560,W*.52));
- const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);canvas.style.height=H+"px";
+ const dpr=Math.min(window.devicePixelRatio||1,2),pixelWidth=Math.round(W*dpr),pixelHeight=Math.round(H*dpr);if(canvas.width!==pixelWidth)canvas.width=pixelWidth;if(canvas.height!==pixelHeight)canvas.height=pixelHeight;const cssHeight=H+"px";if(canvas.style.height!==cssHeight)canvas.style.height=cssHeight;
  const ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);ctx.fillStyle="#081321";ctx.fillRect(0,0,W,H);
  if(labType==="surface3d"){labRotationY=Number($("#labSlider").value)*Math.PI/180;drawSurface3D(ctx,W,H);$("#labValue").textContent=Number($("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:0})+"°";return}
  if(labType==="complex3d"){drawComplex3D(ctx,W,H);$("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:1});return}
@@ -616,7 +616,7 @@ function drawLab(){
   else curve(x=>x,xmin,xmax,"#80b8f4",3);
   if(!["sequence","derivative","integral","schmidt","trig","determinant","limit","continuity","fourier","eigen"].includes(labType))$("#labLegend").innerHTML='<span style="color:#80b8f4">● Courbe / direction de référence</span><span style="color:#e0b86d">● Élément mobile</span>';
  }
- typeset($("#labLegend"));$("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});renderLabGuide();
+ $("#labValue").textContent=(+$("#labSlider").value).toLocaleString("fr-FR",{maximumFractionDigits:2});
 }
 function drawVisuals(){if($("#labType"))labSetup()}
 const MANIM_LIBRARY={
