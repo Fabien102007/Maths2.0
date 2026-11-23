@@ -5,7 +5,7 @@ const KEY="maths4_studio_v1";
 const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},cardReviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
 let reviewQualityByTopic={};
-let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
+let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,activeTutorContext=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 let progressSyncTimer=null;
 const save=()=>{state.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();if(window.Maths2Account?.sync){clearTimeout(progressSyncTimer);progressSyncTimer=setTimeout(()=>window.Maths2Account.sync(),1200);}};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -183,7 +183,7 @@ function renderTopic(id){
  $$("#courseDetail [data-course-anchor]").forEach(b=>b.onclick=()=>$("#"+b.dataset.courseAnchor)?.scrollIntoView({behavior:"smooth",block:"start"}));
  $$("#courseDetail [data-prerequisite]").forEach(b=>b.onclick=()=>openTopic(b.dataset.prerequisite));
  $("#topicExercise").onclick=()=>{if(linkedExercise){go("exercises");openExercise(linkedExercise.id)}else toast("Aucun exercice n’est encore associé à cette notion.")};
- $("#topicTutor").onclick=()=>openTutorWithContext("Je travaille la notion « "+t.title+" ».\n\n"+t.summary+"\n\nAide-moi à comprendre la méthode avec un indice progressif, sans donner directement la solution.");
+ $("#topicTutor").onclick=()=>openTutorWithContext("Je travaille la notion « "+t.title+" ».\n\n"+t.summary+"\n\nAide-moi à comprendre la méthode avec un indice progressif, sans donner directement la solution.",{type:"course",topic:t.title,level,summary:t.summary});
  $("#topicReview").onclick=()=>scheduleReview(id,1);
  if(visual)$("#topicVisual").onclick=()=>{labType=visual;$("#labType").value=visual;go("visuals")};
  typeset($("#courseDetail"));
@@ -231,7 +231,7 @@ function renderExercise(id){
  const e=EXERCISES.find(x=>x.id===id);if(!e)return;
  $("#exerciseDetail").innerHTML=`<button class="exercise-back" id="exerciseBack" type="button">← Tous les exercices</button><div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${exerciseRichText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…">${esc(state.drafts?.[id]||"")}</textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button><button class="btn ghost" id="askTutor">Demander de l'aide au tuteur</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
  $("#exerciseBack").onclick=()=>{activeExercise=null;renderExercises()};
- $("#askTutor").onclick=()=>openTutorWithContext("Je bloque sur cet exercice : "+e.title+"\n\nÉnoncé : "+e.question+"\n\nAide-moi à démarrer par une question ou un indice, sans dévoiler la correction.");
+ $("#askTutor").onclick=()=>openTutorWithContext("Je bloque sur cet exercice : "+e.title+"\n\nÉnoncé : "+e.question+"\n\nAide-moi à démarrer par une question ou un indice, sans dévoiler la correction.",{type:"exercise",title:e.title,question:e.question,level:exerciseLevelOf(e),difficulty:e.difficulty,category:e.category});
  $("#selfAnswer").addEventListener("input",()=>{state.drafts=state.drafts||{};state.drafts[id]=$("#selfAnswer").value;state.updatedAt=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(state));window.Maths2Account?.scheduleSync?.()}catch(e){console.warn("Sauvegarde locale indisponible",e)}});
   let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b>${exerciseRichText(hints[h++])}`;typesetExercise($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
  $("#solutionBtn").onclick=()=>{$("#solutionBox").hidden=false;const raw=Array.isArray(e.solutionSteps)&&e.solutionSteps.length?e.solutionSteps.filter(Boolean).join("\n\n"):(e.answer||"Correction à compléter.");const answer=String(raw).replace(/\*\*\d+\.\s*([^*]+)\*\*/g,"**$1**").replace(/(^|\n)\s*\d+\.\s+(?=[A-ZÀ-ÖØ-Þ])/g,"$1");const body=`<div class="solution-narrative">${exerciseRichText(answer)}</div>`;$("#solutionBox").innerHTML=`<div class="solution-heading"><span>✓</span><div><b>Correction rédigée</b><small>Un raisonnement continu, avec les justifications nécessaires</small></div></div><div class="solution-content">${body}</div><p class="check-note">${esc(e.check||"Vérifie que chaque implication est justifiée.")}</p>`;typesetExercise($("#solutionBox"))};
@@ -345,7 +345,8 @@ function showTutorTyping(){
  const dots=document.createElement("div");dots.className="typing-dots";dots.innerHTML="<i></i><i></i><i></i>";
  body.append(name,dots);row.append(avatar,body);host.append(row);scrollChatToBottom();
 }
-function openTutorWithContext(message){
+function openTutorWithContext(message,context=null){
+ activeTutorContext=context;
  activeMode="tutor";
  go("tutor");
  $$("#tutorModes .mode").forEach(b=>b.classList.toggle("active",b.dataset.mode==="tutor"));
@@ -686,7 +687,7 @@ function init(){
  ["exerciseSearch","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
- $("#clearChat").onclick=()=>{chatHistory=[];$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};
+ $("#clearChat").onclick=()=>{chatHistory=[];activeTutorContext=null;$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};
  $("#tutorImage").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>8*1024*1024){toast("Image limitée à 8 Mo.");return}try{chatImage=await resizeImage(f);$("#uploadName").textContent=f.name+" · prête"}catch{toast("Lecture de l'image impossible.")}};
  const labSelect=$("#labType");if(labSelect){const seen=new Set();[...labSelect.options].forEach(option=>{if(seen.has(option.value))option.remove();else seen.add(option.value)});labType=labSelect.value||"derivative";}labSelect.onchange=()=>{labType=labSelect.value;labSetup()};$("#labSlider").oninput=()=>{if(labType==="surface3d")labRotationY=Number($("#labSlider").value)*Math.PI/180;drawLab()};$("#surfaceFunction").onchange=()=>{updateSurfaceMeta();typeset($("#labFormula"));renderLabGuide();drawLab()};$("#labAnimate").onclick=toggleComplexAnimation;initManimLibrary();
  const labCanvas=$("#labCanvas");labCanvas.addEventListener("pointerdown",e=>{if(labType!=="surface3d"&&labType!=="complex3d")return;labDragging={x:e.clientX,y:e.clientY};labCanvas.setPointerCapture(e.pointerId)});labCanvas.addEventListener("pointermove",e=>{if(!labDragging)return;const dx=e.clientX-labDragging.x,dy=e.clientY-labDragging.y;labDragging={x:e.clientX,y:e.clientY};labRotationY+=dx*.009;labRotationX=Math.max(.15,Math.min(1.45,labRotationX+dy*.007));if(labType==="surface3d")$("#labSlider").value=Math.round(labRotationY*180/Math.PI);drawLab()});["pointerup","pointercancel","lostpointercapture"].forEach(ev=>labCanvas.addEventListener(ev,()=>{labDragging=null}));
