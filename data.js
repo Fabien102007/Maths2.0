@@ -23,8 +23,8 @@ window.EXERCISES = [
       "Comparer |uₙ| à ε et choisir N adapté."
     ],
     "answer": "Pour ε>0, choisir N>3/ε. Pour n≥N, 0≤3/(n+2)<ε, donc uₙ→0.",
-    "solutionSteps": [],
-    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
+    "solutionSteps": ["**1. Identifier la limite candidate.** Le numérateur vaut $3$ et le dénominateur $n+2$ tend vers $+\\infty$. La limite attendue est donc $0$. Il faut maintenant le démontrer avec la définition de la convergence.","**2. Partir de la définition.** On doit montrer que, pour tout $\\varepsilon>0$, il existe $N\\in\\mathbb N$ tel que, pour tout $n\\geq N$, on ait $|u_n-0|<\\varepsilon$. Or, pour tout $n\\in\\mathbb N$, $u_n=\\frac{3}{n+2}>0$, donc $|u_n|=\\frac{3}{n+2}$.","**3. Choisir $N$.** L'inégalité $\\frac{3}{n+2}<\\varepsilon$ est équivalente à $n+2>\\frac{3}{\\varepsilon}$. Pour un $\\varepsilon>0$ fixé, on peut choisir $N=\\lfloor 3/\\varepsilon\\rfloor+1$. Alors $n\\geq N$ implique $n+2>3/\\varepsilon$, donc $\\frac{3}{n+2}<\\varepsilon$.","**Conclusion.** La définition est vérifiée pour tout $\\varepsilon>0$. Ainsi, $\\boxed{u_n\\longrightarrow 0}$."],
+    "check": "Point de vigilance : le choix de N dépend de ε, mais pas de n. Il faut aussi conserver le sens strict de l'inégalité."
   },
   {
     "id": "m4-2",
@@ -37,8 +37,8 @@ window.EXERCISES = [
       "Diviser le numérateur et le dénominateur par n."
     ],
     "answer": "uₙ=(2+1/n)/(1+3/n)→2.",
-    "solutionSteps": [],
-    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
+    "solutionSteps": ["**1. Transformer l'expression.** On cherche une limite finie. En divisant le numérateur et le dénominateur par $n$, on obtient, pour $n\\geq1$, $u_n=\\frac{2+1/n}{1+3/n}$. Comme $1/n\\to0$, cette écriture suggère la limite $2$.","**2. Établir la convergence.** Pour une démonstration directe, calculons l'écart à $2$ : $\\displaystyle u_n-2=\\frac{2n+1}{n+3}-2=\\frac{2n+1-2n-6}{n+3}=-\\frac{5}{n+3}$. Par conséquent, $\\displaystyle |u_n-2|=\\frac{5}{n+3}$.","**3. Vérifier la définition.** Soit $\\varepsilon>0$. Choisissons $N=\\lfloor 5/\\varepsilon\\rfloor+1$. Pour tout $n\\geq N$, on a $n+3>5/\\varepsilon$, donc $\\displaystyle |u_n-2|=\\frac{5}{n+3}<\\varepsilon$.","**Conclusion.** La suite converge et sa limite est $\\boxed{2}$."],
+    "check": "Point de vigilance : diviser par n permet de conjecturer la limite, mais le calcul de |u_n−2| donne une preuve directe et contrôle l'écart."
   },
   {
     "id": "m4-3",
@@ -51,8 +51,8 @@ window.EXERCISES = [
       "Utiliser l'encadrement 0≤uₙ≤2, puis montrer que la suite est croissante."
     ],
     "answer": "**1. Invariance d'un intervalle.** On montre par récurrence que $0\\leq u_n\\leq 2$. C'est vrai pour $n=0$. Si $0\\leq u_n\\leq2$, alors $2\\leq2+u_n\\leq4$, donc $0\\leq u_{n+1}=\\sqrt{2+u_n}\\leq2$. La propriété est établie pour tout $n$.\n\n**2. Monotonie.** Pour $x\\in[0,2]$, les deux membres étant positifs, $\\sqrt{2+x}\\geq x$ équivaut à $2+x\\geq x^2$, soit $(2-x)(x+1)\\geq0$. Ainsi $u_{n+1}\\geq u_n$. La suite est croissante et majorée par $2$ ; le théorème de convergence monotone assure l'existence de $\\ell\\in[0,2]$ tel que $u_n\\to\\ell$.\n\n**3. Détermination de la limite.** La fonction racine carrée est continue sur $[0,+\\infty[$. En passant à la limite dans la relation de récurrence, $\\ell=\\sqrt{2+\\ell}$. En élevant au carré, $\\ell^2-\\ell-2=0$, donc $(\\ell-2)(\\ell+1)=0$. Comme $\\ell\\geq0$, on obtient $\\boxed{\\ell=2}$.",
-    "solutionSteps": [],
-    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
+    "solutionSteps": ["**1. Montrer que la suite reste dans [0,2].** On raisonne par récurrence. Initialement, $u_0=0\\in[0,2]$. Supposons $0\\leq u_n\\leq2$. Alors $2\\leq2+u_n\\leq4$, donc $0\\leq u_{n+1}=\\sqrt{2+u_n}\\leq2$. Ainsi, pour tout $n$, $0\\leq u_n\\leq2$.","**2. Montrer que la suite est croissante.** Pour $x\\in[0,2]$, les deux nombres $x$ et $\\sqrt{2+x}$ sont positifs. On peut donc comparer leurs carrés : $\\sqrt{2+x}\\geq x$ équivaut à $2+x\\geq x^2$, soit $(2-x)(x+1)\\geq0$. Cette dernière inégalité est vraie sur $[0,2]$. En prenant $x=u_n$, on obtient $u_{n+1}\\geq u_n$.","**3. Conclure à la convergence.** La suite est croissante et majorée par $2$. D'après le théorème de convergence des suites monotones, elle converge vers une limite $\\ell\\in[0,2]$.","**4. Déterminer la limite.** La fonction $x\\mapsto\\sqrt{2+x}$ est continue sur $[0,2]$. On peut donc passer à la limite dans la relation $u_{n+1}=\\sqrt{2+u_n}$ : $\\ell=\\sqrt{2+\\ell}$. En élevant au carré, $\\ell^2-\\ell-2=0$, donc $(\\ell-2)(\\ell+1)=0$. Les solutions sont $2$ et $-1$ ; comme $\\ell\\in[0,2]$, seule la valeur $2$ convient.","**Conclusion.** $\\boxed{u_n\\longrightarrow2}$."],
+    "check": "Point de vigilance : on ne peut pas invoquer le théorème de convergence monotone sans avoir prouvé à la fois la monotonie et une borne."
   },
   {
     "id": "m4-4",
@@ -596,8 +596,8 @@ window.EXERCISES = [
       "Calculer |uₙ−5/2| exactement."
     ],
     "answer": "|uₙ−5/2|=19/[2(2n+3)]≤19/(4n). Pour ε>0, choisir N>19/(4ε). Alors n≥N entraîne |uₙ−5/2|<ε.",
-    "solutionSteps": [],
-    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
+    "solutionSteps": ["**1. Calculer exactement l'écart à la limite annoncée.** On a $\\displaystyle u_n-\\frac52=\\frac{5n-2}{2n+3}-\\frac52=\\frac{2(5n-2)-5(2n+3)}{2(2n+3)}=-\\frac{19}{2(2n+3)}$. Ainsi, $\\displaystyle \\left|u_n-\\frac52\\right|=\\frac{19}{2(2n+3)}$.","**2. Trouver une majoration simple.** Pour $n\\geq1$, $2(2n+3)=4n+6\\geq4n$. Par conséquent, $\\displaystyle \\left|u_n-\\frac52\\right|\\leq\\frac{19}{4n}$.","**3. Choisir le rang en fonction de ε.** Soit $\\varepsilon>0$. Prenons $N=\\max\\left(1,\\lfloor 19/(4\\varepsilon)\\rfloor+1\\right)$. Pour tout $n\\geq N$, on a $n>19/(4\\varepsilon)$, donc $\\displaystyle \\left|u_n-\\frac52\\right|\\leq\\frac{19}{4n}<\\varepsilon$.","**Conclusion.** La définition $\\varepsilon$-$N$ est satisfaite : $\\boxed{u_n\\longrightarrow\\frac52}$."],
+    "check": "Point de vigilance : la majoration 19/(4n) est utilisée pour n≥1 ; il faut donc imposer N≥1."
   },
   {
     "id": "m4-43",
@@ -610,8 +610,8 @@ window.EXERCISES = [
       "Utiliser uₙvₙ−ℓm=uₙ(vₙ−m)+m(uₙ−ℓ)."
     ],
     "answer": "Comme $(u_n)$ converge, elle est bornée : il existe $C>0$ et $N_0$ tels que $|u_n|\\leq C$ pour $n\\geq N_0$.\n\nPour tout $n\\geq N_0$, on écrit\n\\[\nu_nv_n-\\ell m=u_n(v_n-m)+m(u_n-\\ell).\n\\]\nD'où\n\\[\n|u_nv_n-\\ell m|\\leq C|v_n-m|+|m|\\,|u_n-\\ell|.\n\\]\nSoit $\\varepsilon>0$. Puisque $v_n\\to m$, il existe $N_1$ tel que $n\\geq N_1$ implique $|v_n-m|<\\varepsilon/(2(C+1))$. Puisque $u_n\\to\\ell$, il existe $N_2$ tel que $n\\geq N_2$ implique $|u_n-\\ell|<\\varepsilon/(2(|m|+1))$.\n\nPour $n\\geq N=\\max(N_0,N_1,N_2)$, on obtient $|u_nv_n-\\ell m|<\\varepsilon/2+\\varepsilon/2=\\varepsilon$. Donc\n\\[\n\\boxed{u_nv_n\\longrightarrow\\ell m}.\n\\]",
-    "solutionSteps": [],
-    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
+    "solutionSteps": ["**1. Utiliser la convergence de $(u_n)$ pour obtenir une borne.** Toute suite convergente est bornée. Il existe donc $C>0$ et $N_0\\in\\mathbb N$ tels que, pour tout $n\\geq N_0$, $|u_n|\\leq C$.","**2. Décomposer la différence.** Pour tout $n\\geq N_0$, on écrit $u_nv_n-\\ell m=u_n(v_n-m)+m(u_n-\\ell)$. L'inégalité triangulaire donne alors $\\displaystyle |u_nv_n-\\ell m|\\leq C|v_n-m|+|m|\\,|u_n-\\ell|$.","**3. Exploiter séparément les deux convergences.** Soit $\\varepsilon>0$. Comme $v_n\\to m$, il existe $N_1$ tel que $n\\geq N_1$ implique $\\displaystyle |v_n-m|<\\frac{\\varepsilon}{2(C+1)}$. Comme $u_n\\to\\ell$, il existe $N_2$ tel que $n\\geq N_2$ implique $\\displaystyle |u_n-\\ell|<\\frac{\\varepsilon}{2(|m|+1)}$.","**4. Réunir les conditions.** Posons $N=\\max(N_0,N_1,N_2)$. Pour tout $n\\geq N$, les trois estimations précédentes sont valables, et $\\displaystyle |u_nv_n-\\ell m|<\\frac{C\\varepsilon}{2(C+1)}+\\frac{|m|\\varepsilon}{2(|m|+1)}<\\frac{\\varepsilon}{2}+\\frac{\\varepsilon}{2}=\\varepsilon$.","**Conclusion.** Pour tout $\\varepsilon>0$, l'écart au produit $\\ell m$ est inférieur à $\\varepsilon$ à partir d'un certain rang. Donc $\\boxed{u_nv_n\\longrightarrow\\ell m}$."],
+    "check": "Point de vigilance : la bornitude de (u_n) est indispensable pour contrôler le premier terme. Elle découle de la convergence de cette suite."
   },
   {
     "id": "m4-44",
@@ -792,8 +792,8 @@ window.EXERCISES = [
       "Montrer que $u_n\\geq\\sqrt2$, puis étudier $u_{n+1}-u_n$ et exploiter la relation de récurrence."
     ],
     "answer": "**1. Minoration.** Pour $x>0$, $\\frac12(x+2/x)\\geq\\sqrt2$ par l'inégalité arithmético-géométrique. Ainsi $u_n>0$ et, dès le rang $1$, $u_n\\geq\\sqrt2$.\n\n**2. Monotonie à partir du rang 1.** Pour $n\\geq1$,\n\\[u_{n+1}-u_n=\\frac{2-u_n^2}{2u_n}.\\]\nSi $u_n\\geq\\sqrt2$, le numérateur est négatif ou nul : la suite est décroissante à partir du rang 1. Elle est minorée par $\\sqrt2$, donc converge vers $\\ell\\geq\\sqrt2$.\n\n**3. Limite.** La fonction $x\\mapsto\\frac12(x+2/x)$ est continue sur $]0,+\\infty[$. En passant à la limite, $\\ell=\\frac12(\\ell+2/\\ell)$, donc $\\ell^2=2$. Comme $\\ell>0$, $\\boxed{\\ell=\\sqrt2}$. ",
-    "solutionSteps": [],
-    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
+    "solutionSteps": ["**1. Établir une minoration à partir du rang 1.** Pour tout $x>0$, l'inégalité arithmético-géométrique donne $\\frac12\\left(x+\\frac2x\\right)\\geq\\sqrt{x\\cdot(2/x)}=\\sqrt2$. Comme $u_0>0$, la récurrence assure que tous les termes sont positifs et que $u_n\\geq\\sqrt2$ pour tout $n\\geq1$.","**2. Étudier la monotonie à partir du rang 1.** Pour $n\\geq1$, on calcule $\\displaystyle u_{n+1}-u_n=\\frac12\\left(u_n+\\frac2{u_n}\\right)-u_n=\\frac{2-u_n^2}{2u_n}$. Or $u_n\\geq\\sqrt2$ et $u_n>0$, donc $2-u_n^2\\leq0$ et $u_{n+1}-u_n\\leq0$. La suite est décroissante à partir du rang 1.","**3. Conclure à la convergence.** La suite $(u_n)_{n\\geq1}$ est décroissante et minorée par $\\sqrt2$. Le théorème de convergence monotone assure qu'elle converge vers une limite $\\ell\\geq\\sqrt2$.","**4. Déterminer la limite.** La fonction $x\\mapsto\\frac12\\left(x+\\frac2x\\right)$ est continue sur $]0,+\\infty[$. Comme $\\ell\\geq\\sqrt2>0$, on peut passer à la limite dans la récurrence : $\\displaystyle \\ell=\\frac12\\left(\\ell+\\frac2\\ell\\right)$. On obtient $\\ell^2=2$. Puisque $\\ell>0$, $\\ell=\\sqrt2$.","**Conclusion.** $\\boxed{u_n\\longrightarrow\\sqrt2}$."],
+    "check": "Point de vigilance : la décroissance n'est démontrée qu'à partir du rang 1. Il n'est pas nécessaire que u₀ soit supérieur à √2."
   },
   {
     "id": "m4-57",
