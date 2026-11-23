@@ -73,7 +73,7 @@ assert.ok(appScript.includes('$$("#tutorModes .mode").forEach'), "Le changement 
 assert.ok(appScript.includes('labType==="trig"?[-1,0,1]'), "Le cercle trigonométrique doit conserver des graduations dans le cadre.");
 assert.ok(appScript.includes('const base=[.65,.38],image=[base[0]*v,base[1]*v]'), "La visualisation des valeurs propres doit montrer Av = λv.");
 assert.ok(appScript.includes('"fourier","eigen"].includes(labType)'), "Les légendes propres des visualisations doivent être préservées.");
-assert.ok(appScript.includes("rating.sum/rating.count"), "Une session ne doit pas multiplier l'intervalle de révision pour chaque flashcard.");
+assert.ok(appScript.includes("function scheduleCardReview(card,quality){") && appScript.includes("state.cardReviews[key]="), "Chaque flashcard doit conserver son propre calendrier de révision.");
 assert.ok(appScript.includes('go("home");typeset(document.body);'), "L'application doit s'ouvrir sur la vue d'ensemble.");
 assert.ok(appScript.includes('listHost.hidden=!!activeTopic') && appScript.includes('course-detail-open'), "La fiche d'un cours doit s'afficher seule après sélection.");
 assert.ok(appScript.includes('id="courseBackList"'), "La fiche de cours doit proposer un retour à la liste.");
@@ -86,7 +86,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.webmanifes
 assert.equal(manifest.start_url, "./app.html", "La PWA doit ouvrir directement l'espace de travail.");
 assert.ok(fs.existsSync(path.join(root, manifest.start_url.replace(/^\.\//, ""))), "URL de démarrage PWA absente.");
 
-for (const video of ["euler_helix.mp4", "derivative_tangent.mp4", "fourier_square.mp4", "riemann_integral.mp4"]) {
+for (const video of ["euler_helix.mp4", "derivative_tangent.mp4", "fourier_square.mp4", "riemann_integral.mp4", "epsilon_n_convergence.mp4", "gram_schmidt_geometry.mp4"]) {
   assert.ok(fs.existsSync(path.join(root, "assets", "manim", video)), "Vidéo Manim manquante : " + video);
 }
 
