@@ -273,8 +273,10 @@ function fallbackReviewCard(t){
 }
 function renderReviewStart(){
  state.cardReviews=state.cardReviews||{};
- const dueCards=FLASHCARDS.filter(card=>state.cardReviews[reviewCardKey(card)]?.due<=Date.now()).length;
- const due=dueTopics().length;
+ const dueCardList=FLASHCARDS.filter(card=>state.cardReviews[reviewCardKey(card)]?.due<=Date.now());
+ const dueCards=dueCardList.length;
+ const coveredTopics=new Set(dueCardList.map(card=>card.topic));
+ const due=dueTopics().filter(t=>!coveredTopics.has(t.id)).length;
  const total=dueCards+due;
  $("#reviewCard").innerHTML=`<div class="eyebrow">RÉPÉTITION ESPACÉE</div><h2>${total?total+" élément(s) à revoir":"Aucune révision en retard"}</h2><p>${total?dueCards+" carte(s) et "+due+" notion(s) en attente. Commence par retrouver les idées essentielles avant de retourner les cartes.":"Lance une session libre pour découvrir des cartes non encore révisées et entretenir tes acquis."}</p><button class="btn primary" id="startReview">${total?"Démarrer les révisions →":"Lancer une session libre →"}</button>`;
  $("#startReview").onclick=startReview;
