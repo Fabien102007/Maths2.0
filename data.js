@@ -907,7 +907,7 @@ window.EXERCISES = [
     "question":"Montrer que la suite $u_n=(-1)^n$ est bornée mais ne converge pas.",
     "hints":["Commencer par établir −1≤uₙ≤1.","Étudier les termes d'indices pairs et impairs."],
     "answer":"La suite est bornée par 1 en valeur absolue. Mais u₂ₙ=1 et u₂ₙ₊₁=−1 pour tout n ; ces deux sous-suites ont des limites différentes. La suite ne converge donc pas.",
-    "solutionSteps":["**1. Vérifier la bornitude.** Pour tout $n$, $u_n=(-1)^n\\in\\{-1,1\\}$. Donc $|u_n|=1$ : la suite est bornée.","**2. Considérer deux sous-suites.** Pour tout $n$, $u_{2n}=1$, donc la sous-suite paire converge vers $1$. En revanche, $u_{2n+1}=-1$, donc la sous-suite impaire converge vers $-1$.","**3. Conclure par unicité.** Si $(u_n)$ conver­geait vers un réel $\\ell$, toutes ses sous-suites convergeraient vers ce même réel. On devrait donc avoir simultanément $\\ell=1$ et $\\ell=-1$, ce qui est impossible. La suite est divergente."],
+    "solutionSteps":["**1. Vérifier la bornitude.** Pour tout $n$, $u_n=(-1)^n\\in\\{-1,1\\}$. Donc $|u_n|=1$ : la suite est bornée.","**2. Considérer deux sous-suites.** Pour tout $n$, $u_{2n}=1$, donc la sous-suite paire converge vers $1$. En revanche, $u_{2n+1}=-1$, donc la sous-suite impaire converge vers $-1$.","**3. Conclure par unicité.** Si $(u_n)$ convergeait vers un réel $\\ell$, toutes ses sous-suites convergeraient vers ce même réel. On devrait donc avoir simultanément $\\ell=1$ et $\\ell=-1$, ce qui est impossible. La suite est divergente."],
     "check":"La bornitude est une condition nécessaire de convergence, pas une condition suffisante."
   },
   {
