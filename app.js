@@ -170,7 +170,7 @@ function renderTopic(id){
   const definitions=(section.definitions||[]).map(index=>{const d=t.definitions[index];return d?'<div class="lesson-definition"><span>Définition</span><b>'+esc(d[0])+'</b><div>'+richText(d[1])+'</div></div>':"";}).join("");
   const properties=(section.properties||[]).map(index=>{const p=t.properties[index];return p?'<div class="lesson-rule"><span>À retenir</span><div>'+richText(p)+'</div></div>':"";}).join("");
   const theorem=(t.theorems||[])[section.theorem];
-  const theoremMarkup=theorem?'<div class="theorem-card"><b>'+esc(theorem.title)+'</b><p>'+richText(theorem.statement)+'</p><details><summary>Comprendre la démonstration</summary><div class="theorem-proof">'+richText(theorem.proof)+'</div></details></div>':"";
+  const theoremMarkup=theorem?'<div class="theorem-card"><b>'+esc(theorem.title)+'</b><div class="theorem-statement">'+richText(theorem.statement)+'</div><details><summary>Comprendre la démonstration</summary><div class="theorem-proof">'+richText(theorem.proof)+'</div></details></div>':"";
   return '<section class="lesson-section"><div class="lesson-section-number">'+String(i+1).padStart(2,"0")+'</div><div class="lesson-section-content"><h3>'+esc(section.title)+'</h3><div class="lesson-prose">'+richText(section.body)+'</div>'+definitions+properties+theoremMarkup+'</div></section>';
  }).join(""):"";
  const lessonMethods=methods?'<aside class="lesson-summary"><h3>Une méthode à retenir</h3>'+(t.methods||[]).map((x,i)=>'<div class="lesson-method"><b>'+(i+1)+'</b><div>'+richText(x)+'</div></div>').join("")+'</aside>':"";
