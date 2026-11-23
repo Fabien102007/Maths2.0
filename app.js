@@ -2,7 +2,7 @@
 "use strict";
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const KEY="maths4_studio_v1";
-const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,});
+const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},cardReviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
 let reviewQualityByTopic={};
 let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
@@ -261,16 +261,64 @@ function renderProgress(){
  const pct=Math.round(100*TOPICS.filter(t=>mastered(t.id)).length/TOPICS.length);$("#bigProgress").textContent=pct+"%";$("#bigProgressBar").style.width=pct+"%";$("#pSolved").textContent=state.solved.length;$("#pSessions").textContent=state.sessions;$("#pReviews").textContent=state.reviewCount;
  $("#masteryList").innerHTML=TOPICS.map(t=>{const a=state.attempts[t.id]||{};const score=Math.round((a.lastScore||0)*100);return `<div class="mastery-row"><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${esc(courseLevelOf(t))} · ${a.total||0} tentative(s)</small></span><div class="mini-track"><i style="width:${score}%"></i></div><strong>${mastered(t.id)?"Maîtrisée":score+"%"}</strong></div>`}).join("");
 }
-function renderReviewStart(){
- const due=dueTopics();$("#reviewCard").innerHTML=`<div class="eyebrow">RÉPÉTITION ESPACÉE</div><h2>${due.length?due.length+" notion(s) à revoir":"Aucune révision en retard"}</h2><p>${due.length?"Essaie de retrouver les idées essentielles avant de retourner chaque carte.":"Tu peux tout de même lancer une session libre pour entretenir tes acquis."}</p><button class="btn primary" id="startReview">Démarrer une session →</button>`;$("#startReview").onclick=startReview;
+const reviewCardKey=card=>String(card.topic)+"::"+String(card.front||"")+"::"+String(card.back||"");
+function scheduleCardReview(card,quality){
+ state.cardReviews=state.cardReviews||{};
+ const key=reviewCardKey(card),previous=state.cardReviews[key]||{interval:0,repetitions:0};
+ const days=quality<=1?1:quality===2?Math.max(3,Math.round((previous.interval||1)*1.5)):Math.max(7,Math.round((previous.interval||3)*2.2));
+ state.cardReviews[key]={due:Date.now()+days*86400000,interval:days,repetitions:quality<=1?0:(previous.repetitions||0)+1,lastQuality:quality,topic:card.topic};
 }
-function startReview(){reviewQualityByTopic={};const due=dueTopics(),reviewed=TOPICS.filter(t=>state.reviews[t.id]);const balanced=["Terminale","Lycée","L1","L2","Prépa"].map(level=>TOPICS.find(t=>t.level===level)).filter(Boolean);const selected=due.length?due:reviewed.length?reviewed.slice(0,5):balanced;reviewQueue=selected.flatMap(t=>{const n=FLASHCARDS.filter(c=>c.topic===t.id).length;return Array(Math.max(1,n)).fill(t.id)});reviewIndex=0;reviewFlipped=false;renderReviewCard()}
+function fallbackReviewCard(t){
+ return {topic:t.id,front:t.title,back:t.definitions?.[0]?.[1]||t.summary||"Revois les idées essentielles de ce chapitre."};
+}
+function renderReviewStart(){
+ state.cardReviews=state.cardReviews||{};
+ const dueCards=FLASHCARDS.filter(card=>state.cardReviews[reviewCardKey(card)]?.due<=Date.now()).length;
+ const due=dueTopics().length;
+ const total=dueCards+due;
+ $("#reviewCard").innerHTML=`<div class="eyebrow">RÉPÉTITION ESPACÉE</div><h2>${total?total+" élément(s) à revoir":"Aucune révision en retard"}</h2><p>${total?dueCards+" carte(s) et "+due+" notion(s) en attente. Commence par retrouver les idées essentielles avant de retourner les cartes.":"Lance une session libre pour découvrir des cartes non encore révisées et entretenir tes acquis."}</p><button class="btn primary" id="startReview">${total?"Démarrer les révisions →":"Lancer une session libre →"}</button>`;
+ $("#startReview").onclick=startReview;
+}
+function startReview(){
+ state.cardReviews=state.cardReviews||{};
+ const now=Date.now(),due=dueTopics().map(t=>t.id),seen=new Set(),pool=[];
+ const add=card=>{const key=reviewCardKey(card);if(!seen.has(key)){seen.add(key);pool.push(card)}};
+ FLASHCARDS.filter(card=>state.cardReviews[reviewCardKey(card)]?.due<=now).forEach(add);
+ if(due.length){
+  FLASHCARDS.filter(card=>due.includes(card.topic)).forEach(add);
+  due.forEach(id=>{if(!FLASHCARDS.some(card=>card.topic===id)) {const t=topic(id);if(t)add(fallbackReviewCard(t));}});
+ }
+ if(!pool.length){
+  FLASHCARDS.filter(card=>!state.cardReviews[reviewCardKey(card)]).forEach(add);
+ }
+ if(!pool.length){
+  FLASHCARDS.slice().sort((a,b)=>(state.cardReviews[reviewCardKey(a)]?.due||0)-(state.cardReviews[reviewCardKey(b)]?.due||0)).forEach(add);
+ }
+ if(!pool.length)TOPICS.forEach(t=>add(fallbackReviewCard(t)));
+ const sessionSize=15;
+ reviewQueue=pool.slice(0,sessionSize).map(card=>({card,topic:card.topic,key:reviewCardKey(card)}));
+ reviewIndex=0;reviewFlipped=false;
+ if(!reviewQueue.length){renderReviewStart();return;}
+ renderReviewCard();
+}
 function renderReviewCard(){
- const id=reviewQueue[reviewIndex],t=topic(id);if(!t){renderReviewStart();return}const occurrence=reviewQueue.slice(0,reviewIndex).filter(x=>x===id).length;const cards=FLASHCARDS.filter(c=>c.topic===id);const card=cards[occurrence%Math.max(1,cards.length)]||{front:t.title,back:t.definitions[0][1]};
- $("#reviewCard").innerHTML=`<div class="review-counter">CARTE ${reviewIndex+1} / ${reviewQueue.length}</div><button class="flashcard" id="flipCard" type="button" aria-label="Retourner la carte"><span class="flashcard-inner"><span class="flashcard-face flashcard-front"><small>RAPPEL ACTIF</small><strong>${card.front}</strong><span>Clique pour retourner la carte</span></span><span class="flashcard-face flashcard-back"><small>RÉPONSE</small><strong>${card.back}</strong><span>Clique pour revoir la question</span></span></span></button><p class="subtle center flashcard-prompt">${reviewFlipped?"Voici la réponse. Évalue ton rappel.":"Essaie de retrouver la réponse avant de retourner la carte."}</p><div class="review-rating" ${reviewFlipped?"":"hidden"}><button data-quality="1">Difficile</button><button data-quality="2">Moyen</button><button data-quality="3">Facile</button></div>`;
- const flip=$("#flipCard");if(reviewFlipped)flip.classList.add("flipped");
- flip.onclick=()=>{reviewFlipped=!reviewFlipped;flip.classList.toggle("flipped",reviewFlipped);$("#reviewCard .review-rating").hidden=!reviewFlipped;$("#reviewCard .flashcard-prompt").textContent=reviewFlipped?"Voici la réponse. Évalue ton rappel.":"Essaie de retrouver la réponse avant de retourner la carte.";typeset($("#reviewCard"))};
- $$("#reviewCard [data-quality]").forEach(b=>b.onclick=()=>{const quality=+b.dataset.quality,cardCount=Math.max(1,cards.length),rating=reviewQualityByTopic[id]||{sum:0,count:0};rating.sum+=quality;rating.count++;reviewQualityByTopic[id]=rating;if(rating.count>=cardCount){scheduleReview(id,Math.round(rating.sum/rating.count),false);delete reviewQualityByTopic[id]}state.reviewCount++;reviewIndex++;reviewFlipped=false;save();if(reviewIndex>=reviewQueue.length){state.sessions++;save();renderReviewStart();toast("Session de révision terminée.")}else renderReviewCard()});typeset($("#reviewCard"));
+ const entry=reviewQueue[reviewIndex];
+ if(!entry){renderReviewStart();return;}
+ const card=entry.card||entry,t=topic(entry.topic||card.topic);
+ if(!t){renderReviewStart();return;}
+ $("#reviewCard").innerHTML=`<div class="review-counter">CARTE ${reviewIndex+1} / ${reviewQueue.length} · ${esc(t.title)}</div><button class="flashcard" id="flipCard" type="button" aria-label="Retourner la carte"><span class="flashcard-inner"><span class="flashcard-face flashcard-front"><small>RAPPEL ACTIF</small><strong>${esc(card.front||t.title)}</strong><span>Clique pour retourner la carte</span></span><span class="flashcard-face flashcard-back"><small>RÉPONSE</small><strong>${esc(card.back||t.summary||"Réponse à compléter.")}</strong><span>Clique pour revoir la question</span></span></span></button><p class="subtle center flashcard-prompt">${reviewFlipped?"Voici la réponse. Évalue ton rappel.":"Essaie de retrouver la réponse avant de retourner la carte."}</p><div class="review-rating" ${reviewFlipped?"":"hidden"}><button data-quality="1">Difficile</button><button data-quality="2">Moyen</button><button data-quality="3">Facile</button></div>`;
+ const flip=$("#flipCard");
+ if(reviewFlipped)flip.classList.add("flipped");
+ flip.onclick=()=>{reviewFlipped=!reviewFlipped;flip.classList.toggle("flipped",reviewFlipped);$("#reviewCard .review-rating").hidden=!reviewFlipped;$("#reviewCard .flashcard-prompt").textContent=reviewFlipped?"Voici la réponse. Évalue ton rappel.":"Essaie de retrouver la réponse avant de retourner la carte.";typeset($("#reviewCard"));};
+ $$("#reviewCard [data-quality]").forEach(b=>b.onclick=()=>{
+  const quality=+b.dataset.quality;
+  scheduleCardReview(card,quality);
+  scheduleReview(entry.topic||card.topic,quality,false);
+  state.reviewCount++;reviewIndex++;reviewFlipped=false;save();
+  if(reviewIndex>=reviewQueue.length){state.sessions++;save();renderReviewStart();toast("Session de révision terminée.");}
+  else renderReviewCard();
+ });
+ typeset($("#reviewCard"));
 }
 function renderTutorMessage(text,role){
  const div=document.createElement("div");div.className="chat-message "+role;
