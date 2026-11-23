@@ -521,3 +521,4 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  .lesson-rule{grid-template-columns:1fr;gap:5px;padding:11px 13px}
  .lesson-summary,.lesson-warning{padding:15px}
 }
+.lesson-section .theorem-statement{color:#e1e8f6;font-size:13px;line-height:1.85}.lesson-section .theorem-statement p{margin:0}
