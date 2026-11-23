@@ -929,3 +929,150 @@ window.EXERCISES.push(
 {id:"l2-multi-3",topic:"multivariable",category:"Analyse",level:"L2",difficulty:"Avancé",title:"Nature d'un point critique",question:"Étudier la nature du point critique de $f(x,y)=x^2-y^2$ en $(0,0)$.",hints:["Vérifie d'abord que le gradient s'annule en $(0,0)$.","Compare les valeurs de $f$ sur les axes $y=0$ et $x=0$."],answer:"L'origine est un point selle : la fonction prend des valeurs positives et négatives arbitrairement près de l'origine.",solutionSteps:["On a $\\partial_x f=2x$ et $\\partial_y f=-2y$, donc le gradient s'annule en $(0,0)$.","Sur l'axe $y=0$, $f(x,0)=x^2>0$ pour $x\\ne0$.","Sur l'axe $x=0$, $f(0,y)=-y^2<0$ pour $y\\ne0$.","Dans tout voisinage de l'origine, la fonction prend donc des valeurs supérieures et inférieures à $f(0,0)=0$. L'origine est un point selle."],check:"Pour exclure un extremum local, trouve des valeurs supérieures et inférieures à la valeur au point dans tout voisinage."},
 {id:"l2-multi-4",topic:"multivariable",category:"Analyse",level:"L2",difficulty:"Intermédiaire",title:"Matrice hessienne",question:"Calculer la matrice hessienne de $f(x,y)=x^2+3xy+2y^2$ et déterminer son déterminant.",hints:["Calcule d'abord les dérivées partielles secondes.","La matrice hessienne est symétrique pour ce polynôme."],answer:"La hessienne est $H_f=\\begin{pmatrix}2&3\\\\3&4\\end{pmatrix}$ et son déterminant vaut $8-9=-1$.",solutionSteps:["Les dérivées premières sont $f_x=2x+3y$ et $f_y=3x+4y$.","Les dérivées secondes sont $f_{xx}=2$, $f_{xy}=3$, $f_{yx}=3$ et $f_{yy}=4$.","La matrice hessienne est donc $H_f=\\begin{pmatrix}2&3\\\\3&4\\end{pmatrix}$.","Son déterminant vaut $2\\times4-3\\times3=8-9=-1$."],check:"Place les dérivées secondes dans le bon ordre et vérifie le déterminant avec la formule ad−bc."}
 );
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Maths2.0 — Enrichissement pédagogique du chapitre L1 « Limites et convergence »
+// Ajout ciblé : définitions, théorèmes démontrés, méthodes, erreurs fréquentes,
+// exercices progressifs et cartes de révision. Aucun contenu existant n'est écrasé.
+// ─────────────────────────────────────────────────────────────────────────────
+(() => {
+  const chapter = window.TOPICS.find(t => t.id === "limits");
+  if (!chapter) return;
+
+  chapter.definitions = [
+    ...chapter.definitions,
+    ["Suite majorée", "Une suite $(u_n)$ est majorée s'il existe $M\\in\\mathbb R$ tel que, pour tout $n$, $u_n\\leq M$."],
+    ["Suite minorée", "Une suite $(u_n)$ est minorée s'il existe $m\\in\\mathbb R$ tel que, pour tout $n$, $u_n\\geq m$."],
+    ["Suite bornée", "Une suite est bornée si elle est à la fois majorée et minorée."],
+    ["Suite croissante", "Une suite est croissante lorsque, pour tout $n$, $u_{n+1}\\geq u_n$."],
+    ["Suite décroissante", "Une suite est décroissante lorsque, pour tout $n$, $u_{n+1}\\leq u_n$."]
+  ];
+
+  chapter.properties = [
+    ...chapter.properties,
+    "Une suite convergente est bornée.",
+    "La limite d'une suite convergente est unique.",
+    "Toute suite croissante et majorée converge.",
+    "Toute suite décroissante et minorée converge.",
+    "Si $u_n\\leq v_n$ à partir d'un certain rang et si les deux suites convergent, alors $\\lim u_n\\leq\\lim v_n$.",
+    "Si $u_n\\leq v_n\\leq w_n$ à partir d'un certain rang et si $u_n$ et $w_n$ convergent vers la même limite $\\ell$, alors $v_n\\to\\ell$."
+  ];
+
+  chapter.theorems = [
+    {
+      title: "Unicité de la limite",
+      statement: "Une suite réelle ne peut pas converger vers deux limites distinctes.",
+      proof: "Supposons que $u_n\\to\\ell$ et $u_n\\to m$. Pour tout $n$, l'inégalité triangulaire donne $|\\ell-m|\\leq|\\ell-u_n|+|u_n-m|$. En faisant tendre $n$ vers l'infini, les deux termes du membre de droite tendent vers $0$. Ainsi $|\\ell-m|=0$, donc $\\ell=m$."
+    },
+    {
+      title: "Une suite convergente est bornée",
+      statement: "Toute suite réelle convergente est bornée.",
+      proof: "Supposons $u_n\\to\\ell$. En prenant $\\varepsilon=1$ dans la définition, il existe $N$ tel que $n\\geq N$ implique $|u_n-\\ell|<1$, donc $|u_n|<|\\ell|+1$. Les termes à partir du rang $N$ sont donc bornés. Les termes $u_0,\\ldots,u_{N-1}$ sont en nombre fini : leur valeur absolue admet un maximum. En prenant le maximum de ces deux bornes, toute la suite est bornée."
+    },
+    {
+      title: "Théorème de convergence monotone (version croissante)",
+      statement: "Toute suite réelle croissante et majorée converge. Sa limite est la borne supérieure de l'ensemble de ses termes.",
+      proof: "Soit $A=\\{u_n:n\\in\\mathbb N\\}$. L'ensemble $A$ est non vide et majoré. Par complétude de $\\mathbb R$, il possède une borne supérieure $\\ell=\\sup A$. Soit $\\varepsilon>0$. Par définition du supremum, il existe un rang $N$ tel que $\\ell-\\varepsilon<u_N\\leq\\ell$. Comme la suite est croissante, pour tout $n\\geq N$, $\\ell-\\varepsilon<u_N\\leq u_n\\leq\\ell$. Donc $|u_n-\\ell|<\\varepsilon$ et $u_n\\to\\ell$."
+    },
+    {
+      title: "Théorème des gendarmes",
+      statement: "Si $u_n\\leq v_n\\leq w_n$ à partir d'un certain rang et si $u_n\\to\\ell$ et $w_n\\to\\ell$, alors $v_n\\to\\ell$.",
+      proof: "Soit $\\varepsilon>0$. Comme $u_n\\to\\ell$, à partir d'un certain rang $u_n>\\ell-\\varepsilon$. Comme $w_n\\to\\ell$, à partir d'un certain rang $w_n<\\ell+\\varepsilon$. En prenant un rang supérieur aux trois rangs concernés, on obtient $\\ell-\\varepsilon<u_n\\leq v_n\\leq w_n<\\ell+\\varepsilon$. Ainsi $|v_n-\\ell|<\\varepsilon$, ce qui prouve $v_n\\to\\ell$."
+    }
+  ];
+
+  chapter.methods = [
+    "Pour une suite explicite, commencer par identifier le terme dominant ou transformer l'expression, puis vérifier si une preuve par encadrement est nécessaire.",
+    "Pour démontrer $u_n\\to\\ell$ avec la définition, calculer $|u_n-\\ell|$, le majorer par une expression simple, puis choisir $N$ en fonction de $\\varepsilon$.",
+    "Pour une suite récurrente, chercher d'abord un intervalle stable, puis étudier la monotonie avant d'utiliser le théorème de convergence monotone.",
+    "Pour une expression oscillante, chercher un encadrement par deux suites qui ont la même limite.",
+    "Pour établir une inégalité entre limites, conserver le sens de l'inégalité et vérifier qu'elle est vraie à partir d'un certain rang."
+  ];
+
+  chapter.commonErrors = [
+    "Confondre suite bornée et suite convergente : la suite $((-1)^n)$ est bornée mais ne converge pas.",
+    "Utiliser le théorème de convergence monotone sans avoir établi à la fois la monotonie et la bonne borne.",
+    "Passer à la limite dans une relation de récurrence sans justifier la continuité de la fonction utilisée.",
+    "Choisir un rang $N$ indépendant de $\\varepsilon$ dans une preuve par définition.",
+    "Oublier que la convergence d'une suite n'impose aucune monotonie."
+  ];
+
+  const extraExercises = [
+    {
+      id: "limits-v1-unique",
+      topic: "limits",
+      category: "Analyse",
+      difficulty: "Intermédiaire",
+      title: "Unicité de la limite — Démonstration",
+      question: "Démontrer qu'une suite réelle ne peut pas avoir deux limites distinctes.",
+      hints: [
+        "Suppose que la suite converge vers deux réels $\\ell$ et $m$.",
+        "Écris une inégalité qui majore $|\\ell-m|$ à l'aide de $u_n$."
+      ],
+      answer: "Supposons que $u_n\\to\\ell$ et $u_n\\to m$. Pour tout $n$, l'inégalité triangulaire donne $|\\ell-m|=|\\ell-u_n+u_n-m|\\leq|\\ell-u_n|+|u_n-m|$. En faisant tendre $n$ vers l'infini, le membre de droite tend vers $0$. On obtient $|\\ell-m|=0$, donc $\\ell=m$. La limite est unique.",
+      solutionSteps: [
+        "**Supposer deux limites.** Supposons que $(u_n)$ converge vers $\\ell$ et vers $m$.",
+        "**Utiliser l'inégalité triangulaire.** Pour tout $n$, $|\\ell-m|=|\\ell-u_n+u_n-m|\\leq|\\ell-u_n|+|u_n-m|$.",
+        "**Faire tendre le rang vers l'infini.** Puisque $u_n\\to\\ell$ et $u_n\\to m$, les deux termes du membre de droite tendent vers $0$. Le nombre fixe $|\\ell-m|$ est donc inférieur ou égal à $0$.",
+        "**Conclusion.** $|\\ell-m|=0$, donc $\\boxed{\\ell=m}$. La limite d'une suite, lorsqu'elle existe, est unique."
+      ],
+      check: "La contradiction ne vient pas d'une supposition que les limites sont différentes : l'inégalité montre directement qu'elles sont égales."
+    },
+    {
+      id: "limits-v1-squeeze",
+      topic: "limits",
+      category: "Analyse",
+      difficulty: "Intermédiaire",
+      title: "Théorème des gendarmes — Application",
+      question: "On définit $u_n=\\frac{\\sin n}{n}$ pour $n\\geq1$. Démontrer que $u_n\\to0$.",
+      hints: [
+        "Rappelle l'encadrement valable pour tout réel $x$ : $-1\\leq\\sin x\\leq1$.",
+        "Divise cet encadrement par $n>0$, puis utilise le théorème des gendarmes."
+      ],
+      answer: "Pour tout $n\\geq1$, $-1\\leq\\sin n\\leq1$. Comme $n>0$, on obtient $-\\frac1n\\leq\\frac{\\sin n}{n}\\leq\\frac1n$. Or $-1/n\\to0$ et $1/n\\to0$. Par le théorème des gendarmes, $\\boxed{u_n\\to0}$.",
+      solutionSteps: [
+        "**Encadrer le numérateur.** Pour tout réel $x$, $-1\\leq\\sin x\\leq1$. En particulier, cette inégalité est vraie pour $x=n$.",
+        "**Diviser par un nombre positif.** Comme $n\\geq1$, la division par $n$ conserve l'ordre : $-\\frac1n\\leq\\frac{\\sin n}{n}\\leq\\frac1n$.",
+        "**Identifier les deux limites.** On sait que $1/n\\to0$, donc $-1/n\\to0$ également.",
+        "**Appliquer le théorème des gendarmes.** La suite centrale est encadrée par deux suites de même limite $0$. Ainsi $\\boxed{\\frac{\\sin n}{n}\\longrightarrow0}$."
+      ],
+      check: "Il faut vérifier que le diviseur n est positif pour conserver le sens des inégalités."
+    },
+    {
+      id: "limits-v1-geometric",
+      topic: "limits",
+      category: "Analyse",
+      difficulty: "Facile",
+      title: "Suite géométrique — Limite",
+      question: "Déterminer la limite de $u_n=\\left(\\frac34\\right)^n$ lorsque $n\\to+\\infty$, en justifiant le résultat.",
+      hints: [
+        "Reconnais une suite géométrique de raison $q=3/4$.",
+        "Compare la valeur absolue de la raison à 1."
+      ],
+      answer: "La suite est géométrique de raison $q=3/4$. Comme $|q|=3/4<1$, le théorème sur les suites géométriques donne $q^n\\to0$. Donc $\\boxed{u_n\\to0}$.",
+      solutionSteps: [
+        "**Identifier la nature de la suite.** On a $u_n=q^n$ avec $q=\\frac34$. C'est une suite géométrique.",
+        "**Vérifier la condition sur la raison.** On a $|q|=\\frac34<1$.",
+        "**Appliquer le théorème.** Pour toute raison $q$ telle que $|q|<1$, la suite géométrique $(q^n)$ converge vers $0$.",
+        "**Conclusion.** $\\boxed{\\lim_{n\\to+\\infty}\\left(\\frac34\\right)^n=0}$."
+      ],
+      check: "Le résultat dépend de la condition stricte $|q|<1$ ; si $q=1$ ou $q=-1$, la conclusion serait différente."
+    }
+  ];
+
+  const existingIds = new Set(window.EXERCISES.map(e => e.id));
+  for (const exercise of extraExercises) {
+    if (!existingIds.has(exercise.id)) window.EXERCISES.push(exercise);
+  }
+
+  const cards = [
+    {topic:"limits",front:"Une suite convergente est-elle nécessairement bornée ?",back:"Oui. Si $u_n\\to\\ell$, alors à partir d'un certain rang $|u_n-\\ell|<1$, donc $|u_n|<|\\ell|+1$. Les premiers termes sont en nombre fini : toute la suite est bornée."},
+    {topic:"limits",front:"Théorème de convergence monotone (croissante)",back:"Toute suite croissante et majorée converge. Sa limite est la borne supérieure de ses termes."},
+    {topic:"limits",front:"Théorème des gendarmes",back:"Si $u_n\\leq v_n\\leq w_n$ à partir d'un certain rang et si $u_n$ et $w_n$ tendent vers $\\ell$, alors $v_n\\to\\ell$."},
+    {topic:"limits",front:"Une suite peut-elle être bornée sans converger ?",back:"Oui. Exemple : $u_n=(-1)^n$ est bornée entre $-1$ et $1$, mais elle n'a pas de limite."},
+    {topic:"limits",front:"Unicité de la limite",back:"Une suite réelle ne peut avoir qu'une seule limite. Si $u_n\\to\\ell$ et $u_n\\to m$, alors $|\\ell-m|\\leq|\\ell-u_n|+|u_n-m|\\to0$, donc $\\ell=m$."}
+  ];
+  const knownCards = new Set(window.FLASHCARDS.map(c => c.front));
+  for (const card of cards) if (!knownCards.has(card.front)) window.FLASHCARDS.push(card);
+})();
