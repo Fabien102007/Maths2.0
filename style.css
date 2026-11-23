@@ -147,6 +147,7 @@ body{background:radial-gradient(ellipse at 78% -18%,rgba(65,88,160,.24),transpar
 .course-detail .definition p{margin:7px 0 0;color:#c3cde0;font-size:12px;line-height:1.8}
 .course-detail .definition-content p{margin:7px 0 0;color:#c3cde0;font-size:12px;line-height:1.8}
 .course-detail .property-list li p{display:inline;margin:0}
+.course-detail .common-errors li p{display:inline;margin:0}
 .course-detail .theorem-statement p{margin:0}
 .course-detail .example-box p{margin:0 0 8px}
 .course-detail .example-box p:last-child{margin-bottom:0}
