@@ -62,8 +62,12 @@ export default {
     if(!plan)throw new Error("Formule invalide. Choisis mensuel ou annuel.");
     const priceId=plan==="annual"?env.STRIPE_PRICE_ANNUAL:env.STRIPE_PRICE_MONTHLY;
     if(!priceId)throw new Error("Le tarif "+plan+" n'est pas encore configuré dans Cloudflare.");
-    const rows=await db(env,"user_subscriptions?select=stripe_customer_id&user_id=eq."+user.id);
-    let customer=rows?.[0]?.stripe_customer_id;
+    const rows=await db(env,"user_subscriptions?select=stripe_customer_id,status&user_id=eq."+user.id);
+    const existing=rows?.[0];
+    if(existing&&["active","trialing"].includes(existing.status)){
+      return json({error:"Un abonnement Premium est déjà actif sur ce compte. Utilise le portail de gestion pour le modifier."},409,env);
+    }
+    let customer=existing?.stripe_customer_id;
     if(!customer){const c=await stripe(env,"customers",{email:user.email,"metadata[supabase_user_id]":user.id});customer=c.id;}
     const s=await stripe(env,"checkout/sessions",{mode:"subscription",customer, "line_items[0][price]":priceId,"line_items[0][quantity]":"1",success_url:env.APP_URL+"?payment=success",cancel_url:env.APP_URL+"?payment=cancelled",client_reference_id:user.id,"metadata[supabase_user_id]":user.id,"subscription_data[metadata][supabase_user_id]":user.id});
     return json({url:s.url},200,env);
