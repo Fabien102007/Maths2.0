@@ -38,7 +38,13 @@ function mathifyTextNodes(root){
  const looksLikeProse=value=>/[A-Za-zÀ-ÿ]{3,}\s+[A-Za-zÀ-ÿ]{3,}/u.test(value);
  for(const n of nodes){
   // Normalise les délimiteurs LaTeX doublés sans modifier les \\ de mise en page.
-  const raw=(n.nodeValue||"").replace(/(?:\\){2,}(?=[()]|\[|\])/g,"\\");
+  let raw=(n.nodeValue||"").replace(/(?:\\){2,}(?=[()]|\[|\])/g,"\\");
+  // Répare les commandes LaTeX collées à leur variable (ex. \\nablaf, \\omegat).
+  raw=raw.replace(/\\(exists|omega|nabla)(?=[A-Za-z])/g,"\\$1 ");
+  // Les fragments courts non délimités contenant ces commandes sont mathématiques.
+  if(!/(?:\$\$|\$[^$\n]+\$|\\\(|\\\[)/.test(raw)){
+   raw=raw.replace(/\\(exists|omega|nabla)\s+([A-Za-z])\b/g,"\\($1 $2\\)");
+  }
   mathSpecial.lastIndex=0;
   const hasMathSymbol=mathSpecial.test(raw);
   if(!hasMathSymbol&&!/(?:\$\$|\$[^$\n]+\$|\\\(|\\\[)/.test(raw))continue;
@@ -52,7 +58,11 @@ function mathifyTextNodes(root){
    else if(formula.startsWith("\\[")&&formula.endsWith("\\]")){display=true;formula=formula.slice(2,-2);}
    else if(formula.startsWith("\\(")&&formula.endsWith("\\)"))formula=formula.slice(2,-2);
    // Un énoncé entier reste du texte ; seuls les fragments mathématiques sont convertis.
-   if(looksLikeProse(formula))return mathifySegment(formula);
+   // Une formule LaTeX contenant des commandes ne doit jamais être reclassée en prose.
+   if(looksLikeProse(formula)&&!/\\[A-Za-z]+/.test(formula))return mathifySegment(formula);
+   formula=formula.replace(/\\(exists|omega|nabla)(?=[A-Za-z])/g,"\\$1 ");
+   // Les vecteurs explicitement fléchés sont affichés en colonnes plutôt qu'en tuples horizontaux.
+   formula=formula.replace(/(\\(?:vec|overrightarrow)\{[^}]+\})\s*=\s*\(([^(),]+),\s*([^(),]+)(?:,\s*([^(),]+))?\)/g,(_,v,a,b,c)=>v+"=\\begin{pmatrix}"+a.trim()+"\\\\\\\"+b.trim()+(c?"\\\\\\\"+c.trim():"")+"\\end{pmatrix}");
    return display?"\\["+formula+"\\]":"\\("+formula+"\\)";
   }).join("");
  }
