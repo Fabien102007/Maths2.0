@@ -1,7 +1,7 @@
 /* Mathevo Cloudflare Worker — auth-protected Stripe + feedback API.
    Secrets/configuration à définir dans les variables d'environnement Cloudflare:
    SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY,
-   STRIPE_SECRET_KEY, STRIPE_PRICE_ID, STRIPE_WEBHOOK_SECRET, APP_URL, ALLOWED_ORIGIN.
+   STRIPE_SECRET_KEY, STRIPE_PRICE_MONTHLY, STRIPE_PRICE_ANNUAL, STRIPE_WEBHOOK_SECRET, APP_URL, ALLOWED_ORIGIN.
 */
 const cors=(env)=>({"Access-Control-Allow-Origin":env.ALLOWED_ORIGIN||env.APP_URL||"*","Access-Control-Allow-Headers":"Authorization,Content-Type,Stripe-Signature","Access-Control-Allow-Methods":"GET,POST,OPTIONS","Vary":"Origin"});
 const json=(data,status=200,env={})=>new Response(JSON.stringify(data),{status,headers:{"Content-Type":"application/json",...cors(env)}});
@@ -46,17 +46,22 @@ export default {
           const rr=await fetch("https://api.stripe.com/v1/subscriptions/"+subscriptionId,{headers:{Authorization:"Bearer "+env.STRIPE_SECRET_KEY}});
           sub=await rr.json();
         }
-        await db(env,"user_subscriptions",{method:"POST",body:JSON.stringify({user_id:userId,stripe_customer_id:obj.customer||sub.customer,stripe_subscription_id:subscriptionId,status:sub.status||"active",price_id:sub.items?.data?.[0]?.price?.id||env.STRIPE_PRICE_ID,current_period_end:sub.current_period_end?new Date(sub.current_period_end*1000).toISOString():null,updated_at:new Date().toISOString()})});
+        await db(env,"user_subscriptions",{method:"POST",body:JSON.stringify({user_id:userId,stripe_customer_id:obj.customer||sub.customer,stripe_subscription_id:subscriptionId,status:sub.status||"active",price_id:sub.items?.data?.[0]?.price?.id||env.STRIPE_PRICE_MONTHLY,current_period_end:sub.current_period_end?new Date(sub.current_period_end*1000).toISOString():null,updated_at:new Date().toISOString()})});
       }
     }
     return json({received:true},200,env);
    }
    if(url.pathname==="/api/checkout"&&request.method==="POST"){
     const user=await userFromRequest(request,env);
+    const payload=await request.json().catch(()=>({}));
+    const plan=payload.plan==="annual"?"annual":payload.plan==="monthly"||!payload.plan?"monthly":null;
+    if(!plan)throw new Error("Formule invalide. Choisis mensuel ou annuel.");
+    const priceId=plan==="annual"?env.STRIPE_PRICE_ANNUAL:env.STRIPE_PRICE_MONTHLY;
+    if(!priceId)throw new Error("Le tarif "+plan+" n'est pas encore configuré dans Cloudflare.");
     const rows=await db(env,"user_subscriptions?select=stripe_customer_id&user_id=eq."+user.id);
     let customer=rows?.[0]?.stripe_customer_id;
     if(!customer){const c=await stripe(env,"customers",{email:user.email,"metadata[supabase_user_id]":user.id,"subscription_data[metadata][supabase_user_id]":user.id});customer=c.id;}
-    const s=await stripe(env,"checkout/sessions",{mode:"subscription",customer, "line_items[0][price]":env.STRIPE_PRICE_ID,"line_items[0][quantity]":"1",success_url:env.APP_URL+"?payment=success",cancel_url:env.APP_URL+"?payment=cancelled",client_reference_id:user.id,"metadata[supabase_user_id]":user.id});
+    const s=await stripe(env,"checkout/sessions",{mode:"subscription",customer, "line_items[0][price]":priceId,"line_items[0][quantity]":"1",success_url:env.APP_URL+"?payment=success",cancel_url:env.APP_URL+"?payment=cancelled",client_reference_id:user.id,"metadata[supabase_user_id]":user.id});
     return json({url:s.url},200,env);
    }
    if(url.pathname==="/api/subscription"&&request.method==="POST"){
