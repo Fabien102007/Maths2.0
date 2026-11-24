@@ -1,6 +1,6 @@
 {
-  "name": "Maths2.0 — Maths Workspace",
-  "short_name": "Maths2.0",
+  "name": "Mathevo — Maths Workspace",
+  "short_name": "Mathevo",
   "start_url": "./app.html",
   "display": "standalone",
   "background_color": "#0b1020",
