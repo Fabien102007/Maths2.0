@@ -225,7 +225,7 @@ window.__mathJaxReady = new Promise(resolve => {
       <label for="accountPassword">Mot de passe</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 caractères minimum">
       <div class="account-actions"><button class="btn primary" type="submit" id="accountSignIn">Se connecter</button><button class="btn ghost" type="button" id="accountSignUp">Créer un compte</button></div>
     </form>
-    <div id="accountSignedIn" hidden><p id="accountPlanStatus" class="account-plan-status">Offre gratuite</p><div class="account-actions"><button class="btn primary" id="accountUpgrade" type="button" disabled>Premium en préparation</button><button class="btn ghost" id="accountManagePlan" type="button" disabled>Abonnement indisponible</button><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button></div></div>
+    <div id="accountSignedIn" hidden><div class="account-profile-name"><label for="accountFirstName">Prénom affiché</label><input id="accountFirstName" type="text" maxlength="40" autocomplete="given-name" placeholder="Ton prénom"><button class="btn secondary" id="accountSaveName" type="button">Enregistrer mon prénom</button></div><p id="accountPlanStatus" class="account-plan-status">Offre gratuite</p><div class="account-actions"><button class="btn primary" id="accountUpgrade" type="button" disabled>Premium en préparation</button><button class="btn ghost" id="accountManagePlan" type="button" disabled>Abonnement indisponible</button><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button></div></div>
     <div class="subscription-preview">
       <div class="eyebrow">LES OFFRES MATHS2.0</div>
       <h3>Choisis ton espace de travail</h3>
