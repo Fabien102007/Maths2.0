@@ -1,4 +1,4 @@
-/* Maths2.0 Cloudflare Worker — auth-protected Stripe + feedback API.
+/* Mathevo Cloudflare Worker — auth-protected Stripe + feedback API.
    Secrets/configuration à définir dans les variables d'environnement Cloudflare:
    SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY,
    STRIPE_SECRET_KEY, STRIPE_PRICE_ID, STRIPE_WEBHOOK_SECRET, APP_URL, ALLOWED_ORIGIN.
