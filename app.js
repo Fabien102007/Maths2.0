@@ -167,7 +167,7 @@ function renderCourses(){
    return `<button type="button" class="course-theme-card course-level-card" data-course-level="${level.name}"><span class="course-theme-symbol">${level.icon}</span><span><b>${level.name}</b><small>${level.desc}</small></span><i>${count?count+" notions":"Contenu à venir"} →</i></button>`;
   }).join("");
   detail.hidden=true;detail.innerHTML="";
-  $("[data-course-level]").forEach(b=>b.onclick=()=>{activeCourseLevel=b.dataset.courseLevel;activeTopic=null;renderCourses();animateContent(listHost)});
+  $$("[data-course-level]").forEach(b=>b.onclick=()=>{activeCourseLevel=b.dataset.courseLevel;activeTopic=null;renderCourses();animateContent(listHost)});
   return;
  }
  back.textContent=activeCourseLevel&&!q?"← Choisir un niveau":"← Analyse et Algèbre";
@@ -226,7 +226,7 @@ function renderExercises(){
    const count=inCategory.filter(e=>exerciseLevelOf(e)===l.name).length;
    return `<button type="button" class="course-theme-card exercise-level-card" data-ex-level="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count?count+" exercices":"Contenu à venir"} →</i></button>`;
   }).join("");
-  $("[data-ex-level]").forEach(b=>b.onclick=()=>{activeExerciseLevel=b.dataset.exLevel;activeExerciseDifficulty=null;activeExercise=null;$("#exerciseSearch").value="";renderExercises();animateContent(levelList)});
+  $$("[data-ex-level]").forEach(b=>b.onclick=()=>{activeExerciseLevel=b.dataset.exLevel;activeExerciseDifficulty=null;activeExercise=null;$("#exerciseSearch").value="";renderExercises();animateContent(levelList)});
   return;
  }
  if(!diff){
@@ -237,7 +237,7 @@ function renderExercises(){
    return `<button type="button" class="course-theme-card exercise-level-card" data-ex-diff="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count} exercices →</i></button>`;
   }).join("");
   const back=levelList.querySelector("[data-ex-level-back]");back.onclick=()=>{activeExerciseLevel=null;activeExercise=null;renderExercises();animateContent(levelList)};
-  $("[data-ex-diff]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exDiff;activeExercise=null;$("#exerciseSearch").value="";renderExercises();animateContent($("#exerciseList"))});
+  $$("[data-ex-diff]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exDiff;activeExercise=null;$("#exerciseSearch").value="";renderExercises();animateContent($("#exerciseList"))});
   return;
  }
  levelList.hidden=true;detail.hidden=false;topicsView.classList.add("exercise-level-selected");
