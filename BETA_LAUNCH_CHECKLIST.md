@@ -1,4 +1,4 @@
-# Maths2.0 — Checklist de préparation à la bêta
+# Mathevo — Checklist de préparation à la bêta
 
 Dernière revue du dépôt : 23 novembre 2026  
 Branche de référence : `main`
