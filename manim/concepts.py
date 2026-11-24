@@ -176,9 +176,10 @@ class EpsilonNConvergence(Scene):
             r"\iff n\geq 11",
         ).scale(0.68).to_edge(DOWN, buff=0.22)
         quantifier = MathTex(
+            r"\exists\,N\in\mathbb{N}\quad\text{tel que}\quad",
             r"\forall n\geq N,\quad |u_n-L|<\varepsilon",
             color="#65D6B0",
-        ).scale(0.78).to_corner(UR).shift(DOWN * 0.82 + LEFT * 0.25)
+        ).scale(0.62).to_corner(UR).shift(DOWN * 0.82 + LEFT * 0.25)
 
         self.play(Write(title), Create(axes), FadeIn(x_label), FadeIn(y_label), run_time=1.8)
         self.play(FadeIn(band), Create(upper), Create(lower), Create(limit_line), run_time=1.6)
@@ -221,28 +222,28 @@ class GramSchmidtGeometry(Scene):
             length=0.22, color="#65D6B0",
         )
         labels = VGroup(
-            MathTex(r"v_1=(2,0)", color="#59C7F2").scale(0.62).next_to(v1_end, DOWN, buff=0.16),
-            MathTex(r"v_2=(1,2)", color="#F4B95F").scale(0.62).next_to(v2_end, UP, buff=0.12),
-            MathTex(r"\operatorname{proj}_{v_1}(v_2)=(1,0)", color="#A99BFF").scale(0.57).next_to(proj_end, DOWN, buff=0.18),
-            MathTex(r"w_2=(0,2)", color="#65D6B0").scale(0.62).next_to((proj_end + v2_end) / 2, RIGHT, buff=0.12),
+            MathTex(r"v_1=\begin{pmatrix}2\\0\end{pmatrix}", color="#59C7F2").scale(0.62).next_to(v1_end, DOWN, buff=0.16),
+            MathTex(r"v_2=\begin{pmatrix}1\\2\end{pmatrix}", color="#F4B95F").scale(0.62).next_to(v2_end, UP, buff=0.12),
+            MathTex(r"\operatorname{proj}_{v_1}(v_2)=\begin{pmatrix}1\\0\end{pmatrix}", color="#A99BFF").scale(0.57).next_to(proj_end, DOWN, buff=0.18),
+            MathTex(r"w_2=\begin{pmatrix}0\\2\end{pmatrix}", color="#65D6B0").scale(0.62).next_to((proj_end + v2_end) / 2, RIGHT, buff=0.12),
         )
 
         panel_x = 1.15
         step1 = MathTex(
-            r"q_1=\frac{v_1}{\|v_1\|}=(1,0)",
+            r"q_1=\frac{v_1}{\|v_1\|}=\begin{pmatrix}1\\0\end{pmatrix}",
             color="#59C7F2",
         ).scale(0.66).move_to([panel_x, 1.75, 0])
         step2 = MathTex(
             r"\operatorname{proj}_{v_1}(v_2)=",
-            r"\frac{\langle v_2,v_1\rangle}{\|v_1\|^2}v_1=(1,0)",
+            r"\frac{\langle v_2,v_1\rangle}{\|v_1\|^2}v_1=\begin{pmatrix}1\\0\end{pmatrix}",
             color="#A99BFF",
         ).scale(0.54).move_to([panel_x, 0.65, 0])
         step3 = MathTex(
-            r"w_2=v_2-\operatorname{proj}_{v_1}(v_2)=(0,2)",
+            r"w_2=v_2-\operatorname{proj}_{v_1}(v_2)=\begin{pmatrix}0\\2\end{pmatrix}",
             color="#65D6B0",
         ).scale(0.53).move_to([panel_x, -0.55, 0])
         step4 = MathTex(
-            r"q_2=\frac{w_2}{\|w_2\|}=(0,1)",
+            r"q_2=\frac{w_2}{\|w_2\|}=\begin{pmatrix}0\\1\end{pmatrix}",
             color="#65D6B0",
         ).scale(0.66).move_to([panel_x, -1.55, 0])
         orthogonal = MathTex(
