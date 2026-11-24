@@ -1,4 +1,4 @@
-# Backend Maths2.0 — Supabase + Stripe + Cloudflare Workers
+# Backend Mathevo — Supabase + Stripe + Cloudflare Workers
 
 Cette intégration est un socle de déploiement, pas un service déjà activé. Le dépôt public ne contient aucune clé privée.
 
