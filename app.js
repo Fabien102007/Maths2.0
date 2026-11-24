@@ -99,6 +99,8 @@ const exerciseRichText=value=>{
    else if(formula.startsWith("$")&&formula.endsWith("$"))formula=formula.slice(1,-1);
    else if(formula.startsWith("\\[")&&formula.endsWith("\\]")){display=true;formula=formula.slice(2,-2);}
    else if(formula.startsWith("\\(")&&formula.endsWith("\\)"))formula=formula.slice(2,-2);
+   formula=formula.replace(/\\(exists|omega|nabla)(?=[A-Za-z])/g,"\\$1 ");
+   formula=formula.replace(/((?:\\(?:vec|overrightarrow)\{[^}]+\}|\\operatorname\{proj\}_{[^}]+}\([^)]*\)|(?:u|v|w|e|q)(?:_?\{?[0-9]+\}?|[₀-₉])?))\s*=\s*\(([^(),]+),\s*([^(),]+)(?:,\s*([^(),]+))?\)/g,(_,v,a,b,c)=>v+"=\\begin{pmatrix}"+a.trim()+"\\\\"+b.trim()+(c?"\\\\"+c.trim():"")+"\\end{pmatrix}");
    return display?"\\["+formula+"\\]":"\\("+formula+"\\)";
   }
   return mathifySegment(esc(part));
