@@ -704,7 +704,7 @@ function init(){
   finally{e.target.value=""}
  };
  $("#courseSearch").addEventListener("input",()=>{activeTopic=null;activeCourseLevel=null;renderCourses()});
- $("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeCourseLevel=null;activeTopic=null;renderCourses();animateContent($("#courseTopicsView"))}));
+ $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeCourseLevel=null;activeTopic=null;renderCourses();animateContent($("#courseTopicsView"))}));
  $("#courseBackThemes").onclick=()=>{if(activeCourseLevel){activeCourseLevel=null;activeTopic=null;renderCourses();animateContent($("#courseList"));}else{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses();animateContent($("#courseThemes"));}};
  $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseLevel=null;activeExerciseDifficulty=null;activeExerciseTopic=null;activeExercise=null;$("#exerciseSearch").value="";$(".exercise-layout").classList.remove("exercise-open");renderExercises();animateContent($("#exerciseThemes"))};
   // Les catégories sont gérées par délégation globale pour rester actives après les rerendus.
