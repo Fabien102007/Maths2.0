@@ -1,4 +1,4 @@
-/* Maths2.0 — authentication, local guest profile and optional cloud sync. */
+/* Mathevo — authentication, local guest profile and optional cloud sync. */
 (() => {
  "use strict";
  const cfg=window.MATHS2_CONFIG||{};
@@ -95,7 +95,7 @@
    hideWelcome();
  });
  document.getElementById("welcomeLogin")?.addEventListener("click",()=>{
-   hideWelcome();showAccount();message("Connecte-toi avec ton compte Maths2.0.");
+   hideWelcome();showAccount();message("Connecte-toi avec ton compte Mathevo.");
  });
  welcomeForm?.addEventListener("submit",async e=>{
    e.preventDefault();
@@ -143,7 +143,7 @@
    try{
      await callWorker("/api/feedback",{category:document.getElementById("feedbackCategory").value,rating:Number(document.getElementById("feedbackRating").value),message:messageText});
      document.getElementById("feedbackMessage").value="";
-     message("Merci ! Ton retour a bien été transmis à l'équipe Maths2.0.");
+     message("Merci ! Ton retour a bien été transmis à l'équipe Mathevo.");
    }catch(e){message(e.message);}
  });
  document.getElementById("accountSaveName")?.addEventListener("click",async()=>{
@@ -170,7 +170,7 @@
      if(!data.session&&!readProfile().firstName)showWelcome();
    }).catch(()=>{if(!readProfile().firstName)showWelcome()});
  }else{
-   message("Tu peux utiliser Maths2.0 en invité. La création de compte sera disponible lorsque le service sera activé.");
+   message("Tu peux utiliser Mathevo en invité. La création de compte sera disponible lorsque le service sera activé.");
    if(!readProfile().firstName)showWelcome();
    const signUp=document.getElementById("accountSignUp");
    if(signUp)signUp.disabled=true;
