@@ -62,7 +62,7 @@ function mathifyTextNodes(root){
    if(looksLikeProse(formula)&&!/\\[A-Za-z]+/.test(formula))return mathifySegment(formula);
    formula=formula.replace(/\\(exists|omega|nabla)(?=[A-Za-z])/g,"\\$1 ");
    // Les vecteurs explicitement fléchés sont affichés en colonnes plutôt qu'en tuples horizontaux.
-   formula=formula.replace(/(\\(?:vec|overrightarrow)\{[^}]+\})\s*=\s*\(([^(),]+),\s*([^(),]+)(?:,\s*([^(),]+))?\)/g,(_,v,a,b,c)=>v+"=\\begin{pmatrix}"+a.trim()+"\\\\\\\"+b.trim()+(c?"\\\\\\\"+c.trim():"")+"\\end{pmatrix}");
+   formula=formula.replace(/(\\(?:vec|overrightarrow)\{[^}]+\})\s*=\s*\(([^(),]+),\s*([^(),]+)(?:,\s*([^(),]+))?\)/g,(_,v,a,b,c)=>v+"=\\begin{pmatrix}"+a.trim()+"\\\\"+b.trim()+(c?"\\\\"+c.trim():"")+"\\end{pmatrix}");
    return display?"\\["+formula+"\\]":"\\("+formula+"\\)";
   }).join("");
  }
