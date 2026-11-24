@@ -67,7 +67,7 @@ window.__mathJaxReady = new Promise(resolve => {
     <section class="view active" id="view-home">
       <div class="hero">
         <div class="hero-copy"><div class="eyebrow"><span class="pulse"></span> TON ESPACE DE PROGRESSION</div>
-          <h1>Comprendre. Raisonner.<br><em>Maîtriser.</em></h1>
+          <h1 id="homeGreeting">Bonjour !<br><em>Prêt à progresser ?</em></h1>
           <p>Un environnement de travail conçu pour faire progresser ton raisonnement mathématique, étape après étape.</p>
           <div class="hero-actions"><button class="btn primary" data-go="exercises">Reprendre les exercices <span>→</span></button><button class="btn ghost" data-go="courses">Explorer les cours</button></div>
         </div>
@@ -198,6 +198,23 @@ window.__mathJaxReady = new Promise(resolve => {
   </main>
 </div>
 <div class="toast" id="toast" role="status"></div>
+<div class="account-modal" id="welcomeModal" hidden>
+  <div class="account-dialog panel welcome-dialog" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <div class="eyebrow">BIENVENUE SUR MATHS2.0</div>
+    <h2 id="welcomeTitle">Ton espace de travail commence ici.</h2>
+    <p class="subtle">Crée ton compte ou découvre immédiatement l'application en invité.</p>
+    <form id="welcomeForm">
+      <label for="welcomeFirstName">Ton prénom</label><input id="welcomeFirstName" type="text" maxlength="40" autocomplete="given-name" required placeholder="Ex. Alex">
+      <label for="welcomeEmail">Adresse e-mail</label><input id="welcomeEmail" type="email" autocomplete="email" required placeholder="toi@exemple.fr">
+      <label for="welcomePassword">Mot de passe</label><input id="welcomePassword" type="password" minlength="8" autocomplete="new-password" required placeholder="8 caractères minimum">
+      <button class="btn primary" id="welcomeCreate" type="submit">Créer mon compte</button>
+    </form>
+    <button class="btn ghost welcome-login" id="welcomeLogin" type="button">J'ai déjà un compte</button>
+    <div class="welcome-divider"><span>ou</span></div>
+    <button class="btn secondary welcome-guest" id="welcomeGuest" type="button">Continuer en invité</button>
+    <p class="subscription-note" id="welcomeStatus" role="status">En invité, ton prénom et ta progression restent enregistrés sur cet appareil.</p>
+  </div>
+</div>
 <div class="account-modal" id="accountModal" hidden>
   <div class="account-dialog panel" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
     <button class="account-close" id="accountClose" type="button" aria-label="Fermer">×</button>
@@ -240,7 +257,7 @@ window.__mathJaxReady = new Promise(resolve => {
   <script defer src="config.js?v=20261120-supabase-config1"></script>
   <script defer src="data.js?v=20261121-quality18"></script>
   <script defer src="curriculum.js?v=20261121-quality18"></script>
-  <script defer src="app.js?v=20261124-latex-tokenfix4"></script>
-  <script defer src="account.js?v=20261121-quality18"></script>
+  <script defer src="app.js?v=20261124-welcome1"></script>
+  <script defer src="account.js?v=20261124-welcome1"></script>
 </body>
 </html>
