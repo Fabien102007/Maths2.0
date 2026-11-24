@@ -21,12 +21,16 @@ async function stripe(env,path,body){
  const data=await r.json();if(!r.ok)throw new Error(data.error?.message||"Erreur Stripe.");return data;
 }
 async function verifyStripe(request,secret,body){
- const sig=request.headers.get("Stripe-Signature")||"",parts=Object.fromEntries(sig.split(",").map(x=>x.split("="))),timestamp=parts.t;
- if(!timestamp||!parts.v1)return false;
+ const sig=request.headers.get("Stripe-Signature")||"";
+ const parts=sig.split(",").map(x=>x.trim().split("="));
+ const timestamp=parts.find(([key])=>key==="t")?.[1];
+ const signatures=parts.filter(([key])=>key==="v1").map(([,value])=>value);
+ if(!timestamp||!signatures.length||!secret)return false;
+ if(Math.abs(Date.now()/1000-Number(timestamp))>300)return false;
  const encoder=new TextEncoder(),key=await crypto.subtle.importKey("raw",encoder.encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
  const digest=await crypto.subtle.sign("HMAC",key,encoder.encode(timestamp+"."+body));
  const hex=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,"0")).join("");
- return hex===parts.v1;
+ return signatures.some(signature=>signature.length===hex.length&&signature===hex);
 }
 export default {
  async fetch(request,env){
@@ -60,7 +64,7 @@ export default {
     if(!priceId)throw new Error("Le tarif "+plan+" n'est pas encore configuré dans Cloudflare.");
     const rows=await db(env,"user_subscriptions?select=stripe_customer_id&user_id=eq."+user.id);
     let customer=rows?.[0]?.stripe_customer_id;
-    if(!customer){const c=await stripe(env,"customers",{email:user.email,"metadata[supabase_user_id]":user.id,"subscription_data[metadata][supabase_user_id]":user.id});customer=c.id;}
+    if(!customer){const c=await stripe(env,"customers",{email:user.email,"metadata[supabase_user_id]":user.id});customer=c.id;}
     const s=await stripe(env,"checkout/sessions",{mode:"subscription",customer, "line_items[0][price]":priceId,"line_items[0][quantity]":"1",success_url:env.APP_URL+"?payment=success",cancel_url:env.APP_URL+"?payment=cancelled",client_reference_id:user.id,"metadata[supabase_user_id]":user.id,"subscription_data[metadata][supabase_user_id]":user.id});
     return json({url:s.url},200,env);
    }
