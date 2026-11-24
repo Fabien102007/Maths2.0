@@ -7,5 +7,5 @@ window.MATHS2_CONFIG={
  progressSyncEnabled:false, // Synchronisation cloud en attente de validation SQL/RLS.
  supabaseUrl:"https://oppuxvbxojfqalbvchtq.supabase.co",
  supabaseAnonKey:"sb_publishable_MbjibQDvS64A08v5Qy-oww_uK8EFduq",
- workerUrl:""
+ workerUrl:"https://mathevo-billing.freitasaguiarfabien.workers.dev"
 };
