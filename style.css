@@ -532,6 +532,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* Correctifs d’affichage des animations Manim : respecter le ratio natif de chaque vidéo, y compris les exports portrait. */
 .manim-stage{display:flex;align-items:center;justify-content:center;min-width:0;}
 .manim-video{display:block;width:100%;height:auto;max-height:70vh;aspect-ratio:auto;object-fit:contain;}
-.manim-active-equation{min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;}
-.manim-active-equation mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden;}
-@media(max-width:560px){.manim-video{max-height:62vh}.manim-active-equation{font-size:.95rem;}}
+.manim-viewer-equation{min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;}
+.manim-viewer-equation mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden;}
+@media(max-width:560px){.manim-video{max-height:62vh}.manim-viewer-equation{font-size:.95rem;}}
