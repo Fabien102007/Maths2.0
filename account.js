@@ -63,10 +63,14 @@
      if(signed)signed.hidden=false;
      const nameInput=document.getElementById("accountFirstName");if(nameInput)nameInput.value=firstName||"";
      const billingReady=!!cfg.workerUrl;
-     const upgrade=document.getElementById("accountUpgrade");
+     const upgradeButtons=["accountUpgrade","accountUpgradeAnnual","accountUpgradePreview","accountUpgradePreviewAnnual"].map(id=>document.getElementById(id)).filter(Boolean);
      const manage=document.getElementById("accountManagePlan");
      const feedback=document.getElementById("feedbackSend");
-     if(upgrade){upgrade.disabled=!billingReady;upgrade.textContent=billingReady?"Passer à Premium":"Premium en préparation";}
+     upgradeButtons.forEach(button=>{button.disabled=!billingReady;});
+     const monthly=document.getElementById("accountUpgrade");if(monthly)monthly.textContent="Choisir le mensuel · 5,99 €/mois";
+     const annual=document.getElementById("accountUpgradeAnnual");if(annual)annual.textContent="Choisir l'annuel · 49,99 €/an";
+     const previewMonthly=document.getElementById("accountUpgradePreview");if(previewMonthly)previewMonthly.textContent="Choisir le mensuel · 5,99 €/mois";
+     const previewAnnual=document.getElementById("accountUpgradePreviewAnnual");if(previewAnnual)previewAnnual.textContent="Choisir l'annuel · 49,99 €/an";
      if(manage)manage.disabled=!billingReady;
      if(feedback)feedback.disabled=!billingReady;
      open.textContent="Mon compte · connecté";
@@ -134,9 +138,14 @@
    message(data.session?"Compte créé.":"Compte créé : vérifie ton e-mail pour confirmer l'inscription.");
    if(data.session)await refresh(data.session);
  });
- document.getElementById("accountUpgrade")?.addEventListener("click",async()=>{
-   try{const data=await callWorker("/api/checkout");if(data.url)location.href=data.url;}catch(e){message(e.message);}
- });
+ const startCheckout=async plan=>{
+   try{message("Préparation du paiement sécurisé…");const data=await callWorker("/api/checkout",{plan});if(data.url)location.href=data.url;else message("Stripe n'a pas retourné de lien de paiement.");}
+   catch(e){message(e.message);}
+ };
+ document.getElementById("accountUpgrade")?.addEventListener("click",()=>startCheckout("monthly"));
+ document.getElementById("accountUpgradeAnnual")?.addEventListener("click",()=>startCheckout("annual"));
+ document.getElementById("accountUpgradePreview")?.addEventListener("click",()=>startCheckout("monthly"));
+ document.getElementById("accountUpgradePreviewAnnual")?.addEventListener("click",()=>startCheckout("annual"));
  document.getElementById("feedbackSend")?.addEventListener("click",async()=>{
    const messageText=document.getElementById("feedbackMessage").value.trim();
    if(messageText.length<5){message("Écris un retour d'au moins 5 caractères.");return;}
@@ -161,7 +170,7 @@
  document.getElementById("accountManagePlan")?.addEventListener("click",async()=>{
    try{const data=await callWorker("/api/portal");if(data.url)location.href=data.url;}catch(e){message(e.message);}
  });
- window.Maths2Account={sync:syncProgress,scheduleSync:()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncProgress(),1800)},checkout:async()=>callWorker("/api/checkout")};
+ window.Maths2Account={sync:syncProgress,scheduleSync:()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncProgress(),1800)},checkout:async(plan="monthly")=>callWorker("/api/checkout",{plan})};
  if(ready()){
    client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
    client.auth.onAuthStateChange((_event,s)=>{refresh(s)});
