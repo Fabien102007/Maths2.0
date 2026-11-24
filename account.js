@@ -28,7 +28,7 @@
  let client=null,session=null,syncTimer=null;
  const ready=()=>cfg.accountsEnabled===true&&!!(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase?.createClient);
  const message=t=>{if(status)status.textContent=t};
- const firstNameOf=s=>String(s?.user_metadata?.first_name||s?.user_metadata?.full_name||"").trim()||String(s?.email||"").split("@")[0]||"";
+ const firstNameOf=s=>String(s?.user_metadata?.first_name||s?.user_metadata?.full_name||"").trim()||String(readProfile().firstName||"").trim()||String(s?.email||"").split("@")[0]||"";
  const syncProgress=async()=>{
    if(!client||!session||cfg.progressSyncEnabled!==true)return;
    try{
