@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0b1020">
-  <meta name="description" content="Maths2.0 — apprendre, comprendre et maîtriser les mathématiques.">
-  <title>Maths2.0 — Maîtriser les mathématiques</title>
+  <meta name="description" content="Mathevo — apprendre, comprendre et maîtriser les mathématiques.">
+  <title>Mathevo — Maîtriser les mathématiques</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css?v=20261124-complexproof1">
@@ -39,7 +39,7 @@ window.__mathJaxReady = new Promise(resolve => {
 <body>
 <div class="app-shell">
   <aside class="sidebar" id="sidebar">
-    <a class="brand" href="#" data-view="home"><span class="brand-mark">∑</span><span><b>Maths2.0</b><small>MATHS WORKSPACE</small></span></a>
+    <a class="brand" href="#" data-view="home"><span class="brand-mark">∑</span><span><b>Mathevo</b><small>MATHS WORKSPACE</small></span></a>
     <div class="side-label">ESPACE DE TRAVAIL</div>
     <nav class="nav">
       <button class="nav-link" data-view="home"><span>⌂</span> Vue d'ensemble</button>
@@ -60,7 +60,7 @@ window.__mathJaxReady = new Promise(resolve => {
   <main class="main">
     <header class="topbar">
       <button class="mobile-menu" id="mobileMenu">☰</button>
-      <div class="breadcrumb"><span>Maths2.0</span><i>/</i><b id="crumb">Vue d'ensemble</b></div>
+      <div class="breadcrumb"><span>Mathevo</span><i>/</i><b id="crumb">Vue d'ensemble</b></div>
       <div class="top-actions"><button class="account-button" id="accountOpen" type="button">Mon compte</button><span class="streak">✦ <b id="streak">0</b> jour</span><button class="icon-btn" id="exportData" title="Exporter une sauvegarde">⇩</button><label class="icon-btn import-label" for="importData" title="Importer une sauvegarde">⇧</label><input type="file" id="importData" accept="application/json,.json" hidden><button class="icon-btn" id="resetData" title="Réinitialiser la progression">↺</button></div>
     </header>
 
@@ -116,7 +116,7 @@ window.__mathJaxReady = new Promise(resolve => {
 
     <section class="view" id="view-tutor">
       <div class="page-intro"><div class="eyebrow">ASSISTANT PÉDAGOGIQUE</div><h1>Le tuteur IA</h1><p>Il ne fait pas le travail à ta place : il t'aide à construire le raisonnement.</p></div>
-      <div class="tutor-layout"><div class="panel tutor-panel"><div class="tutor-header"><div class="tutor-avatar">✳</div><div><b>Maths2.0 Tutor</b><small><span class="online-dot"></span> Service IA configuré</small></div><button class="text-btn" id="clearChat">Nouvelle discussion</button></div><div class="mode-tabs" id="tutorModes"><button class="mode active" data-mode="tutor">Tuteur guidé</button><button class="mode" data-mode="concept">Expliquer une notion</button><button class="mode" data-mode="exam">Mode examen</button><button class="mode" data-mode="proof_review">Analyser ma preuve</button></div><div class="chat" id="chat"><div class="chat-welcome"><span>✳</span><h3>Sur quoi travailles-tu ?</h3><p>Décris ton blocage, colle une démonstration ou joins une photo de ta copie.</p></div></div><div class="chat-composer" id="chatComposer"><div class="chat-attachment-row"><label class="upload-btn" for="tutorImage"><span class="attach-icon">＋</span> Joindre une photo</label><input type="file" id="tutorImage" accept="image/png,image/jpeg,image/webp" hidden><span id="uploadName" class="subtle">Aucune image jointe</span></div><div class="chat-compose"><textarea id="chatInput" rows="2" placeholder="Pose ta question, partage ton raisonnement…"></textarea><button class="send-button" id="sendChat" type="button" aria-label="Envoyer le message" title="Envoyer"><span>↑</span></button></div><div class="compose-footer"><span>↵ Envoyer</span><span>⇧ + ↵ pour aller à la ligne</span></div></div><div class="status-line" id="tutorStatus" aria-live="polite">Le tuteur IA est prêt à t'accompagner.</div></div><aside class="panel tutor-tips"><div class="eyebrow">POUR MIEUX APPRENDRE</div><h3>Comment utiliser le tuteur ?</h3><div class="tip"><b>01</b><p>Montre ce que tu as déjà essayé, même si ce n'est pas terminé.</p></div><div class="tip"><b>02</b><p>Demande un indice précis plutôt que la solution complète.</p></div><div class="tip"><b>03</b><p>Vérifie chaque étape et reformule le résultat avec tes mots.</p></div><div class="privacy-note">◎ La progression reste sur cet appareil. Si tu utilises le tuteur IA, tes messages et pièces jointes sont transmis au Worker pour traitement. <a href="privacy.html">Voir la politique de confidentialité</a>.</div></aside></div>
+      <div class="tutor-layout"><div class="panel tutor-panel"><div class="tutor-header"><div class="tutor-avatar">✳</div><div><b>Mathevo Tutor</b><small><span class="online-dot"></span> Service IA configuré</small></div><button class="text-btn" id="clearChat">Nouvelle discussion</button></div><div class="mode-tabs" id="tutorModes"><button class="mode active" data-mode="tutor">Tuteur guidé</button><button class="mode" data-mode="concept">Expliquer une notion</button><button class="mode" data-mode="exam">Mode examen</button><button class="mode" data-mode="proof_review">Analyser ma preuve</button></div><div class="chat" id="chat"><div class="chat-welcome"><span>✳</span><h3>Sur quoi travailles-tu ?</h3><p>Décris ton blocage, colle une démonstration ou joins une photo de ta copie.</p></div></div><div class="chat-composer" id="chatComposer"><div class="chat-attachment-row"><label class="upload-btn" for="tutorImage"><span class="attach-icon">＋</span> Joindre une photo</label><input type="file" id="tutorImage" accept="image/png,image/jpeg,image/webp" hidden><span id="uploadName" class="subtle">Aucune image jointe</span></div><div class="chat-compose"><textarea id="chatInput" rows="2" placeholder="Pose ta question, partage ton raisonnement…"></textarea><button class="send-button" id="sendChat" type="button" aria-label="Envoyer le message" title="Envoyer"><span>↑</span></button></div><div class="compose-footer"><span>↵ Envoyer</span><span>⇧ + ↵ pour aller à la ligne</span></div></div><div class="status-line" id="tutorStatus" aria-live="polite">Le tuteur IA est prêt à t'accompagner.</div></div><aside class="panel tutor-tips"><div class="eyebrow">POUR MIEUX APPRENDRE</div><h3>Comment utiliser le tuteur ?</h3><div class="tip"><b>01</b><p>Montre ce que tu as déjà essayé, même si ce n'est pas terminé.</p></div><div class="tip"><b>02</b><p>Demande un indice précis plutôt que la solution complète.</p></div><div class="tip"><b>03</b><p>Vérifie chaque étape et reformule le résultat avec tes mots.</p></div><div class="privacy-note">◎ La progression reste sur cet appareil. Si tu utilises le tuteur IA, tes messages et pièces jointes sont transmis au Worker pour traitement. <a href="privacy.html">Voir la politique de confidentialité</a>.</div></aside></div>
     </section>
 
     <section class="view" id="view-visuals">
@@ -218,7 +218,7 @@ window.__mathJaxReady = new Promise(resolve => {
 <div class="account-modal" id="accountModal" hidden>
   <div class="account-dialog panel" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
     <button class="account-close" id="accountClose" type="button" aria-label="Fermer">×</button>
-    <div class="eyebrow">ESPACE PERSONNEL</div><h2 id="accountTitle">Ton compte Maths2.0</h2>
+    <div class="eyebrow">ESPACE PERSONNEL</div><h2 id="accountTitle">Ton compte Mathevo</h2>
     <p id="accountStatus" class="subtle">Les comptes et la synchronisation multi-appareils seront ouverts après les tests techniques. L’application reste utilisable gratuitement sans compte.</p>
     <form id="accountForm">
       <label for="accountEmail">Adresse e-mail</label><input id="accountEmail" type="email" autocomplete="email" required placeholder="toi@exemple.fr">
@@ -244,7 +244,7 @@ window.__mathJaxReady = new Promise(resolve => {
       <p class="subscription-note">Tarif indicatif à tester : 5,99 €/mois ou 49,99 €/an. Offre en préparation : aucun paiement ni abonnement n’est activé.</p>
     </div>
     <div class="account-feedback">
-      <div class="eyebrow">BÊTA TEST</div><b>Donner un retour sur Maths2.0</b>
+      <div class="eyebrow">BÊTA TEST</div><b>Donner un retour sur Mathevo</b>
       <label for="feedbackCategory">Sujet</label><select id="feedbackCategory"><option value="bug">Bug ou problème</option><option value="cours">Cours</option><option value="exercice">Exercice / correction</option><option value="visualisation">Visualisation</option><option value="idee">Idée d'amélioration</option><option value="autre">Autre</option></select>
       <label for="feedbackRating">Note globale</label><select id="feedbackRating"><option value="5">5 — Excellent</option><option value="4">4 — Bien</option><option value="3" selected>3 — Moyen</option><option value="2">2 — Décevant</option><option value="1">1 — Très décevant</option></select>
       <label for="feedbackMessage">Ton retour</label><textarea id="feedbackMessage" rows="3" maxlength="4000" placeholder="Décris ce qui fonctionne, ce qui bloque ou ce que tu aimerais voir…"></textarea>
