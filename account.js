@@ -1,7 +1,4 @@
-/* Maths2.0 — authentication, cloud sync and billing bridge.
-   Configure window.MATHS2_CONFIG in config.js with the Supabase project URL,
-   anon key and the deployed Cloudflare Worker URL. Never put service-role or Stripe
-   secret keys in this file. */
+/* Maths2.0 — authentication, local guest profile and optional cloud sync. */
 (() => {
  "use strict";
  const cfg=window.MATHS2_CONFIG||{};
@@ -11,27 +8,34 @@
  const signed=document.getElementById("accountSignedIn");
  const open=document.getElementById("accountOpen");
  const close=document.getElementById("accountClose");
+ const welcome=document.getElementById("welcomeModal");
+ const welcomeForm=document.getElementById("welcomeForm");
+ const welcomeStatus=document.getElementById("welcomeStatus");
  if(!modal||!open)return;
+ const PROFILE_KEY="maths2_profile_v1";
+ const readProfile=()=>{try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||"{}")}catch{return {}}};
+ const saveProfile=patch=>{
+   const next={...readProfile(),...patch};
+   localStorage.setItem(PROFILE_KEY,JSON.stringify(next));
+   document.dispatchEvent(new CustomEvent("maths2:profile-updated",{detail:next}));
+   return next;
+ };
+ const setWelcomeMessage=t=>{if(welcomeStatus)welcomeStatus.textContent=t};
+ const showWelcome=()=>{if(welcome)welcome.hidden=false};
+ const hideWelcome=()=>{if(welcome)welcome.hidden=true};
+ const showAccount=()=>{modal.hidden=false;document.getElementById("accountEmail")?.focus()};
+ const hideAccount=()=>{modal.hidden=true};
  let client=null,session=null,syncTimer=null;
  const ready=()=>cfg.accountsEnabled===true&&!!(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase?.createClient);
  const message=t=>{if(status)status.textContent=t};
- const show=()=>{modal.hidden=false;document.getElementById("accountEmail")?.focus()};
- const hide=()=>{modal.hidden=true};
- const callWorker=async(path,body={})=>{
-   if(!session?.access_token||!cfg.workerUrl)throw new Error("Le service de compte n'est pas encore configuré.");
-   const res=await fetch(cfg.workerUrl.replace(/\/$/,"")+path,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token},body:JSON.stringify(body)});
-   const data=await res.json().catch(()=>({}));
-   if(!res.ok)throw new Error(data.error||"Le service est momentanément indisponible.");
-   return data;
- };
+ const firstNameOf=s=>String(s?.user_metadata?.first_name||s?.user_metadata?.full_name||"").trim()||String(s?.email||"").split("@")[0]||"";
  const syncProgress=async()=>{
-   if(!client||!session)return;
+   if(!client||!session||cfg.progressSyncEnabled!==true)return;
    try{
      const local=JSON.parse(localStorage.getItem("maths4_studio_v1")||"{}");
      const {data,error}=await client.from("user_progress").select("state,updated_at").eq("user_id",session.user.id).maybeSingle();
      if(error)throw error;
-     const localDate=local.updatedAt||"1970-01-01";
-     const cloudDate=data?.updated_at||"1970-01-01";
+     const localDate=local.updatedAt||"1970-01-01",cloudDate=data?.updated_at||"1970-01-01";
      if(data?.state&&new Date(cloudDate)>new Date(localDate)){
        localStorage.setItem("maths4_studio_v1",JSON.stringify(data.state));
        message("Une progression cloud plus récente a été restaurée. Recharge l'application pour l'afficher.");
@@ -41,17 +45,22 @@
        if(upsertError)throw upsertError;
        message("Connecté : progression synchronisée avec ton compte.");
      }
-     const plan=document.getElementById("accountPlanStatus");
-     if(cfg.workerUrl){
-       const sub=await callWorker("/api/subscription");
-       if(plan)plan.textContent=sub.active?"Maths2.0 Premium · abonnement "+sub.status:"Offre gratuite";
-     }else if(plan){plan.textContent="Offre gratuite · Premium en préparation";}
    }catch(e){message("Compte connecté, mais synchronisation non terminée : "+e.message);}
+ };
+ const callWorker=async(path,body={})=>{
+   if(!session?.access_token||!cfg.workerUrl)throw new Error("Le service de compte n'est pas encore configuré.");
+   const res=await fetch(cfg.workerUrl.replace(/\/$/,"")+path,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token},body:JSON.stringify(body)});
+   const data=await res.json().catch(()=>({}));
+   if(!res.ok)throw new Error(data.error||"Le service est momentanément indisponible.");
+   return data;
  };
  const refresh=async(s)=>{
    session=s;
    if(s){
-     form.hidden=true;signed.hidden=false;
+     const firstName=firstNameOf(s)||readProfile().firstName;
+     if(firstName)saveProfile({firstName,guest:false});
+     if(form)form.hidden=true;
+     if(signed)signed.hidden=false;
      const billingReady=!!cfg.workerUrl;
      const upgrade=document.getElementById("accountUpgrade");
      const manage=document.getElementById("accountManagePlan");
@@ -61,43 +70,71 @@
      if(feedback)feedback.disabled=!billingReady;
      open.textContent="Mon compte · connecté";
      message("Connecté avec "+s.user.email+".");
-     await syncProgress();
+     if(cfg.progressSyncEnabled===true)await syncProgress();
+     else{
+       const plan=document.getElementById("accountPlanStatus");
+       if(plan)plan.textContent="Compte créé · progression conservée sur cet appareil";
+       message("Compte connecté. La progression reste pour le moment enregistrée sur cet appareil.");
+     }
    }else{
-     form.hidden=false;signed.hidden=true;open.textContent="Mon compte";
-     message(ready()?"Connecte-toi pour synchroniser ta progression.":"La connexion sera activée dès que le projet Supabase et le Worker seront configurés.");
+     if(form)form.hidden=false;
+     if(signed)signed.hidden=true;
+     open.textContent="Mon compte";
+     message(ready()?"Connecte-toi pour retrouver ton compte.":"La création de compte n'est pas disponible pour le moment. Le mode invité reste accessible.");
    }
  };
- open.addEventListener("click",show);close?.addEventListener("click",hide);
- modal.addEventListener("click",e=>{if(e.target===modal)hide()});
- document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!modal.hidden)hide()});
- if(!ready()){
-   message("Les comptes seront activés après finalisation de la configuration Supabase. Tu peux utiliser gratuitement l’application sans créer de compte.");
-   form?.querySelectorAll("input,button").forEach(control=>control.disabled=true);
-   const feedback=document.getElementById("feedbackSend");if(feedback)feedback.disabled=true;
- }else{
-   client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
-   client.auth.getSession().then(({data})=>refresh(data.session));
-   client.auth.onAuthStateChange((_event,s)=>{session=s;refresh(s)});
- }
+ open.addEventListener("click",showAccount);
+ close?.addEventListener("click",hideAccount);
+ modal.addEventListener("click",e=>{if(e.target===modal)hideAccount()});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!modal.hidden)hideAccount()});
+ document.getElementById("welcomeGuest")?.addEventListener("click",()=>{
+   const firstName=String(document.getElementById("welcomeFirstName")?.value||"").trim();
+   if(!firstName){setWelcomeMessage("Indique ton prénom pour personnaliser ton espace.");document.getElementById("welcomeFirstName")?.focus();return;}
+   saveProfile({firstName,guest:true});
+   hideWelcome();
+ });
+ document.getElementById("welcomeLogin")?.addEventListener("click",()=>{
+   hideWelcome();showAccount();message("Connecte-toi avec ton compte Maths2.0.");
+ });
+ welcomeForm?.addEventListener("submit",async e=>{
+   e.preventDefault();
+   if(!ready()){setWelcomeMessage("La création de compte n'est pas disponible pour le moment. Tu peux continuer en invité.");return;}
+   const firstName=String(document.getElementById("welcomeFirstName").value||"").trim();
+   const email=String(document.getElementById("welcomeEmail").value||"").trim();
+   const password=document.getElementById("welcomePassword").value;
+   if(!firstName){setWelcomeMessage("Saisis ton prénom.");return;}
+   if(password.length<8){setWelcomeMessage("Le mot de passe doit contenir au moins 8 caractères.");return;}
+   const button=document.getElementById("welcomeCreate");if(button)button.disabled=true;
+   setWelcomeMessage("Création de ton compte…");
+   try{
+     const {data,error}=await client.auth.signUp({email,password,options:{data:{first_name:firstName}}});
+     if(error)throw error;
+     saveProfile({firstName,guest:false});
+     if(data.session){await refresh(data.session);hideWelcome();}
+     else{hideWelcome();showAccount();message("Compte créé. Vérifie ta boîte mail pour confirmer ton adresse, puis connecte-toi.");}
+   }catch(err){setWelcomeMessage(err.message||"Impossible de créer le compte pour le moment.");}
+   finally{if(button)button.disabled=false;}
+ });
  form?.addEventListener("submit",async e=>{
    e.preventDefault();
-   if(!client){message("Supabase n'est pas encore configuré.");return;}
+   if(!client){message("Le service de compte n'est pas disponible.");return;}
    const email=document.getElementById("accountEmail").value.trim(),password=document.getElementById("accountPassword").value;
    const {data,error}=await client.auth.signInWithPassword({email,password});
-   if(error){message(error.message);return;}await refresh(data.session);
+   if(error){message(error.message);return;}
+   await refresh(data.session);
  });
  document.getElementById("accountSignUp")?.addEventListener("click",async()=>{
-   if(!client){message("Supabase n'est pas encore configuré.");return;}
+   if(!client){message("Le service de compte n'est pas disponible.");return;}
    const email=document.getElementById("accountEmail").value.trim(),password=document.getElementById("accountPassword").value;
    if(!email||password.length<8){message("Saisis un e-mail et un mot de passe d'au moins 8 caractères.");return;}
-   const {data,error}=await client.auth.signUp({email,password});
+   const firstName=readProfile().firstName||"";
+   const {data,error}=await client.auth.signUp({email,password,options:{data:{first_name:firstName}}});
    if(error){message(error.message);return;}
    message(data.session?"Compte créé.":"Compte créé : vérifie ton e-mail pour confirmer l'inscription.");
    if(data.session)await refresh(data.session);
  });
  document.getElementById("accountUpgrade")?.addEventListener("click",async()=>{
-   try{const data=await callWorker("/api/checkout");if(data.url)location.href=data.url;}
-   catch(e){message(e.message);}
+   try{const data=await callWorker("/api/checkout");if(data.url)location.href=data.url;}catch(e){message(e.message);}
  });
  document.getElementById("feedbackSend")?.addEventListener("click",async()=>{
    const messageText=document.getElementById("feedbackMessage").value.trim();
@@ -110,8 +147,22 @@
  });
  document.getElementById("accountSignOut")?.addEventListener("click",async()=>{await client?.auth.signOut();await refresh(null)});
  document.getElementById("accountManagePlan")?.addEventListener("click",async()=>{
-   try{const data=await callWorker("/api/portal");if(data.url)location.href=data.url;}
-   catch(e){message(e.message);}
+   try{const data=await callWorker("/api/portal");if(data.url)location.href=data.url;}catch(e){message(e.message);}
  });
  window.Maths2Account={sync:syncProgress,scheduleSync:()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncProgress(),1800)},checkout:async()=>callWorker("/api/checkout")};
+ if(ready()){
+   client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+   client.auth.onAuthStateChange((_event,s)=>{refresh(s)});
+   client.auth.getSession().then(async({data})=>{
+     await refresh(data.session);
+     if(!data.session&&!readProfile().firstName)showWelcome();
+   }).catch(()=>{if(!readProfile().firstName)showWelcome()});
+ }else{
+   message("Tu peux utiliser Maths2.0 en invité. La création de compte sera disponible lorsque le service sera activé.");
+   if(!readProfile().firstName)showWelcome();
+   const signUp=document.getElementById("accountSignUp");
+   if(signUp)signUp.disabled=true;
+   const signIn=document.getElementById("accountSignIn");
+   if(signIn)signIn.disabled=true;
+ }
 })();
