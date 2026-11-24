@@ -90,6 +90,6 @@ for (const video of ["euler_helix.mp4", "derivative_tangent.mp4", "fourier_squar
   assert.ok(fs.existsSync(path.join(root, "assets", "manim", video)), "Vidéo Manim manquante : " + video);
 }
 
-console.log("Maths2.0 quality gate: OK");
+console.log("Mathevo quality gate: OK");
 console.log(topics.length + " notions · " + exercises.length + " exercices · " + flashcards.length + " flashcards");
 console.log("Cours structurés, prérequis, corrections, ressources locales et manifeste PWA vérifiés.");
