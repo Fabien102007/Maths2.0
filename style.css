@@ -549,3 +549,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* Démonstrations : formules lisibles et contenues sur mobile */
 .theorem-proof{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal}
 .theorem-proof mjx-container[display="true"]{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:3px 0 7px}
+
+
+/* Transitions homogènes à l'intérieur des cours et des exercices. */
+.content-enter{animation:mathevo-content-enter .34s cubic-bezier(.2,.75,.25,1) both}
+@keyframes mathevo-content-enter{
+ from{opacity:0;transform:translateY(9px)}
+ to{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+ .content-enter{animation:none!important}
+}
