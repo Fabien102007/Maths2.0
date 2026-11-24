@@ -112,6 +112,13 @@ const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
 const mastered=id=>state.attempts[id]?.independent>=2 && state.attempts[id]?.lastScore>=0.8;
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
+// Réutilise une transition courte pour chaque changement de niveau ou de contenu.
+function animateContent(el){
+ if(!el)return;
+ el.classList.remove("content-enter");
+ void el.offsetWidth;
+ el.classList.add("content-enter");
+}
 function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",presentation:"Découvrir Mathevo",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals")drawVisuals();if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
 function renderDashboard(){
  const profile=(()=>{try{return JSON.parse(localStorage.getItem('maths2_profile_v1')||'{}')}catch{return {}}})();
@@ -160,7 +167,7 @@ function renderCourses(){
    return `<button type="button" class="course-theme-card course-level-card" data-course-level="${level.name}"><span class="course-theme-symbol">${level.icon}</span><span><b>${level.name}</b><small>${level.desc}</small></span><i>${count?count+" notions":"Contenu à venir"} →</i></button>`;
   }).join("");
   detail.hidden=true;detail.innerHTML="";
-  $$("[data-course-level]").forEach(b=>b.onclick=()=>{activeCourseLevel=b.dataset.courseLevel;activeTopic=null;renderCourses()});
+  $("[data-course-level]").forEach(b=>b.onclick=()=>{activeCourseLevel=b.dataset.courseLevel;activeTopic=null;renderCourses();animateContent(listHost)});
   return;
  }
  back.textContent=activeCourseLevel&&!q?"← Choisir un niveau":"← Analyse et Algèbre";
@@ -169,7 +176,7 @@ function renderCourses(){
  $$("#courseList [data-topic]").forEach(b=>b.onclick=()=>openTopic(b.dataset.topic));
  if(activeTopic&&filtered.some(t=>t.id===activeTopic)){detail.hidden=false;renderTopic(activeTopic);}else{activeTopic=null;detail.hidden=true;detail.innerHTML="";}
 }
-function openTopic(id){activeTopic=id;renderCourses()}
+function openTopic(id){activeTopic=id;renderCourses();animateContent($("#courseDetail"))}
 function renderTopic(id){
  const t=topic(id);if(!t)return;
  const linkedExercise=EXERCISES.find(e=>e.topic===id);
@@ -195,7 +202,7 @@ function renderTopic(id){
  $("#courseDetail").innerHTML = '<button type="button" class="course-back course-back-list" id="courseBackList">← Retour à la liste des cours</button><div class="detail-top"><span class="tag">'+esc(t.category)+' · '+esc(level)+'</span>'+(mastered(id)?'<span class="mastered-label">✓ Maîtrisée</span>':'')+'</div><h2>'+esc(t.title)+'</h2><p class="lead">'+esc(t.summary)+'</p><p class="course-meta">'+esc(t.chapter||t.category)+' · '+esc(level)+' · '+EXERCISES.filter(e=>e.topic===id).length+' exercice(s)</p>'+
  (Array.isArray(t.lessonSections)?'<div class="lesson-reading-note">Cours structuré · Suis les idées dans l’ordre</div>'+lessonMarkup+lessonMethods+lessonErrors:
  '<div class="course-roadmap"><div class="course-roadmap-head"><span>PARCOURS DU CHAPITRE</span><small>'+outline.length+' étapes</small></div><div class="course-outline">'+outlineMarkup+'</div></div>'+prerequisiteMarkup+'<h3 id="course-definitions">01 · Définitions essentielles</h3>'+(t.definitions||[]).map(d=>'<div class="definition"><b>'+esc(d[0])+'</b><div class="definition-content">'+richText(d[1])+'</div></div>').join("")+'<h3 id="course-properties">02 · Propriétés à connaître</h3><ul class="property-list">'+(t.properties||[]).map(p=>'<li>'+richText(p)+'</li>').join("")+'</ul>'+(theorems?'<h3 id="course-theorems">03 · Théorèmes et démonstrations</h3>'+theorems:'')+'<h3 id="course-example">'+(theorems?"04":"03")+' · Exemple détaillé</h3><div class="example-box">'+richText(t.example||"Exemple à compléter.")+'</div>'+(methods?'<h3 id="course-methods">Méthodes à maîtriser</h3><ul class="property-list">'+methods+'</ul>':'')+(errors?'<h3>Erreurs classiques à éviter</h3><ul class="common-errors">'+errors+'</ul>':''))+'</div><div class="detail-actions"><button class="btn primary" id="topicExercise">S’entraîner sur cette notion →</button><button class="btn ghost" id="topicTutor">Demander un indice au tuteur IA</button><button class="btn ghost" id="topicReview">Ajouter aux révisions</button>'+(visual?'<button class="btn ghost" id="topicVisual">Explorer visuellement →</button>':'')+'</div>';
- $("#courseBackList").onclick=()=>{activeTopic=null;renderCourses();window.scrollTo({top:0,behavior:"smooth"})};
+ $("#courseBackList").onclick=()=>{activeTopic=null;renderCourses();animateContent($("#courseList"));window.scrollTo({top:0,behavior:"smooth"})};
  $$("#courseDetail [data-course-anchor]").forEach(b=>b.onclick=()=>$("#"+b.dataset.courseAnchor)?.scrollIntoView({behavior:"smooth",block:"start"}));
  $$("#courseDetail [data-prerequisite]").forEach(b=>b.onclick=()=>openTopic(b.dataset.prerequisite));
  $("#topicExercise").onclick=()=>{if(linkedExercise){go("exercises");openExercise(linkedExercise.id)}else toast("Aucun exercice n’est encore associé à cette notion.")};
@@ -219,7 +226,7 @@ function renderExercises(){
    const count=inCategory.filter(e=>exerciseLevelOf(e)===l.name).length;
    return `<button type="button" class="course-theme-card exercise-level-card" data-ex-level="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count?count+" exercices":"Contenu à venir"} →</i></button>`;
   }).join("");
-  $$("[data-ex-level]").forEach(b=>b.onclick=()=>{activeExerciseLevel=b.dataset.exLevel;activeExerciseDifficulty=null;activeExercise=null;$("#exerciseSearch").value="";renderExercises()});
+  $("[data-ex-level]").forEach(b=>b.onclick=()=>{activeExerciseLevel=b.dataset.exLevel;activeExerciseDifficulty=null;activeExercise=null;$("#exerciseSearch").value="";renderExercises();animateContent(levelList)});
   return;
  }
  if(!diff){
@@ -229,8 +236,8 @@ function renderExercises(){
    const count=inCategory.filter(e=>exerciseLevelOf(e)===activeExerciseLevel&&e.difficulty===l.name).length;
    return `<button type="button" class="course-theme-card exercise-level-card" data-ex-diff="${l.name}"><span class="course-theme-symbol">${l.icon}</span><span><b>${l.name}</b><small>${l.desc}</small></span><i>${count} exercices →</i></button>`;
   }).join("");
-  const back=levelList.querySelector("[data-ex-level-back]");back.onclick=()=>{activeExerciseLevel=null;activeExercise=null;renderExercises()};
-  $$("[data-ex-diff]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exDiff;activeExercise=null;$("#exerciseSearch").value="";renderExercises()});
+  const back=levelList.querySelector("[data-ex-level-back]");back.onclick=()=>{activeExerciseLevel=null;activeExercise=null;renderExercises();animateContent(levelList)};
+  $("[data-ex-diff]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exDiff;activeExercise=null;$("#exerciseSearch").value="";renderExercises();animateContent($("#exerciseList"))});
   return;
  }
  levelList.hidden=true;detail.hidden=false;topicsView.classList.add("exercise-level-selected");
@@ -242,11 +249,11 @@ function renderExercises(){
  if(activeExercise&&list.some(e=>e.id===activeExercise))renderExercise(activeExercise);
  else if(!activeExercise)$("#exerciseDetail").innerHTML='<div class="empty-state"><span>⌘</span><h3>Choisis un exercice</h3><p>Les exercices de niveau '+esc(diff.toLowerCase())+' apparaissent ici.</p></div>';
 }
-function openExercise(id){const e=EXERCISES.find(x=>x.id===id);if(e){activeExerciseCategory=e.category;activeExerciseLevel=exerciseLevelOf(e);activeExerciseDifficulty=e.difficulty;activeExerciseTopic=null;activeExercise=id;}renderExercises()}
+function openExercise(id){const e=EXERCISES.find(x=>x.id===id);if(e){activeExerciseCategory=e.category;activeExerciseLevel=exerciseLevelOf(e);activeExerciseDifficulty=e.difficulty;activeExerciseTopic=null;activeExercise=id;}renderExercises();animateContent($("#exerciseDetail"))}
 function renderExercise(id){
  const e=EXERCISES.find(x=>x.id===id);if(!e)return;
  $("#exerciseDetail").innerHTML=`<button class="exercise-back" id="exerciseBack" type="button">← Tous les exercices</button><div class="detail-top"><span class="tag">${esc(e.category)} · ${esc(e.difficulty)}</span><span class="subtle">${esc(topic(e.topic)?.title||"")}</span></div><h2>${esc(e.title)}</h2><div class="question-box">${exerciseRichText(e.question)}</div><div class="answer-area"><label for="selfAnswer">Ta démarche (facultatif, pour garder une trace)</label><textarea id="selfAnswer" rows="4" placeholder="Pose les étapes de ton raisonnement…">${esc(state.drafts?.[id]||"")}</textarea><div class="exercise-actions"><button class="btn ghost" id="hintBtn">Afficher un indice</button><button class="btn ghost" id="solutionBtn">Voir la correction</button><button class="btn ghost" id="askTutor">Demander de l'aide au tuteur</button></div><div id="hintBox" class="hint-box" hidden></div><div id="solutionBox" class="solution-box" hidden></div></div><div class="self-check"><b>Évalue ton travail en toute honnêteté</b><p>La validation repose sur ton autonomie, pas sur le simple affichage de la correction.</p><div><button class="rating-btn" data-score="0">À reprendre</button><button class="rating-btn" data-score="1">Avec aide</button><button class="rating-btn" data-score="2">Réussi seul</button></div></div>`;
- $("#exerciseBack").onclick=()=>{activeExercise=null;renderExercises()};
+ $("#exerciseBack").onclick=()=>{activeExercise=null;renderExercises();animateContent($("#exerciseList"))};
  $("#askTutor").onclick=()=>openTutorWithContext("Je bloque sur cet exercice : "+e.title+"\n\nÉnoncé : "+e.question+"\n\nAide-moi à démarrer par une question ou un indice, sans dévoiler la correction.",{type:"exercise",title:e.title,question:e.question,level:exerciseLevelOf(e),difficulty:e.difficulty,category:e.category});
  $("#selfAnswer").addEventListener("input",()=>{state.drafts=state.drafts||{};state.drafts[id]=$("#selfAnswer").value;state.updatedAt=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(state));window.Maths2Account?.scheduleSync?.()}catch(e){console.warn("Sauvegarde locale indisponible",e)}});
   let h=0;$("#hintBtn").onclick=()=>{const hints=e.hints||[];if(h<hints.length){$("#hintBox").hidden=false;$("#hintBox").innerHTML=`<b>Indice ${h+1}/${hints.length}</b>${exerciseRichText(hints[h++])}`;typesetExercise($("#hintBox"))}else toast("Tous les indices ont été affichés.")};
@@ -697,11 +704,11 @@ function init(){
   finally{e.target.value=""}
  };
  $("#courseSearch").addEventListener("input",()=>{activeTopic=null;activeCourseLevel=null;renderCourses()});
- $$("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeCourseLevel=null;activeTopic=null;renderCourses()}));
- $("#courseBackThemes").onclick=()=>{if(activeCourseLevel){activeCourseLevel=null;activeTopic=null;}else{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";}renderCourses()};
- $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseLevel=null;activeExerciseDifficulty=null;activeExerciseTopic=null;activeExercise=null;$("#exerciseSearch").value="";$(".exercise-layout").classList.remove("exercise-open");renderExercises()};
+ $("#courseThemes [data-course-category]").forEach(b=>b.addEventListener("click",()=>{activeCourseCategory=b.dataset.courseCategory;activeCourseLevel=null;activeTopic=null;renderCourses();animateContent($("#courseTopicsView"))}));
+ $("#courseBackThemes").onclick=()=>{if(activeCourseLevel){activeCourseLevel=null;activeTopic=null;renderCourses();animateContent($("#courseList"));}else{activeCourseCategory=null;activeTopic=null;$("#courseSearch").value="";renderCourses();animateContent($("#courseThemes"));}};
+ $("#exerciseBackThemes").onclick=()=>{activeExerciseCategory=null;activeExerciseLevel=null;activeExerciseDifficulty=null;activeExerciseTopic=null;activeExercise=null;$("#exerciseSearch").value="";$(".exercise-layout").classList.remove("exercise-open");renderExercises();animateContent($("#exerciseThemes"))};
   // Les catégories sont gérées par délégation globale pour rester actives après les rerendus.
- $("#exerciseTopicBack").onclick=()=>{activeExerciseDifficulty=null;activeExercise=null;$(".exercise-layout").classList.remove("exercise-open");renderExercises()};
+ $("#exerciseTopicBack").onclick=()=>{activeExerciseDifficulty=null;activeExercise=null;$(".exercise-layout").classList.remove("exercise-open");renderExercises();animateContent($("#exerciseTopicList"))};
  ["exerciseSearch","exerciseDifficulty"].forEach(id=>$("#"+id).addEventListener("input",renderExercises));
  $("#tutorModes").onclick=e=>{const b=e.target.closest("[data-mode]");if(!b)return;activeMode=b.dataset.mode;$$(".mode").forEach(x=>x.classList.toggle("active",x===b));$("#tutorStatus").textContent="Mode sélectionné : "+b.textContent};
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
@@ -724,6 +731,7 @@ document.addEventListener("click",event=>{
  activeExerciseTopic=null;
  activeExercise=null;
  renderExercises();
+ animateContent($("#exerciseTopicsView"));
 });
 document.addEventListener("maths2:profile-updated",()=>renderDashboard());
  document.addEventListener("DOMContentLoaded",init);
