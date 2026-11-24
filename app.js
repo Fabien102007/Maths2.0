@@ -61,8 +61,8 @@ function mathifyTextNodes(root){
    // Une formule LaTeX contenant des commandes ne doit jamais être reclassée en prose.
    if(looksLikeProse(formula)&&!/\\[A-Za-z]+/.test(formula))return mathifySegment(formula);
    formula=formula.replace(/\\(exists|omega|nabla)(?=[A-Za-z])/g,"\\$1 ");
-   // Les vecteurs explicitement fléchés sont affichés en colonnes plutôt qu'en tuples horizontaux.
-   formula=formula.replace(/((?:\\(?:vec|overrightarrow)\{[^}]+\}|(?:u|v|w|e|q)(?:_?\{?[0-9]+\}?|[₀-₉])?))\s*=\s*\(([^(),]+),\s*([^(),]+)(?:,\s*([^(),]+))?\)/g,(_,v,a,b,c)=>v+"=\\begin{pmatrix}"+a.trim()+"\\\\"+b.trim()+(c?"\\\\"+c.trim():"")+"\\end{pmatrix}");
+   // Les vecteurs identifiés par leur notation sont affichés en colonnes plutôt qu'en tuples horizontaux.
+   formula=formula.replace(/((?:\\(?:vec|overrightarrow)\{[^}]+\}|\\operatorname\{proj\}_{[^}]+}\([^)]*\)|(?:u|v|w|e|q)(?:_?\{?[0-9]+\}?|[₀-₉])?))\s*=\s*\(([^(),]+),\s*([^(),]+)(?:,\s*([^(),]+))?\)/g,(_,v,a,b,c)=>v+"=\\begin{pmatrix}"+a.trim()+"\\\\"+b.trim()+(c?"\\\\"+c.trim():"")+"\\end{pmatrix}");
    return display?"\\["+formula+"\\]":"\\("+formula+"\\)";
   }).join("");
  }
