@@ -290,9 +290,27 @@ function scheduleReview(id,quality=1,notify=true){
  state.reviews[id]={due:Date.now()+days*86400000,interval:days,repetitions,lastQuality:quality};
  save();if(notify)toast("Révision reprogrammée dans "+days+" jour(s).");
 }
+function renderPremiumStudyPlan(){
+ const host=$("#premiumStudyPlan");if(!host)return;
+ if(window.Maths2Account?.isPremium!==true){
+  host.innerHTML='<div class="premium-study-locked"><span>✦</span><div><b>Ton diagnostic pédagogique approfondi</b><p>Premium analyse tes tentatives, repère les notions fragiles et te propose les prochaines priorités de travail.</p></div><button class="btn primary" id="premiumStudyUnlock" type="button">Découvrir Premium</button></div>';
+  $("#premiumStudyUnlock")?.addEventListener("click",()=>$("#accountOpen")?.click());
+  return;
+ }
+ const attempts=TOPICS.map(t=>({topic:t,data:state.attempts[t.id]||null,score:state.attempts[t.id]?.lastScore??null}))
+  .filter(x=>!mastered(x.topic.id))
+  .sort((a,b)=>(a.score??-0.05)-(b.score??-0.05)||(b.data?.total||0)-(a.data?.total||0));
+ const attempted=TOPICS.filter(t=>(state.attempts[t.id]?.total||0)>0);
+ const avg=attempted.length?Math.round(attempted.reduce((sum,t)=>sum+(state.attempts[t.id].lastScore||0),0)/attempted.length*100):null;
+ const due=dueTopics().length;
+ const priorities=attempts.slice(0,3);
+ const priorityMarkup=priorities.map((x,i)=>`<div class="premium-priority"><span class="premium-priority-number">${i+1}</span><div><b>${esc(x.topic.title)}</b><small>${esc(x.topic.category)} · ${esc(courseLevelOf(x.topic))} · ${x.data?.total||0} tentative(s)</small></div><strong>${x.score===null?"À découvrir":Math.round(x.score*100)+"% au dernier essai"}</strong></div>`).join("");
+ host.innerHTML=`<div class="premium-study-metrics"><div><small>Notions travaillées</small><b>${attempted.length}/${TOPICS.length}</b></div><div><small>Réussite moyenne récente</small><b>${avg===null?"—":avg+"%"}</b></div><div><small>Notions à réviser</small><b>${due}</b></div></div><div class="premium-study-body"><div><div class="eyebrow">TES TROIS PRIORITÉS</div><h3>Où concentrer tes efforts</h3>${priorityMarkup||'<p class="subtle">Toutes les notions sont actuellement maîtrisées. Continue avec des exercices plus exigeants pour entretenir ton niveau.</p>'}</div><aside class="premium-study-advice"><span>✦ CONSEIL MATHEVO</span><p>${attempted.length===0?"Commence par travailler quelques exercices et évalue honnêtement tes tentatives : ton diagnostic se construira à partir de données réelles.":due>0?"Certaines notions sont arrivées à échéance : commence par les réviser avant d'ouvrir un nouveau chapitre.":"Travaille d'abord la priorité n°1, puis refais un exercice sans consulter la correction pour vérifier que la méthode est acquise."}</p></aside></div><p class="premium-study-footnote">Analyse calculée à partir de tes évaluations d'exercices sur cet appareil. Elle évolue lorsque tu enregistres de nouvelles tentatives.</p>`;
+}
 function renderProgress(){
  const pct=Math.round(100*TOPICS.filter(t=>mastered(t.id)).length/TOPICS.length);$("#bigProgress").textContent=pct+"%";$("#bigProgressBar").style.width=pct+"%";$("#pSolved").textContent=state.solved.length;$("#pSessions").textContent=state.sessions;$("#pReviews").textContent=state.reviewCount;
  $("#masteryList").innerHTML=TOPICS.map(t=>{const a=state.attempts[t.id]||{};const score=Math.round((a.lastScore||0)*100);return `<div class="mastery-row"><span><b>${esc(t.title)}</b><small>${esc(t.category)} · ${esc(courseLevelOf(t))} · ${a.total||0} tentative(s)</small></span><div class="mini-track"><i style="width:${score}%"></i></div><strong>${mastered(t.id)?"Maîtrisée":score+"%"}</strong></div>`}).join("");
+ renderPremiumStudyPlan();
 }
 const reviewCardKey=card=>String(card.topic)+"::"+String(card.front||"")+"::"+String(card.back||"");
 function scheduleCardReview(card,quality){
@@ -744,6 +762,6 @@ document.addEventListener("click",event=>{
  animateContent($("#exerciseTopicsView"));
 });
 document.addEventListener("maths2:profile-updated",()=>renderDashboard());
-document.addEventListener("maths2:subscription-updated",()=>{if($("#view-exercises")?.classList.contains("active"))renderExercises();});
+document.addEventListener("maths2:subscription-updated",()=>{if($("#view-exercises")?.classList.contains("active"))renderExercises();if($("#view-progress")?.classList.contains("active"))renderProgress();});
  document.addEventListener("DOMContentLoaded",init);
 })();
