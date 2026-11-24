@@ -1,4 +1,4 @@
-/* Maths2.0 — programme complémentaire et corrections enrichies */
+/* Mathevo — programme complémentaire et corrections enrichies */
 (() => {
 "use strict";
 const byId = Object.fromEntries(window.EXERCISES.map(e => [e.id,e]));
