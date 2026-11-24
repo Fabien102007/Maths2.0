@@ -43,7 +43,7 @@ function mathifyTextNodes(root){
   raw=raw.replace(/\\(exists|omega|nabla)(?=[A-Za-z])/g,"\\$1 ");
   // Les fragments courts non délimités contenant ces commandes sont mathématiques.
   if(!/(?:\$\$|\$[^$\n]+\$|\\\(|\\\[)/.test(raw)){
-   raw=raw.replace(/\\(exists|omega|nabla)\s+([A-Za-z])\b/g,"\\($1 $2\\)");
+   raw=raw.replace(/\\(exists|omega|nabla)\s+([A-Za-z])\b/g,(_,cmd,v)=>"\\("+"\\"+cmd+" "+v+"\\)");
   }
   mathSpecial.lastIndex=0;
   const hasMathSymbol=mathSpecial.test(raw);
