@@ -560,3 +560,31 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(prefers-reduced-motion:reduce){
  .content-enter{animation:none!important}
 }
+
+/* Mathevo Premium — diagnostic pédagogique */
+.premium-study-panel{margin-top:15px;border-color:#514a83;background:linear-gradient(145deg,#1b2040,#121d31)}
+.premium-study-tag{font-size:9px;letter-spacing:1px;color:#c2baff;border:1px solid #514b83;border-radius:20px;padding:7px 10px}
+.premium-study-locked{display:flex;align-items:center;gap:15px;padding:18px 0}
+.premium-study-locked>span{font-size:30px;color:#b6aaff}
+.premium-study-locked>div{flex:1}
+.premium-study-locked b{font-size:13px;color:#edf0ff}
+.premium-study-locked p,.premium-study-footnote{font-size:10px;line-height:1.6;color:#94a3bf;margin:6px 0 0}
+.premium-study-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.premium-study-metrics>div{background:#18243a;border:1px solid #303d5c;border-radius:12px;padding:14px}
+.premium-study-metrics small,.premium-study-metrics b{display:block}
+.premium-study-metrics small{font-size:10px;color:#95a5c1}
+.premium-study-metrics b{font:800 22px Manrope;color:#c1b8ff;margin-top:7px}
+.premium-study-body{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
+.premium-study-body h3{margin:8px 0 12px}
+.premium-priority{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #303b58}
+.premium-priority-number{width:27px;height:27px;display:grid;place-items:center;border-radius:8px;background:#302e58;color:#c6bdff;font-weight:800;font-size:11px}
+.premium-priority>div{flex:1}
+.premium-priority b,.premium-priority small{display:block}
+.premium-priority b{font-size:11px}
+.premium-priority small{font-size:9px;color:#93a2bd;margin-top:4px}
+.premium-priority strong{font-size:9px;color:#c0b7ff;text-align:right}
+.premium-study-advice{background:#202542;border:1px solid #454477;border-radius:12px;padding:16px}
+.premium-study-advice span{font-size:9px;letter-spacing:1px;color:#c2baff}
+.premium-study-advice p{font-size:11px;line-height:1.7;color:#c4cee2;margin:10px 0 0}
+.premium-study-footnote{border-top:1px solid #303b58;padding-top:12px;margin-top:14px}
+@media(max-width:650px){.premium-study-locked{align-items:flex-start;flex-wrap:wrap}.premium-study-locked>div{min-width:65%}.premium-study-locked .btn{margin-left:44px}.premium-study-metrics{grid-template-columns:1fr}.premium-study-body{grid-template-columns:1fr}.premium-priority{align-items:flex-start}.premium-priority strong{max-width:100px}}
