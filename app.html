@@ -225,7 +225,7 @@ window.__mathJaxReady = new Promise(resolve => {
       <label for="accountPassword">Mot de passe</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="8 caractères minimum">
       <div class="account-actions"><button class="btn primary" type="submit" id="accountSignIn">Se connecter</button><button class="btn ghost" type="button" id="accountSignUp">Créer un compte</button></div>
     </form>
-    <div id="accountSignedIn" hidden><div class="account-profile-name"><label for="accountFirstName">Prénom affiché</label><input id="accountFirstName" type="text" maxlength="40" autocomplete="given-name" placeholder="Ton prénom"><button class="btn secondary" id="accountSaveName" type="button">Enregistrer mon prénom</button></div><p id="accountPlanStatus" class="account-plan-status">Offre gratuite</p><div class="account-actions"><button class="btn primary" id="accountUpgrade" type="button" disabled>Premium en préparation</button><button class="btn ghost" id="accountManagePlan" type="button" disabled>Abonnement indisponible</button><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button></div></div>
+    <div id="accountSignedIn" hidden><div class="account-profile-name"><label for="accountFirstName">Prénom affiché</label><input id="accountFirstName" type="text" maxlength="40" autocomplete="given-name" placeholder="Ton prénom"><button class="btn secondary" id="accountSaveName" type="button">Enregistrer mon prénom</button></div><p id="accountPlanStatus" class="account-plan-status">Offre gratuite</p><div class="account-actions"><button class="btn primary" id="accountUpgrade" type="button" disabled>Choisir le mensuel · 5,99 €/mois</button><button class="btn secondary" id="accountUpgradeAnnual" type="button" disabled>Choisir l'annuel · 49,99 €/an</button><button class="btn ghost" id="accountManagePlan" type="button" disabled>Abonnement indisponible</button><button class="btn ghost" id="accountSignOut" type="button">Se déconnecter</button></div></div>
     <div class="subscription-preview">
       <div class="eyebrow">LES OFFRES MATHEVO</div>
       <h3>Choisis ton espace de travail</h3>
@@ -236,12 +236,12 @@ window.__mathJaxReady = new Promise(resolve => {
           <span class="subscription-current">Inclus pour tous</span>
         </article>
         <article class="subscription-card premium">
-          <span class="subscription-kicker">EN PRÉPARATION</span><h4>Premium</h4><div class="subscription-price">5,99 € <small>/ mois envisagés</small></div>
+          <span class="subscription-kicker">OFFRE PREMIUM</span><h4>Premium</h4><div class="subscription-price">5,99 € <small>/ mois</small></div><div class="subscription-price">49,99 € <small>/ an</small></div>
           <ul><li>Tout le contenu gratuit</li><li>Parcours et statistiques avancés</li><li>Synchronisation multi-appareils</li><li>Collections d'exercices approfondies</li><li>Fonctionnalités pédagogiques exclusives</li></ul>
-          <button class="btn primary" id="accountUpgradePreview" type="button" disabled>Abonnement bientôt disponible</button>
+          <div class="account-actions"><button class="btn primary" id="accountUpgradePreview" type="button" disabled>Choisir le mensuel · 5,99 €/mois</button><button class="btn secondary" id="accountUpgradePreviewAnnual" type="button" disabled>Choisir l'annuel · 49,99 €/an</button></div>
         </article>
       </div>
-      <p class="subscription-note">Tarif indicatif à tester : 5,99 €/mois ou 49,99 €/an. Offre en préparation : aucun paiement ni abonnement n’est activé.</p>
+      <p class="subscription-note">Deux formules au choix : 5,99 €/mois ou 49,99 €/an. Le paiement sera disponible après configuration et tests du service.</p>
     </div>
     <div class="account-feedback">
       <div class="eyebrow">BÊTA TEST</div><b>Donner un retour sur Mathevo</b>
@@ -258,6 +258,6 @@ window.__mathJaxReady = new Promise(resolve => {
   <script defer src="data.js?v=20261121-quality18"></script>
   <script defer src="curriculum.js?v=20261124-complexproof1"></script>
   <script defer src="app.js?v=20261124-welcome2"></script>
-  <script defer src="account.js?v=20261124-profile4"></script>
+  <script defer src="account.js?v=20261124-stripeplans1"></script>
 </body>
 </html>
