@@ -1,7 +1,7 @@
-# Maths2.0 — Learning Studio
+# Mathevo — Learning Studio
 
 ## Présentation
-Maths2.0 est une application web progressive (PWA) en français pour apprendre, pratiquer et visualiser les mathématiques du lycée à l'université.
+Mathevo est une application web progressive (PWA) en français pour apprendre, pratiquer et visualiser les mathématiques du lycée à l'université.
 
 - La racine du site (\`index.html\`) présente le produit.
 - \`app.html\` ouvre directement l'espace de travail.
