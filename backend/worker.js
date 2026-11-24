@@ -78,6 +78,12 @@ export default {
     const row=rows?.[0];
     return json({active:!!row&&["active","trialing"].includes(row.status),status:row?.status||"inactive",currentPeriodEnd:row?.current_period_end||null},200,env);
    }
+   if(url.pathname==="/api/ai-entitlement"&&request.method==="POST"){
+    const user=await userFromRequest(request,env);
+    const rows=await db(env,"user_subscriptions?select=status&user_id=eq."+encodeURIComponent(user.id));
+    const row=rows?.[0];
+    return json({active:!!row&&["active","trialing"].includes(row.status)},200,env);
+   }
    if(url.pathname==="/api/portal"&&request.method==="POST"){
     const user=await userFromRequest(request,env);
     const rows=await db(env,"user_subscriptions?select=stripe_customer_id&user_id=eq."+user.id);
