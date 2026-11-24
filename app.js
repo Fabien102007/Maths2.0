@@ -240,6 +240,16 @@ function renderExercises(){
   $$("[data-ex-diff]").forEach(b=>b.onclick=()=>{activeExerciseDifficulty=b.dataset.exDiff;activeExercise=null;$("#exerciseSearch").value="";renderExercises();animateContent($("#exerciseList"))});
   return;
  }
+ if(diff==="Avancé"&&window.Maths2Account?.isPremium!==true){
+  activeExercise=null;
+  levelList.hidden=true;detail.hidden=false;topicsView.classList.add("exercise-level-selected");
+  $(".exercise-layout").classList.remove("exercise-open");
+  $("#exerciseTopicHeading").textContent=activeExerciseCategory+" · "+activeExerciseLevel+" · Avancé";
+  $("#exerciseList").innerHTML='<div class="empty-state"><span>✦</span><h3>Collections avancées réservées à Premium</h3><p>Débloque les exercices les plus exigeants et les collections approfondies avec Mathevo Premium.</p><button class="btn primary" id="premiumUnlock" type="button">Découvrir Premium</button></div>';
+  $("#exerciseDetail").innerHTML='<div class="empty-state"><h3>Approfondis tes méthodes</h3><p>Les exercices avancés sont inclus dans l’offre Premium.</p></div>';
+  $("#premiumUnlock").onclick=()=>$("#accountOpen")?.click();
+  return;
+ }
  levelList.hidden=true;detail.hidden=false;topicsView.classList.add("exercise-level-selected");
  $("#exerciseTopicHeading").textContent=activeExerciseCategory+" · "+activeExerciseLevel+" · "+diff;
  const list=inCategory.filter(e=>exerciseLevelOf(e)===activeExerciseLevel&&e.difficulty===diff&&(!q||(e.title+" "+e.question+" "+(topic(e.topic)?.title||"")).toLowerCase().includes(q)));
@@ -734,5 +744,6 @@ document.addEventListener("click",event=>{
  animateContent($("#exerciseTopicsView"));
 });
 document.addEventListener("maths2:profile-updated",()=>renderDashboard());
+document.addEventListener("maths2:subscription-updated",()=>{if($("#view-exercises")?.classList.contains("active"))renderExercises();});
  document.addEventListener("DOMContentLoaded",init);
 })();
