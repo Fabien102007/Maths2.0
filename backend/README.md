@@ -27,6 +27,8 @@ Configurer les routes:
 - POST `/api/feedback`
 - POST `/api/stripe-webhook`
 
+La route `/api/checkout` refuse désormais de créer une nouvelle souscription si le compte possède déjà un abonnement `active` ou `trialing` dans `user_subscriptions` (HTTP 409). Cette vérification côté serveur complète le blocage visuel du bouton dans l'interface. Déployer le Worker Cloudflare après toute modification de `backend/worker.js`.
+
 Dans Stripe, créer un produit avec deux prix récurrents (mensuel et annuel), renseigner leurs deux identifiants `price_...` dans les variables Cloudflare ci-dessus, puis déclarer le webhook pour les événements `checkout.session.completed`, `customer.subscription.updated` et `customer.subscription.deleted`.
 
 ## 3. Synchronisation
