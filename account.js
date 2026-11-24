@@ -28,7 +28,7 @@
  let client=null,session=null,syncTimer=null;
  const ready=()=>cfg.accountsEnabled===true&&!!(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase?.createClient);
  const message=t=>{if(status)status.textContent=t};
- const firstNameOf=s=>String(s?.user?.user_metadata?.first_name||s?.user?.user_metadata?.full_name||"").trim()||String(readProfile().firstName||"").trim()||String(s?.user?.email||"").split("@")[0]||"";
+ const firstNameOf=s=>String(s?.user?.user_metadata?.first_name||s?.user?.user_metadata?.full_name||s?.user?.user_metadata?.name||"").trim()||String(readProfile().firstName||"").trim();
  const syncProgress=async()=>{
    if(!client||!session||cfg.progressSyncEnabled!==true)return;
    try{
@@ -61,6 +61,7 @@
      if(firstName)saveProfile({firstName,guest:false});
      if(form)form.hidden=true;
      if(signed)signed.hidden=false;
+     const nameInput=document.getElementById("accountFirstName");if(nameInput)nameInput.value=firstName||"";
      const billingReady=!!cfg.workerUrl;
      const upgrade=document.getElementById("accountUpgrade");
      const manage=document.getElementById("accountManagePlan");
@@ -144,6 +145,17 @@
      document.getElementById("feedbackMessage").value="";
      message("Merci ! Ton retour a bien été transmis à l'équipe Maths2.0.");
    }catch(e){message(e.message);}
+ });
+ document.getElementById("accountSaveName")?.addEventListener("click",async()=>{
+   const firstName=String(document.getElementById("accountFirstName")?.value||"").trim();
+   if(!firstName){message("Saisis ton prénom.");return;}
+   saveProfile({firstName,guest:false});
+   if(client&&session){
+     const {data,error}=await client.auth.updateUser({data:{first_name:firstName,full_name:firstName}});
+     if(error){message("Prénom enregistré sur cet appareil, mais pas sur le compte : "+error.message);return;}
+     session=data.user?{...session,user:data.user}:session;
+   }
+   message("Prénom enregistré : "+firstName+".");
  });
  document.getElementById("accountSignOut")?.addEventListener("click",async()=>{await client?.auth.signOut();await refresh(null)});
  document.getElementById("accountManagePlan")?.addEventListener("click",async()=>{
