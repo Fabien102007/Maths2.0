@@ -1,4 +1,4 @@
-name: Maths2.0 quality gate
+name: Mathevo quality gate
 
 on:
   push:
