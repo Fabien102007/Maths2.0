@@ -545,3 +545,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .welcome-divider:before,.welcome-divider:after{content:"";height:1px;flex:1;background:#34445f}
 
 .account-profile-name{display:grid;gap:8px;margin:0 0 16px;padding:14px;border:1px solid var(--line,#34445f);border-radius:12px}.account-profile-name .btn{justify-self:start}
+
+/* Démonstrations : formules lisibles et contenues sur mobile */
+.theorem-proof{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal}
+.theorem-proof mjx-container[display="true"]{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:3px 0 7px}
