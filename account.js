@@ -66,21 +66,32 @@
      const upgradeButtons=["accountUpgrade","accountUpgradeAnnual","accountUpgradePreview","accountUpgradePreviewAnnual"].map(id=>document.getElementById(id)).filter(Boolean);
      const manage=document.getElementById("accountManagePlan");
      const feedback=document.getElementById("feedbackSend");
-     upgradeButtons.forEach(button=>{button.disabled=!billingReady;});
-     const monthly=document.getElementById("accountUpgrade");if(monthly)monthly.textContent="Choisir le mensuel · 5,99 €/mois";
-     const annual=document.getElementById("accountUpgradeAnnual");if(annual)annual.textContent="Choisir l'annuel · 49,99 €/an";
-     const previewMonthly=document.getElementById("accountUpgradePreview");if(previewMonthly)previewMonthly.textContent="Choisir le mensuel · 5,99 €/mois";
-     const previewAnnual=document.getElementById("accountUpgradePreviewAnnual");if(previewAnnual)previewAnnual.textContent="Choisir l'annuel · 49,99 €/an";
-     if(manage)manage.disabled=!billingReady;
+     let subscription=null,subscriptionError=null;
+     if(billingReady){
+       try{subscription=await callWorker("/api/subscription");}
+       catch(error){subscriptionError=error;}
+     }
+     const premiumActive=subscription?.active===true;
+     const planStatus=document.getElementById("accountPlanStatus");
+     if(planStatus){
+       if(subscriptionError)planStatus.textContent="Statut de l'abonnement momentanément indisponible.";
+       else if(premiumActive){
+         const end=subscription.currentPeriodEnd?new Date(subscription.currentPeriodEnd):null;
+         planStatus.textContent="Premium actif"+(end&&!Number.isNaN(end.getTime())?" · prochaine échéance le "+end.toLocaleDateString("fr-FR"):"");
+       }else planStatus.textContent="Offre gratuite · aucun abonnement actif";
+     }
+     upgradeButtons.forEach(button=>{button.disabled=!billingReady||premiumActive;});
+     const monthly=document.getElementById("accountUpgrade");if(monthly)monthly.textContent=premiumActive?"Abonnement Premium actif":"Choisir le mensuel · 5,99 €/mois";
+     const annual=document.getElementById("accountUpgradeAnnual");if(annual)annual.textContent=premiumActive?"Abonnement Premium actif":"Choisir l'annuel · 49,99 €/an";
+     const previewMonthly=document.getElementById("accountUpgradePreview");if(previewMonthly)previewMonthly.textContent=premiumActive?"Abonnement Premium actif":"Choisir le mensuel · 5,99 €/mois";
+     const previewAnnual=document.getElementById("accountUpgradePreviewAnnual");if(previewAnnual)previewAnnual.textContent=premiumActive?"Abonnement Premium actif":"Choisir l'annuel · 49,99 €/an";
+     if(manage){manage.disabled=!billingReady||!premiumActive;manage.textContent=premiumActive?"Gérer mon abonnement":"Aucun abonnement actif";}
      if(feedback)feedback.disabled=!billingReady;
      open.textContent="Mon compte · connecté";
      message("Connecté avec "+s.user.email+".");
      if(cfg.progressSyncEnabled===true)await syncProgress();
-     else{
-       const plan=document.getElementById("accountPlanStatus");
-       if(plan)plan.textContent="Compte créé · progression conservée sur cet appareil";
-       message("Compte connecté. La progression reste pour le moment enregistrée sur cet appareil.");
-     }
+     else if(subscriptionError)message("Compte connecté. Impossible de vérifier le statut Premium pour le moment.");
+     else message("Compte connecté. La progression reste pour le moment enregistrée sur cet appareil.");
    }else{
      if(form)form.hidden=false;
      if(signed)signed.hidden=true;
