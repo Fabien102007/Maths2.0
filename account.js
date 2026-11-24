@@ -25,7 +25,7 @@
  const hideWelcome=()=>{if(welcome)welcome.hidden=true};
  const showAccount=()=>{modal.hidden=false;document.getElementById("accountEmail")?.focus()};
  const hideAccount=()=>{modal.hidden=true};
- let client=null,session=null,syncTimer=null;
+ let client=null,session=null,syncTimer=null,premiumActiveState=false;
  const ready=()=>cfg.accountsEnabled===true&&!!(cfg.supabaseUrl&&cfg.supabaseAnonKey&&window.supabase?.createClient);
  const message=t=>{if(status)status.textContent=t};
  const firstNameOf=s=>String(s?.user?.user_metadata?.first_name||s?.user?.user_metadata?.full_name||s?.user?.user_metadata?.name||"").trim()||String(readProfile().firstName||"").trim();
@@ -72,6 +72,8 @@
        catch(error){subscriptionError=error;}
      }
      const premiumActive=subscription?.active===true;
+     premiumActiveState=premiumActive;
+     document.dispatchEvent(new CustomEvent("maths2:subscription-updated",{detail:{active:premiumActive}}));
      const planStatus=document.getElementById("accountPlanStatus");
      if(planStatus){
        if(subscriptionError)planStatus.textContent="Statut de l'abonnement momentanément indisponible.";
@@ -93,6 +95,8 @@
      else if(subscriptionError)message("Compte connecté. Impossible de vérifier le statut Premium pour le moment.");
      else message("Compte connecté. La progression reste pour le moment enregistrée sur cet appareil.");
    }else{
+     premiumActiveState=false;
+     document.dispatchEvent(new CustomEvent("maths2:subscription-updated",{detail:{active:false}}));
      if(form)form.hidden=false;
      if(signed)signed.hidden=true;
      open.textContent="Mon compte";
@@ -181,7 +185,7 @@
  document.getElementById("accountManagePlan")?.addEventListener("click",async()=>{
    try{const data=await callWorker("/api/portal");if(data.url)location.href=data.url;}catch(e){message(e.message);}
  });
- window.Maths2Account={sync:syncProgress,scheduleSync:()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncProgress(),1800)},checkout:async(plan="monthly")=>callWorker("/api/checkout",{plan})};
+ window.Maths2Account={get isPremium(){return premiumActiveState===true},sync:syncProgress,scheduleSync:()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncProgress(),1800)},checkout:async(plan="monthly")=>callWorker("/api/checkout",{plan})};
  if(ready()){
    client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
    client.auth.onAuthStateChange((_event,s)=>{refresh(s)});
