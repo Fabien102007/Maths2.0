@@ -1,4 +1,4 @@
--- Maths2.0 — schéma initial Supabase
+-- Mathevo — schéma initial Supabase
 -- À exécuter dans Supabase SQL Editor avant de renseigner config.js.
 -- La progression est strictement isolée par utilisateur via RLS.
 
