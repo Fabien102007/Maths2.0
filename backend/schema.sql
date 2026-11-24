@@ -1,4 +1,4 @@
--- Maths2.0 — schéma Supabase initial.
+-- Mathevo — schéma Supabase initial.
 -- À exécuter dans Supabase SQL Editor avant d'activer la synchronisation.
 create table if not exists public.user_progress (
   user_id uuid primary key references auth.users(id) on delete cascade,
