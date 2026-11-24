@@ -185,7 +185,7 @@
  document.getElementById("accountManagePlan")?.addEventListener("click",async()=>{
    try{const data=await callWorker("/api/portal");if(data.url)location.href=data.url;}catch(e){message(e.message);}
  });
- window.Maths2Account={get isPremium(){return premiumActiveState===true},sync:syncProgress,scheduleSync:()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncProgress(),1800)},checkout:async(plan="monthly")=>callWorker("/api/checkout",{plan})};
+ window.Maths2Account={get isPremium(){return premiumActiveState===true},get accessToken(){return session?.access_token||null},sync:syncProgress,scheduleSync:()=>{clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncProgress(),1800)},checkout:async(plan="monthly")=>callWorker("/api/checkout",{plan})};
  if(ready()){
    client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
    client.auth.onAuthStateChange((_event,s)=>{refresh(s)});
