@@ -725,5 +725,6 @@ document.addEventListener("click",event=>{
  activeExercise=null;
  renderExercises();
 });
-document.addEventListener("DOMContentLoaded",init);
+document.addEventListener("maths2:profile-updated",()=>renderDashboard());
+ document.addEventListener("DOMContentLoaded",init);
 })();
