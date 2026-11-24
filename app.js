@@ -112,7 +112,7 @@ const topic=id=>TOPICS.find(t=>t.id===id);
 const dueTopics=()=>TOPICS.filter(t=>state.reviews[t.id]&&state.reviews[t.id].due<=Date.now());
 const mastered=id=>state.attempts[id]?.independent>=2 && state.attempts[id]?.lastScore>=0.8;
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600)}
-function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",presentation:"Découvrir Maths2.0",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals")drawVisuals();if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
+function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",presentation:"Découvrir Mathevo",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals")drawVisuals();if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
 function renderDashboard(){
  const profile=(()=>{try{return JSON.parse(localStorage.getItem('maths2_profile_v1')||'{}')}catch{return {}}})();
  const firstName=String(profile.firstName||'').trim();
@@ -342,7 +342,7 @@ function renderTutorMessage(text,role){
  const div=document.createElement("div");div.className="chat-message "+role;
  const avatar=document.createElement("span");avatar.className="chat-message-avatar";avatar.textContent=role==="user"?"T":"✳";
  const body=document.createElement("div");body.className="chat-message-body";
- const name=document.createElement("b");name.className="chat-message-name";name.textContent=role==="user"?"TOI":"MATHS2.0";
+ const name=document.createElement("b");name.className="chat-message-name";name.textContent=role==="user"?"TOI":"MATHEVO";
  const content=document.createElement("div");content.className="chat-message-content";content.innerHTML=richText(text);
  body.append(name,content);div.append(avatar,body);return div;
 }
@@ -359,7 +359,7 @@ function showTutorTyping(){
  const host=$("#chat"),row=document.createElement("div");row.className="chat-message assistant chat-typing";row.id="chatTyping";
  const avatar=document.createElement("span");avatar.className="chat-message-avatar";avatar.textContent="✳";
  const body=document.createElement("div");body.className="chat-message-body";
- const name=document.createElement("b");name.className="chat-message-name";name.textContent="MATHS2.0";
+ const name=document.createElement("b");name.className="chat-message-name";name.textContent="MATHEVO";
  const dots=document.createElement("div");dots.className="typing-dots";dots.innerHTML="<i></i><i></i><i></i>";
  body.append(name,dots);row.append(avatar,body);host.append(row);scrollChatToBottom();
 }
@@ -675,12 +675,12 @@ function init(){
   window.__maths20InitDone=true;
  $$("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));$$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
  $("#mobileMenu").onclick=()=>$("#sidebar").classList.toggle("open");
- $("#resetData").onclick=()=>{if(confirm("Effacer toute la progression locale de Maths2.0 ?")){state=blank();save();go("home");toast("Progression réinitialisée.")}};
+ $("#resetData").onclick=()=>{if(confirm("Effacer toute la progression locale de Mathevo ?")){state=blank();save();go("home");toast("Progression réinitialisée.")}};
  $("#exportData").onclick=()=>{
-  const payload={app:"Maths2.0",version:1,exportedAt:new Date().toISOString(),state};
+  const payload={app:"Mathevo",version:1,exportedAt:new Date().toISOString(),state};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download="maths2-sauvegarde-"+new Date().toISOString().slice(0,10)+".json";
+  a.href=url;a.download="mathevo-sauvegarde-"+new Date().toISOString().slice(0,10)+".json";
   document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
   toast("Sauvegarde téléchargée.");
  };
