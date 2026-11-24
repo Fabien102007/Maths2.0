@@ -15,7 +15,8 @@ Déployer `worker.js` avec les variables/secrets suivants:
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY` (secret)
 - `STRIPE_SECRET_KEY` (secret)
-- `STRIPE_PRICE_ID`
+- `STRIPE_PRICE_MONTHLY` (ID `price_...` du tarif mensuel)
+- `STRIPE_PRICE_ANNUAL` (ID `price_...` du tarif annuel)
 - `STRIPE_WEBHOOK_SECRET` (secret)
 - `APP_URL` (URL de l'application)
 - `ALLOWED_ORIGIN` (origine GitHub Pages, sans chemin)
@@ -26,7 +27,7 @@ Configurer les routes:
 - POST `/api/feedback`
 - POST `/api/stripe-webhook`
 
-Dans Stripe, créer un produit et un prix récurrent, puis déclarer le webhook pour les événements `checkout.session.completed`, `customer.subscription.updated` et `customer.subscription.deleted`.
+Dans Stripe, créer un produit avec deux prix récurrents (mensuel et annuel), renseigner leurs deux identifiants `price_...` dans les variables Cloudflare ci-dessus, puis déclarer le webhook pour les événements `checkout.session.completed`, `customer.subscription.updated` et `customer.subscription.deleted`.
 
 ## 3. Synchronisation
 Le client authentifie l'utilisateur avec Supabase Auth et synchronise son objet de progression dans `user_progress`. Les politiques RLS limitent chaque ligne à son propriétaire.
