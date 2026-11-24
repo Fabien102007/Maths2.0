@@ -986,7 +986,7 @@ window.EXERCISES.push(
 
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Maths2.0 — Enrichissement pédagogique du chapitre L1 « Limites et convergence »
+// Mathevo — Enrichissement pédagogique du chapitre L1 « Limites et convergence »
 // Ajout ciblé : définitions, théorèmes démontrés, méthodes, erreurs fréquentes,
 // exercices progressifs et cartes de révision. Aucun contenu existant n'est écrasé.
 // ─────────────────────────────────────────────────────────────────────────────
