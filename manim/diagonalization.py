@@ -32,15 +32,15 @@ class DiagonalizationJourney(Scene):
         self.play(FadeIn(heading),FadeIn(caption),run_time=1.2)
 
         # Une seule ligne de calcul est visible à la fois : aucune formule ne peut se chevaucher.
-        poly1=MathTex(r"\\chi_A(\\lambda)=\\det(A-\\lambda I)").scale_to_fit_width(11.8).move_to(ORIGIN)
+        poly1=MathTex(r"\chi_A(\lambda)=\det(A-\lambda I)").scale_to_fit_width(11.8).move_to(ORIGIN)
         self.play(Write(poly1),run_time=2.2)
         self.wait(1.1)
 
-        poly2=MathTex(r"\\chi_A(\\lambda)=\\det\\begin{pmatrix}2-\\lambda&1\\\\0&1-\\lambda\\end{pmatrix}").scale_to_fit_width(11.8).move_to(ORIGIN)
+        poly2=MathTex(r"\chi_A(\lambda)=\det\begin{pmatrix}2-\lambda&1\\0&1-\lambda\end{pmatrix}").scale_to_fit_width(11.8).move_to(ORIGIN)
         self.play(FadeOut(poly1,shift=UP*.12),FadeIn(poly2,shift=DOWN*.12),run_time=1.1)
         self.wait(1.2)
 
-        poly3=MathTex(r"\\chi_A(\\lambda)=(2-\\lambda)(1-\\lambda)").scale_to_fit_width(11.8).move_to(ORIGIN)
+        poly3=MathTex(r"\chi_A(\lambda)=(2-\lambda)(1-\lambda)").scale_to_fit_width(11.8).move_to(ORIGIN)
         poly3.set_color("#65D6B0")
         note=Text("La matrice est triangulaire : son déterminant est le produit des termes diagonaux.",font_size=18,color="#B9C8DC").to_edge(DOWN,buff=0.65)
         self.play(FadeOut(poly2,shift=UP*.12),FadeIn(poly3,shift=DOWN*.12),run_time=1.1)
@@ -48,7 +48,7 @@ class DiagonalizationJourney(Scene):
         self.wait(1.8)
         self.play(FadeOut(poly3),FadeOut(note),FadeOut(caption),run_time=1)
 
-        roots=MathTex(r"\\lambda_1=2",r"\\qquad",r"\\lambda_2=1").scale_to_fit_width(9.5).move_to(ORIGIN)
+        roots=MathTex(r"\lambda_1=2",r"\qquad",r"\lambda_2=1").scale_to_fit_width(9.5).move_to(ORIGIN)
         roots[0].set_color("#59C7F2");roots[2].set_color("#A99BFF")
         root_note=Text("Les deux racines sont les deux valeurs propres.",font_size=19,color="#B9C8DC").next_to(roots,DOWN,buff=.65)
         self.play(Write(roots),FadeIn(root_note),run_time=2)
