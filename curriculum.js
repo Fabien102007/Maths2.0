@@ -685,6 +685,228 @@ const courseEnrichments = {
       "Chercher des vecteurs propres en résolvant $Ax=0$ au lieu de $(A-\\lambda I)x=0$.",
       "Conclure qu'une matrice est diagonalisable parce que son polynôme caractéristique est scindé, sans vérifier les dimensions des espaces propres."
     ]
+  },
+  "term-sequences": {
+    "lessonSections": [
+      {
+        "title": "Suites explicites et récurrentes",
+        "body": "Une suite peut être définie directement en fonction de n ou par récurrence à partir d'un terme initial. Dans le cas $u_{n+1}=f(u_n)$, il faut étudier l'effet de f sur les valeurs de la suite et rechercher un intervalle stable."
+      },
+      {
+        "title": "Suites arithmétiques et géométriques",
+        "body": "Une suite arithmétique vérifie $u_{n+1}=u_n+r$ et $u_n=u_0+nr$. Une suite géométrique vérifie $u_{n+1}=qu_n$ et $u_n=u_0q^n$. Ces expressions donnent les termes et permettent d'étudier les limites."
+      },
+      {
+        "title": "Variations et bornes",
+        "body": "Pour étudier les variations, on compare $u_{n+1}$ et $u_n$, souvent en calculant leur différence. Pour une suite récurrente, on cherche souvent un intervalle stable avant d'établir la monotonie et la bornitude."
+      },
+      {
+        "title": "Convergence",
+        "body": "Toute suite croissante et majorée converge ; toute suite décroissante et minorée converge. Pour une suite récurrente convergente $u_{n+1}=f(u_n)$ avec f continue, on peut ensuite passer à la limite et obtenir $\\ell=f(\\ell)$. Il faut prouver la convergence avant ce passage."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Limite d'une suite géométrique",
+        "statement": "Si $u_n=u_0q^n$ et $|q|<1$, alors $u_n\\to0$.",
+        "proof": "Lorsque $|q|<1$, la suite des puissances $q^n$ tend vers 0. En multipliant par la constante $u_0$, on obtient $u_0q^n\\to0$. Si $u_0=0$, la suite est nulle et le résultat reste vrai."
+      }
+    ],
+    "methods": [
+      "Pour une suite récurrente : intervalle stable, monotonie, bornitude, convergence, puis limite.",
+      "Pour les variations, étudier le signe de $u_{n+1}-u_n$.",
+      "Pour une suite géométrique, identifier q avant de conclure sur la limite."
+    ],
+    "commonErrors": [
+      "Résoudre $\\ell=f(\\ell)$ sans avoir établi que la suite converge.",
+      "Confondre croissante et strictement croissante.",
+      "Oublier le cas d'une raison négative."
+    ]
+  },
+  "term-functions": {
+    "lessonSections": [
+      {
+        "title": "Domaine et régularité",
+        "body": "Avant l'étude, déterminer le domaine de définition. Vérifier où la fonction est continue et dérivable ; les points où une formule change, où un dénominateur s'annule ou où une racine impose une condition doivent être traités séparément."
+      },
+      {
+        "title": "Calcul de la dérivée",
+        "body": "Les règles usuelles permettent de calculer $f'$. Pour une composée, on utilise $(g\\circ f)'=(g'\\circ f)f'$. La dérivée mesure le taux de variation local et donne le coefficient directeur de la tangente."
+      },
+      {
+        "title": "Variations et extrema",
+        "body": "Le signe de $f'$ détermine les variations. Les points où $f'=0$ ou n'existe pas sont des points critiques possibles, mais ils ne sont pas automatiquement des extrema. Il faut étudier le signe de la dérivée de part et d'autre."
+      },
+      {
+        "title": "Tangente et optimisation",
+        "body": "La tangente en a a pour équation $y=f(a)+f'(a)(x-a)$. Dans un problème d'optimisation, traduire la situation par une fonction, déterminer son domaine, étudier ses variations et comparer les valeurs aux bornes."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Théorème de Fermat",
+        "statement": "Si f admet un extremum local en un point intérieur a et est dérivable en a, alors $f'(a)=0$.",
+        "proof": "Pour un minimum local, les accroissements $f(a+h)-f(a)$ sont positifs ou nuls pour h assez petit. Le quotient par h est donc positif pour h>0 et négatif pour h<0. Si f est dérivable, les deux limites latérales sont égales à $f'(a)$. Cette limite est à la fois positive ou nulle et négative ou nulle ; elle vaut donc 0. Le cas du maximum se traite de la même façon."
+      }
+    ],
+    "methods": [
+      "Factoriser $f'$ et dresser son signe avant le tableau de variations.",
+      "Pour une tangente, calculer séparément f(a) et f'(a).",
+      "Dans un problème d'optimisation, examiner aussi les bornes du domaine."
+    ],
+    "commonErrors": [
+      "Croire que tout point où $f'=0$ est un extremum.",
+      "Oublier les points où la dérivée n'existe pas.",
+      "Étudier le signe de f au lieu de celui de f' pour les variations."
+    ]
+  },
+  "term-probability": {
+    "lessonSections": [
+      {
+        "title": "Probabilités conditionnelles",
+        "body": "Si $P(B)>0$, la probabilité de A sachant B vaut $P(A|B)=P(A\\cap B)/P(B)$. Dans un arbre pondéré, les branches issues d'un même nœud décrivent des cas conditionnels et leurs probabilités ont une somme égale à 1."
+      },
+      {
+        "title": "Arbres et probabilités totales",
+        "body": "La probabilité d'un chemin est le produit des probabilités de ses branches. Pour un événement obtenu par plusieurs chemins incompatibles, on additionne leurs probabilités : c'est la formule des probabilités totales."
+      },
+      {
+        "title": "Épreuves de Bernoulli et loi binomiale",
+        "body": "Une épreuve de Bernoulli a deux issues : succès de probabilité p et échec de probabilité 1−p. Pour n épreuves indépendantes de même paramètre, le nombre X de succès suit la loi binomiale $\\mathcal B(n,p)$."
+      },
+      {
+        "title": "Calculs binomiaux",
+        "body": "Pour k de 0 à n, $P(X=k)=\\binom nkp^k(1-p)^{n-k}$. L'espérance vaut $np$ et la variance $np(1-p)$. Pour calculer « au moins un succès », le complémentaire « aucun succès » est souvent plus simple."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Formule de la loi binomiale",
+        "statement": "Si X suit $\\mathcal B(n,p)$, alors $P(X=k)=\\binom nkp^k(1-p)^{n-k}$.",
+        "proof": "Pour obtenir exactement k succès, on choisit les k positions des succès parmi n, soit $\\binom nk$ possibilités. Pour chaque configuration fixée, l'indépendance donne la probabilité $p^k(1-p)^{n-k}$. Les configurations étant incompatibles, on additionne leurs probabilités et l'on obtient la formule."
+      }
+    ],
+    "methods": [
+      "Vérifier indépendance et identité des paramètres avant d'utiliser une loi binomiale.",
+      "Sur un arbre, multiplier le long d'un chemin et additionner les chemins incompatibles.",
+      "Utiliser le complémentaire pour « au moins un » lorsque c'est plus direct."
+    ],
+    "commonErrors": [
+      "Inverser $P(A|B)$ et $P(B|A)$.",
+      "Oublier le coefficient binomial.",
+      "Utiliser une loi binomiale lorsque les épreuves ne sont pas indépendantes."
+    ]
+  },
+  "term-complex": {
+    "lessonSections": [
+      {
+        "title": "Forme algébrique",
+        "body": "Tout complexe s'écrit $z=a+ib$ avec a,b réels et $i^2=-1$. Pour additionner ou multiplier, développer puis remplacer $i^2$ par −1. Le conjugué est $\\bar z=a-ib$."
+      },
+      {
+        "title": "Module et argument",
+        "body": "Le module $|z|=\\sqrt{a^2+b^2}$ est la distance du point d'affixe z à l'origine. Pour z non nul, un argument est un angle de sa direction, défini modulo $2\\pi$."
+      },
+      {
+        "title": "Formes trigonométrique et exponentielle",
+        "body": "On écrit $z=r(\\cos\\theta+i\\sin\\theta)=re^{i\\theta}$, avec r=|z|. Cette forme simplifie les produits et quotients : les modules se multiplient ou se divisent, tandis que les arguments s'ajoutent ou se soustraient."
+      },
+      {
+        "title": "Puissances et racines",
+        "body": "La formule de De Moivre donne $(re^{i\\theta})^n=r^ne^{in\\theta}$. Pour résoudre $z^n=w$, comparer les modules puis les arguments modulo $2\\pi$ ; lorsque w est non nul, on obtient n racines distinctes."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Module d'un produit",
+        "statement": "Pour tous complexes z et w, $|zw|=|z||w|$.",
+        "proof": "On utilise $|z|^2=z\\bar z$. Alors $|zw|^2=(zw)\\overline{zw}=zw\\bar z\\bar w=(z\\bar z)(w\\bar w)=|z|^2|w|^2$. Les modules étant positifs, on prend la racine carrée."
+      }
+    ],
+    "methods": [
+      "Pour diviser par un complexe, vérifier qu'il est non nul puis utiliser le conjugué.",
+      "Pour les puissances et racines, passer en forme exponentielle et traiter les arguments modulo $2\\pi$.",
+      "Revenir à la forme algébrique pour donner les coordonnées réelles et imaginaires."
+    ],
+    "commonErrors": [
+      "Oublier que l'argument est défini modulo $2\\pi$.",
+      "Attribuer un argument au complexe nul.",
+      "Oublier les différentes branches lors d'une racine n-ième."
+    ]
+  },
+  "term-vectors": {
+    "lessonSections": [
+      {
+        "title": "Coordonnées dans l'espace",
+        "body": "Dans un repère de l'espace, un vecteur est décrit par trois coordonnées. Les opérations se font coordonnée par coordonnée et la norme euclidienne de $(x,y,z)$ vaut $\\sqrt{x^2+y^2+z^2}$."
+      },
+      {
+        "title": "Produit scalaire et orthogonalité",
+        "body": "Le produit scalaire de u et v est $u\\cdot v=xx'+yy'+zz'$. Deux vecteurs sont orthogonaux si et seulement si ce produit est nul. Le produit scalaire permet aussi de calculer des angles."
+      },
+      {
+        "title": "Droites et plans",
+        "body": "Une droite est décrite par un point et un vecteur directeur. Un plan peut être décrit par un point A et un vecteur normal n. Si $n=(a,b,c)$, une équation du plan passant par A est $a(x-x_A)+b(y-y_A)+c(z-z_A)=0$."
+      },
+      {
+        "title": "Positions relatives",
+        "body": "Pour étudier les positions relatives, comparer les vecteurs directeurs et normaux, puis résoudre les systèmes d'équations si nécessaire. Il faut distinguer droites sécantes, parallèles ou confondues, ainsi que droite parallèle, incluse ou sécante à un plan."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Équation d'un plan",
+        "statement": "Un plan passant par A et de vecteur normal non nul $n=(a,b,c)$ a pour équation $a(x-x_A)+b(y-y_A)+c(z-z_A)=0$.",
+        "proof": "Un point M appartient au plan si et seulement si le vecteur $\\overrightarrow{AM}$ est orthogonal à n. Cette condition s'écrit $n\\cdot\\overrightarrow{AM}=0$. En développant le produit scalaire avec les coordonnées, on obtient l'équation annoncée."
+      }
+    ],
+    "methods": [
+      "Pour déterminer un plan, trouver un point et un vecteur normal.",
+      "Pour vérifier l'orthogonalité, calculer le produit scalaire.",
+      "Pour une intersection, traduire les contraintes géométriques en système linéaire."
+    ],
+    "commonErrors": [
+      "Confondre vecteur directeur et vecteur normal.",
+      "Oublier le terme constant de l'équation cartésienne.",
+      "Conclure au parallélisme à partir d'un dessin seul."
+    ]
+  },
+  "term-equations": {
+    "lessonSections": [
+      {
+        "title": "Équation du second degré",
+        "body": "Une équation du second degré s'écrit $ax^2+bx+c=0$ avec a non nul. Le discriminant $\\Delta=b^2-4ac$ détermine le nombre de racines réelles."
+      },
+      {
+        "title": "Résolution selon le discriminant",
+        "body": "Si $\\Delta>0$, il existe deux racines $(-b\\pm\\sqrt\\Delta)/(2a)$. Si $\\Delta=0$, il existe une racine double $-b/(2a)$. Si $\\Delta<0$, il n'existe aucune racine réelle."
+      },
+      {
+        "title": "Factorisation et signe",
+        "body": "Avec deux racines distinctes, le trinôme se factorise en $a(x-x_1)(x-x_2)$. Avec une racine double, il vaut $a(x-x_0)^2$. Pour deux racines distinctes, son signe est celui de a à l'extérieur des racines et l'opposé entre elles."
+      },
+      {
+        "title": "Choisir et vérifier une méthode",
+        "body": "On peut résoudre par factorisation, identité remarquable ou discriminant. Après calcul, vérifier les racines dans l'équation initiale et présenter l'ensemble des solutions dans ℝ."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Formule des racines",
+        "statement": "Pour $a\\ne0$, les solutions de $ax^2+bx+c=0$ sont $(-b\\pm\\sqrt\\Delta)/(2a)$ si $\\Delta>0$, une racine double si $\\Delta=0$, et aucune racine réelle si $\\Delta<0$.",
+        "proof": "On divise par a puis on complète le carré : $x^2+(b/a)x+c/a=0$ équivaut à $(x+b/(2a))^2=(b^2-4ac)/(4a^2)=\\Delta/(4a^2)$. Selon le signe de Δ, le membre de droite est positif, nul ou négatif, ce qui donne les trois cas et les formules."
+      }
+    ],
+    "methods": [
+      "Identifier a, b et c avec leurs signes avant de calculer Δ.",
+      "Étudier le signe du trinôme en tenant compte du signe de a.",
+      "Vérifier une factorisation en développant."
+    ],
+    "commonErrors": [
+      "Oublier que a doit être non nul.",
+      "Oublier le dénominateur 2a.",
+      "Confondre le signe du discriminant et le signe du trinôme."
+    ]
   }
 }
 for (const [id, extra] of Object.entries(courseEnrichments)) {
