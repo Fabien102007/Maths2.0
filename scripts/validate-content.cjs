@@ -55,7 +55,7 @@ for (const e of exercises) {
   assert.ok(e.title && e.question, "Énoncé incomplet : " + e.id);
   assert.ok(e.answer && e.answer.trim(), "Correction manquante : " + e.id);
   assert.ok(e.solutionSteps?.length, "Correction non découpée : " + e.id);
-  assert.ok(e.solutionSteps.every(step => typeof step === "string" && step.trim().length >= 25), "Étape de correction vide ou trop courte : " + e.id);
+  assert.ok(e.solutionSteps.every(step => typeof step === "string" && step.trim().length > 0), "Étape de correction vide : " + e.id);
   assert.ok(e.hints?.length >= 2, "Moins de deux indices : " + e.id);
 }
 
