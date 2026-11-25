@@ -88,6 +88,13 @@ const typesetExercise=el=>{
 };
 const richText=value=>esc(value).replace(/^#{1,6}[ \t]+(.+)$/gm,'<h3 class="chat-response-heading">$1</h3>').replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
 // Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
+const proofMarkup=value=>{
+ const source=String(value??"").trim();
+ const steps=source.split(/\\n\\s*\\n/).flatMap(paragraph=>paragraph.trim().split(/(?<=[.!?])\\s+(?=[A-ZÀ-ÖØ-Þ])/u).map(step=>step.trim()).filter(Boolean));
+ if(!steps.length)return richText(source);
+ return '<div class="proof-steps">'+steps.map((step,i)=>'<div class="proof-step"><span class="proof-step-index">'+String(i+1).padStart(2,"0")+'</span><div class="proof-step-content">'+richText(step)+'</div></div>').join("")+'</div>';
+};
+
 const exerciseRichText=value=>{
  const raw=String(value??"").replace(/(?:\\){2,}(?=[()[\]])/g,"\\");
  const delimiters=/(\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g;
@@ -184,7 +191,7 @@ function renderTopic(id){
  const visualByTopic={limits:"limit",continuity:"continuity",derivative:"derivative",integrals:"integral",basis:"schmidt",matrices:"determinant",eigenvalues:"eigen","term-sequences":"sequence","term-functions":"derivative","term-complex":"complex3d"};
  const visual=visualByTopic[id]||null;
  const prerequisites=(t.prerequisites||[]).map(topic).filter(Boolean);
- const theorems=(t.theorems||[]).map((th,i)=>`<div class="theorem-card"><b>Théorème ${i+1} — ${esc(th.title)}</b><div class="theorem-statement">${richText(th.statement)}</div><details><summary>Voir la démonstration</summary><div class="theorem-proof">${richText(th.proof)}</div></details></div>`).join("");
+ const theorems=(t.theorems||[]).map((th,i)=>`<div class="theorem-card"><b>Théorème ${i+1} — ${esc(th.title)}</b><div class="theorem-statement">${richText(th.statement)}</div><details><summary>Voir la démonstration</summary><div class="theorem-proof">${proofMarkup(th.proof)}</div></details></div>`).join("");
  const methods=(t.methods||[]).map(x=>`<li>${richText(x)}</li>`).join("");
  const errors=(t.commonErrors||[]).map(x=>`<li>${richText(x)}</li>`).join("");
  const outline=[["course-definitions","Définitions"],["course-properties","Propriétés"],...(theorems?[["course-theorems","Démonstrations"]]:[]),["course-example","Exemple"],...(methods?[["course-methods","Méthodes"]]:[])];
@@ -193,7 +200,7 @@ function renderTopic(id){
   const definitions=(section.definitions||[]).map(index=>{const d=t.definitions[index];return d?'<div class="lesson-definition"><span>Définition</span><b>'+esc(d[0])+'</b><div>'+richText(d[1])+'</div></div>':"";}).join("");
   const properties=(section.properties||[]).map(index=>{const p=t.properties[index];return p?'<div class="lesson-rule"><span>À retenir</span><div>'+richText(p)+'</div></div>':"";}).join("");
   const theorem=(t.theorems||[])[section.theorem];
-  const theoremMarkup=theorem?'<div class="theorem-card"><b>'+esc(theorem.title)+'</b><div class="theorem-statement">'+richText(theorem.statement)+'</div><details><summary>Comprendre la démonstration</summary><div class="theorem-proof">'+richText(theorem.proof)+'</div></details></div>':"";
+  const theoremMarkup=theorem?'<div class="theorem-card"><b>'+esc(theorem.title)+'</b><div class="theorem-statement">'+richText(theorem.statement)+'</div><details><summary>Comprendre la démonstration</summary><div class="theorem-proof">'+proofMarkup(theorem.proof)+'</div></details></div>':"";
   return '<section class="lesson-section"><div class="lesson-section-number">'+String(i+1).padStart(2,"0")+'</div><div class="lesson-section-content"><h3>'+esc(section.title)+'</h3><div class="lesson-prose">'+richText(section.body)+'</div>'+definitions+properties+theoremMarkup+'</div></section>';
  }).join(""):"";
  const lessonMethods=methods?'<aside class="lesson-summary"><h3>Une méthode à retenir</h3>'+(t.methods||[]).map((x,i)=>'<div class="lesson-method"><b>'+(i+1)+'</b><div>'+richText(x)+'</div></div>').join("")+'</aside>':"";
