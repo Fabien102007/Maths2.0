@@ -5,7 +5,7 @@ const KEY="maths4_studio_v1";
 const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},cardReviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
 let reviewQualityByTopic={};
-let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeMode="tutor",chatHistory=[],chatImage=null,activeTutorContext=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
+let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeVisualCategory=null,activeVisualLevel=null,activeVisualId=null,activeMode="tutor",chatHistory=[],chatImage=null,activeTutorContext=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 let progressSyncTimer=null;
 const save=()=>{state.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();if(window.Maths2Account?.sync){clearTimeout(progressSyncTimer);progressSyncTimer=setTimeout(()=>window.Maths2Account.sync(),1200);}};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -119,7 +119,7 @@ function animateContent(el){
  void el.offsetWidth;
  el.classList.add("content-enter");
 }
-function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",presentation:"Découvrir Mathevo",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals")drawVisuals();if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
+function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",presentation:"Découvrir Mathevo",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals"){renderVisualLibrary();drawVisuals();}if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
 function renderDashboard(){
  const profile=(()=>{try{return JSON.parse(localStorage.getItem('maths2_profile_v1')||'{}')}catch{return {}}})();
  const firstName=String(profile.firstName||'').trim();
@@ -208,7 +208,7 @@ function renderTopic(id){
  $("#topicExercise").onclick=()=>{if(linkedExercise){go("exercises");openExercise(linkedExercise.id)}else toast("Aucun exercice n’est encore associé à cette notion.")};
  $("#topicTutor").onclick=()=>openTutorWithContext("Je travaille la notion « "+t.title+" ».\n\n"+t.summary+"\n\nAide-moi à comprendre la méthode avec un indice progressif, sans donner directement la solution.",{type:"course",topic:t.title,level,summary:t.summary});
  $("#topicReview").onclick=()=>scheduleReview(id,1);
- if(visual)$("#topicVisual").onclick=()=>{labType=visual;$("#labType").value=visual;go("visuals")};
+ if(visual)$("#topicVisual").onclick=()=>{const entry=VISUAL_CATALOG.find(v=>v.id===visual);if(entry){activeVisualCategory=entry.category;activeVisualLevel=entry.level;go("visuals");openVisual(visual)}else{go("visuals")}};
  typeset($("#courseDetail"));
 }
 function exerciseLevelOf(e){const t=topic(e.topic);const raw=t?.level==="Prépa"?"Prépa":(e.level||courseLevelOf(t||{}));return raw==="Prépa"?"Approfondissement":raw==="Lycée"?"Terminale":raw;}
@@ -486,6 +486,75 @@ function labSetup(){
  $("#labValue").textContent=Number(cfg.value).toLocaleString("fr-FR",{maximumFractionDigits:2});
  typeset($("#labFormula"));typeset($("#labCaption"));typeset($("#labSliderLabel"));renderLabGuide();drawLab();
 }
+
+const VISUAL_LEVELS=[
+ {name:"Terminale",desc:"Lycée · notions fondamentales",icon:"🎓"},
+ {name:"L1",desc:"Université · première année de licence",icon:"∑"},
+ {name:"L2",desc:"Université · deuxième année de licence",icon:"∂"},
+ {name:"Approfondissement",desc:"Notions avancées et prolongements",icon:"↗"}
+];
+const VISUAL_CATALOG=[
+ {id:"sequence",category:"Analyse",level:"Terminale",title:"Convergence d'une suite",desc:"Observer les termes se rapprocher de leur limite.",chapter:"Suites"},
+ {id:"trig",category:"Analyse",level:"Terminale",title:"Cercle trigonométrique",desc:"Cosinus, sinus, radians et angles remarquables.",chapter:"Trigonométrie"},
+ {id:"complex3d",category:"Analyse",level:"Terminale",title:"Exponentielle complexe et hélice",desc:"Relier rotation dans le plan et trajectoire en trois dimensions.",chapter:"Nombres complexes"},
+ {id:"injectivity",category:"Analyse",level:"Terminale",title:"Injectivité",desc:"Comprendre pourquoi deux antécédents distincts peuvent avoir la même image.",chapter:"Fonctions"},
+ {id:"limit",category:"Analyse",level:"L1",title:"Notion de limite",desc:"Faire tendre x vers a et visualiser les écarts.",chapter:"Limites"},
+ {id:"continuity",category:"Analyse",level:"L1",title:"Continuité",desc:"Relier variation de x et variation de f(x).",chapter:"Continuité"},
+ {id:"derivative",category:"Analyse",level:"L1",title:"Dérivée : sécante et tangente",desc:"Comprendre le passage du taux de variation à la dérivée.",chapter:"Dérivation"},
+ {id:"integral",category:"Analyse",level:"L1",title:"Intégrale et sommes de Riemann",desc:"Comparer aire exacte et approximation par rectangles.",chapter:"Intégration"},
+ {id:"surface3d",category:"Analyse",level:"L2",title:"Surfaces de fonctions à deux variables",desc:"Explorer paraboloïde, selle, surface ondulée et gaussienne.",chapter:"Fonctions de plusieurs variables"},
+ {id:"taylor",category:"Analyse",level:"Approfondissement",title:"Développements limités",desc:"Comparer une fonction à son polynôme de Taylor.",chapter:"Analyse asymptotique"},
+ {id:"fourier",category:"Analyse",level:"Approfondissement",title:"Séries de Fourier",desc:"Reconstruire progressivement un signal carré.",chapter:"Séries"},
+ {id:"determinant",category:"Algèbre",level:"L1",title:"Déterminant et aire orientée",desc:"Voir le parallélogramme se déformer et l'aire s'annuler.",chapter:"Matrices et déterminants"},
+ {id:"schmidt",category:"Algèbre",level:"L1",title:"Gram–Schmidt",desc:"Décomposer un vecteur en projection et composante orthogonale.",chapter:"Espaces euclidiens"},
+ {id:"eigen",category:"Algèbre",level:"L1",title:"Valeurs propres et directions propres",desc:"Voir une direction propre conservée par une transformation.",chapter:"Valeurs propres"},
+ {id:"diagonalization",category:"Algèbre",level:"L1",title:"Diagonalisation : comprendre les matrices",desc:"Déterminant, polynôme caractéristique, vecteurs propres et matrices semblables.",chapter:"Matrices et diagonalisation"}
+];
+function renderVisualLibrary(){
+ const themes=$("#visualThemes"),levelsView=$("#visualLevelsView"),cardsView=$("#visualCardsView"),detail=$("#visualDetail");
+ if(!themes||!levelsView||!cardsView||!detail)return;
+ if(activeVisualId){themes.hidden=true;levelsView.hidden=true;cardsView.hidden=true;detail.hidden=false;return;}
+ detail.hidden=true;
+ if(!activeVisualCategory){themes.hidden=false;levelsView.hidden=true;cardsView.hidden=true;return;}
+ themes.hidden=true;
+ if(!activeVisualLevel){
+  levelsView.hidden=false;cardsView.hidden=true;
+  const available=VISUAL_CATALOG.filter(v=>v.category===activeVisualCategory);
+  $("#visualLevelList").innerHTML='<div class="course-level-intro"><b>Choisis ton niveau d’études</b><span>'+esc(activeVisualCategory)+'</span></div>'+VISUAL_LEVELS.filter(l=>available.some(v=>v.level===l.name)).map(l=>{
+   const count=available.filter(v=>v.level===l.name).length;
+   return '<button type="button" class="course-theme-card course-level-card" data-visual-level="'+l.name+'"><span class="course-theme-symbol">'+l.icon+'</span><span><b>'+l.name+'</b><small>'+l.desc+'</small></span><i>'+count+' visualisation'+(count>1?'s':'')+' →</i></button>';
+  }).join("");
+  return;
+ }
+ levelsView.hidden=true;cardsView.hidden=false;
+ const entries=VISUAL_CATALOG.filter(v=>v.category===activeVisualCategory&&v.level===activeVisualLevel);
+ $("#visualCards").innerHTML=entries.map(v=>'<button type="button" class="course-theme-card visual-card" data-visual-id="'+v.id+'"><span class="course-theme-symbol">'+(v.id==="diagonalization"?"λ":v.category==="Analyse"?"∫":"∑")+'</span><span><b>'+esc(v.title)+'</b><small>'+esc(v.desc)+'</small></span><i>Explorer →</i></button>').join("")||'<p class="subtle">Aucune visualisation disponible à ce niveau pour le moment.</p>';
+}
+function openVisual(id){
+ const entry=VISUAL_CATALOG.find(v=>v.id===id);if(!entry)return;
+ activeVisualId=id;
+ $("#visualDetailTitle").textContent=entry.title;
+ $("#visualDetailMeta").textContent=entry.category+" · "+entry.level+" · "+entry.chapter;
+ $("#visualLibrary").hidden=true;$("#visualDetail").hidden=false;
+ const special=id==="diagonalization";
+ $("#diagSpecialLab").hidden=!special;$("#genericVisualLab").hidden=special;
+ if(special){
+  stopComplexAnimation();
+  requestAnimationFrame(()=>window.dispatchEvent(new Event("resize")));
+ }else{
+  labType=id;$("#labType").value=id;labSetup();
+ }
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function closeVisualDetail(){
+ if(labType==="complex3d")stopComplexAnimation();
+ activeVisualId=null;$("#visualDetail").hidden=true;$("#visualLibrary").hidden=false;renderVisualLibrary();
+}
+function showVisualCatalog(){
+ activeVisualCategory=null;activeVisualLevel=null;activeVisualId=null;
+ $("#visualDetail").hidden=true;$("#visualLibrary").hidden=false;renderVisualLibrary();
+}
+
 
 const SURFACE_FUNCTIONS={
  paraboloid:{label:"Paraboloïde",formula:"\\\\(f(x,y)=0.34(x^2+y^2)\\\\)",caption:"Un minimum au point (0,0). La hauteur augmente dans toutes les directions à mesure que l'on s'éloigne de l'origine.",fn:(x,y)=>.34*(x*x+y*y)},
