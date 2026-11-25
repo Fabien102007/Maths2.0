@@ -11,6 +11,7 @@ on:
       - "legal.html"
       - "sw.js"
       - "app.js"
+      - "diagonalisation.js"
       - "data.js"
       - "curriculum.js"
       - "style.css"
@@ -38,6 +39,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check app.js
+          node --check diagonalisation.js
           node --check data.js
           node --check curriculum.js
           node --check account.js
