@@ -22,7 +22,162 @@ const topics = [
 {id:"series",title:"Séries numériques",category:"Analyse",level:"Prépa",chapter:"Analyse",summary:"Étudier la convergence des sommes infinies et maîtriser les séries de référence.",definitions:[["Série numérique","La série Σuₙ converge lorsque la suite de ses sommes partielles converge."],["Condition nécessaire","Si Σuₙ converge, alors uₙ tend vers 0."]],properties:["Une série géométrique de raison q converge si |q|<1.","La série de Riemann Σ1/nᵖ converge si et seulement si p>1.","La série harmonique Σ1/n diverge."],example:"Σ(1/3)ⁿ=1/(1−1/3)=3/2.",exerciseId:"m4-89",prerequisites:["limits"]}
 ];
 for(const t of topics) if(!window.TOPICS.some(old=>old.id===t.id)) window.TOPICS.push(t);
-const add=(id,topic,difficulty,title,question,answer,hint,category)=>window.EXERCISES.push({id,topic,category:category||(["polynomials","linear-systems","euclidean","vector-spaces","linear-maps","matrices","eigenvalues","basis"].includes(topic)?"Algèbre":"Analyse"),difficulty,title,question,hints:[hint],answer,solutionSteps:[],check:"Justifie la propriété utilisée, vérifie ses hypothèses et termine par une conclusion explicite."});
+const addedExerciseSolutions = {
+  "m4-62": [
+    "Une période T>0 doit vérifier f(x+T)=f(x) pour tout x.",
+    "Comme le cosinus est 2π-périodique, il faut que 4(x+T)=4x+2πk pour un entier k. La plus petite valeur positive correspond à k=1.",
+    "On obtient 4T=2π, donc T=π/2. C'est la période fondamentale."
+  ],
+  "m4-63": [
+    "Le point du cercle trigonométrique associé à l'angle x a pour coordonnées (cos x,sin x).",
+    "Le cercle unité est défini par l'équation X²+Y²=1.",
+    "En remplaçant X et Y par les coordonnées du point, on obtient cos²x+sin²x=1 pour tout réel x."
+  ],
+  "m4-64": [
+    "On isole le cosinus : 2cos x−1=0 équivaut à cos x=1/2.",
+    "Sur le cercle trigonométrique, le cosinus est l'abscisse. L'abscisse 1/2 est atteinte aux angles π/3 et −π/3 modulo 2π.",
+    "Dans l'intervalle [0,2π], ces deux angles sont π/3 et 5π/3. Ce sont les deux solutions."
+  ],
+  "m4-65": [
+    "On applique Taylor-Young à f(x)=eˣ au voisinage de 0, à l'ordre 2.",
+    "On a f(0)=1, f'(x)=eˣ et f''(x)=eˣ, donc f'(0)=f''(0)=1.",
+    "La formule donne eˣ=1+x+x²/2+o(x²) lorsque x tend vers 0."
+  ],
+  "m4-66": [
+    "On utilise le développement limité connu ln(1+x)=x−x²/2+o(x²) lorsque x tend vers 0.",
+    "En soustrayant x, on obtient ln(1+x)−x=−x²/2+o(x²).",
+    "On factorise le terme principal : −x²/2(1+o(1)). Le facteur entre parenthèses tend vers 1, donc ln(1+x)−x est équivalent à −x²/2."
+  ],
+  "m4-67": [
+    "On part de l'identité géométrique finie : (1−x)(1+x+x²+x³)=1−x⁴.",
+    "Pour x≠1, on divise par 1−x : 1/(1−x)=1+x+x²+x³+x⁴/(1−x).",
+    "Au voisinage de 0, 1/(1−x) reste borné, donc x⁴/(1−x)=O(x⁴)=o(x³).",
+    "Le développement limité à l'ordre 3 est donc 1+x+x²+x³+o(x³)."
+  ],
+  "m4-68": [
+    "Le théorème de Heine-Borel, dans ℝ, affirme qu'un ensemble est compact si et seulement s'il est fermé et borné.",
+    "L'intervalle [0,1] est fermé puisqu'il contient ses deux extrémités.",
+    "Il est borné car tout élément x vérifie 0≤x≤1.",
+    "Les deux conditions sont réunies : [0,1] est compact."
+  ],
+  "m4-69": [
+    "Pour montrer que ]0,1[ n'est pas fermé, considérons la suite uₙ=1/n pour n≥2.",
+    "Chaque terme appartient à ]0,1[, mais uₙ tend vers 0.",
+    "Or 0 n'appartient pas à ]0,1[. L'intervalle n'est donc pas fermé.",
+    "Par le critère de Heine-Borel dans ℝ, il n'est pas compact."
+  ],
+  "m4-70": [
+    "Le théorème de l'image continue d'un compact indique que l'image d'un compact par une fonction continue est compacte.",
+    "Comme K est compact et f continue sur K, l'ensemble f(K) est compact dans ℝ.",
+    "Dans ℝ, un compact est fermé et borné. Comme K est non vide, le théorème des bornes atteintes assure aussi que f atteint son minimum et son maximum sur K."
+  ],
+  "m4-71": [
+    "Pour z=a+ib, le conjugué est a−ib. Ici z=3−4i, donc son conjugué est 3+4i.",
+    "Le module vaut √(a²+b²). On obtient |z|=√(3²+(−4)²)=√(9+16)=√25=5."
+  ],
+  "m4-72": [
+    "On développe le produit : (2+i)(3−2i)=6−4i+3i−2i².",
+    "Comme i²=−1, le terme −2i² vaut +2.",
+    "On regroupe les parties réelle et imaginaire : 6+2−i=8−i."
+  ],
+  "m4-73": [
+    "On ramène tout dans le membre de gauche : z²=−1 équivaut à z²+1=0.",
+    "Dans ℂ, z²+1=(z−i)(z+i), puisque i²=−1.",
+    "Un produit est nul si et seulement si l'un de ses facteurs est nul. Les solutions sont donc z=i et z=−i."
+  ],
+  "m4-74": [
+    "On cherche deux nombres dont le produit vaut 6 et la somme vaut 5. Les nombres 2 et 3 conviennent.",
+    "On factorise alors X²−5X+6=(X−2)(X−3), car le développement redonne X²−5X+6."
+  ],
+  "m4-75": [
+    "Un produit de facteurs est nul si et seulement si au moins un facteur est nul.",
+    "Dans P(X)=(X−1)²(X+2), le facteur X−1 s'annule en X=1 et apparaît à la puissance 2 : la racine 1 est de multiplicité 2.",
+    "Le facteur X+2 s'annule en X=−2 et apparaît à la puissance 1 : la racine −2 est de multiplicité 1."
+  ],
+  "m4-76": [
+    "Le théorème du reste affirme que le reste de la division euclidienne d'un polynôme P par X−a est P(a).",
+    "Ici a=2, donc le reste est P(2).",
+    "On calcule P(2)=2³−2×2+4=8−4+4=8. Le reste est 8."
+  ],
+  "m4-77": [
+    "On additionne les deux équations : (2x+y)+(x−y)=5+1, d'où 3x=6 et x=2.",
+    "On remplace x par 2 dans la deuxième équation : 2−y=1, donc y=1.",
+    "Le couple (2,1) vérifie les deux équations ; c'est l'unique solution puisque l'élimination a déterminé successivement x puis y."
+  ],
+  "m4-78": [
+    "La deuxième équation 2x−y=0 donne y=2x.",
+    "On remplace dans la première : x+2(2x)=5, donc 5x=5 et x=1.",
+    "On en déduit y=2. La solution du système est (1,2)."
+  ],
+  "m4-79": [
+    "La première équation est x+y=1. En la multipliant par 2, on obtient nécessairement 2x+2y=2.",
+    "La deuxième équation impose pourtant 2x+2y=3.",
+    "Un même nombre ne peut être égal à la fois à 2 et à 3 : les deux équations sont incompatibles. Le système n'a aucune solution."
+  ],
+  "m4-80": [
+    "Un dé équilibré possède six issues équiprobables : 1,2,3,4,5,6.",
+    "Les issues favorables à l'événement « obtenir un nombre pair » sont 2,4 et 6, soit trois issues.",
+    "La probabilité est donc 3/6=1/2."
+  ],
+  "m4-81": [
+    "Comme P(B)=0,3 est strictement positif, la probabilité conditionnelle P(A|B) est définie.",
+    "Par définition, P(A|B)=P(A∩B)/P(B).",
+    "On remplace par les valeurs données : 0,12/0,3=0,4. Donc P(A|B)=0,4."
+  ],
+  "m4-82": [
+    "Pour une variable de Bernoulli de paramètre p, l'espérance vaut E(X)=p.",
+    "Sa variance vaut V(X)=p(1−p).",
+    "Avec p=0,3, on obtient E(X)=0,3 et V(X)=0,3×0,7=0,21."
+  ],
+  "m4-83": [
+    "On résout y'=3y. L'équation est à variables séparables ; pour une solution non nulle, y'/y=3.",
+    "En intégrant, ln|y|=3x+C₀, ce qui donne y=Ce^{3x}. La solution nulle est également obtenue pour C=0.",
+    "Toutes les solutions sur ℝ sont donc y(x)=Ce^{3x}, où C est une constante réelle."
+  ],
+  "m4-84": [
+    "La solution générale de y'=3y est y(x)=Ce^{3x}.",
+    "La condition initiale y(0)=2 donne C e⁰=C=2.",
+    "La solution qui satisfait la condition initiale est donc y(x)=2e^{3x}. On vérifie bien que sa dérivée vaut 6e^{3x}=3y(x)."
+  ],
+  "m4-85": [
+    "L'équation y'=2x demande une fonction dont la dérivée est 2x.",
+    "Une primitive de 2x est x². Toutes les primitives sur ℝ diffèrent d'une constante.",
+    "Les solutions sont donc y(x)=x²+C, avec C∈ℝ."
+  ],
+  "m4-86": [
+    "Dans ℝ² muni du produit scalaire usuel, ⟨(a,b),(c,d)⟩=ac+bd.",
+    "On applique la formule à u=(1,2) et v=(3,−1) : ⟨u,v⟩=1×3+2×(−1).",
+    "Le calcul donne 3−2=1."
+  ],
+  "m4-87": [
+    "Deux vecteurs sont orthogonaux si et seulement si leur produit scalaire est nul.",
+    "On calcule ⟨u,v⟩=1×1+1×(−1)=1−1=0.",
+    "Le produit scalaire étant nul, u et v sont orthogonaux."
+  ],
+  "m4-88": [
+    "La projection orthogonale de v sur la droite vectorielle dirigée par u≠0 est projᵤ(v)=(⟨v,u⟩/‖u‖²)u.",
+    "Ici ⟨v,u⟩=2×1+1×1=3 et ‖u‖²=1²+1²=2.",
+    "Le coefficient vaut 3/2. Ainsi projᵤ(v)=(3/2)(1,1)=(3/2,3/2)."
+  ],
+  "m4-89": [
+    "Il s'agit d'une série géométrique de premier terme 1 et de raison q=1/3.",
+    "Une série géométrique Σqⁿ converge si et seulement si |q|<1. Ici |q|=1/3<1, donc elle converge.",
+    "Sa somme, en commençant à n=0, vaut 1/(1−q)=1/(1−1/3)=3/2."
+  ],
+  "m4-90": [
+    "On regroupe les termes positifs par blocs dyadiques. Pour chaque entier k≥0, considérons les indices n de 2ᵏ+1 à 2ᵏ⁺¹.",
+    "Ce bloc contient 2ᵏ termes, et chacun vérifie 1/n≥1/2ᵏ⁺¹. Sa somme est donc au moins 2ᵏ/2ᵏ⁺¹=1/2.",
+    "Chaque bloc apporte au moins 1/2. En additionnant un nombre arbitraire de blocs, les sommes partielles deviennent arbitrairement grandes.",
+    "La série harmonique diverge donc vers +∞."
+  ],
+  "m4-91": [
+    "Si p≤0, alors 1/nᵖ ne tend pas vers 0 : la condition nécessaire de convergence d'une série n'est pas satisfaite. La série diverge.",
+    "Supposons p>0. La fonction x↦x⁻ᵖ est positive, continue et décroissante sur [1,+∞[ ; le critère intégral s'applique.",
+    "L'intégrale impropre ∫₁⁺∞ x⁻ᵖ dx converge exactement lorsque p>1 : pour p≠1, sa primitive est x^{1−p}/(1−p), et pour p=1 elle diverge comme ln x.",
+    "La série de Riemann Σ1/nᵖ converge donc si et seulement si p>1."
+  ]
+};
+const add=(id,topic,difficulty,title,question,answer,hint,category)=>window.EXERCISES.push({id,topic,category:category||(["polynomials","linear-systems","euclidean","vector-spaces","linear-maps","matrices","eigenvalues","basis"].includes(topic)?"Algèbre":"Analyse"),difficulty,title,question,hints:[hint],answer,solutionSteps:addedExerciseSolutions[id]||[answer],check:"Justifie la propriété utilisée, vérifie ses hypothèses et termine par une conclusion explicite."});
 add("m4-62","trigonometry","Facile","Périodicité du cosinus","Déterminer la période fondamentale de $f(x)=\\cos(4x)$.","On cherche le plus petit T>0 tel que 4T=2π. Donc $\\boxed{T=\\pi/2}$.","Rappelle la période de cos(x).");
 add("m4-63","trigonometry","Intermédiaire","Identité fondamentale","Démontrer que $\\cos^2x+\\sin^2x=1$.","Le point associé à x sur le cercle unité a pour coordonnées (cos x,sin x) et vérifie X²+Y²=1. Donc $\\boxed{\\cos^2x+\\sin^2x=1}$.","Utilise l'équation du cercle unité.");
 add("m4-64","trigonometry","Avancé","Équation trigonométrique","Résoudre $2\\cos x-1=0$ sur $[0,2\\pi]$.","L'équation équivaut à cos x=1/2. Sur le cercle trigonométrique, $\\boxed{x=\\pi/3\\text{ ou }5\\pi/3}$.","Le cosinus est l'abscisse sur le cercle.");
