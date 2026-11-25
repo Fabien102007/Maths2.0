@@ -426,10 +426,273 @@ const courseEnrichments = {
       "Appliquer le critère intégral à une fonction qui n'est pas positive ou décroissante sans justification.",
       "Oublier de traiter séparément le cas $p\\leq0$ dans la série de Riemann."
     ]
+  },
+  "derivative": {
+    "lessonSections": [
+      {
+        "title": "Définition et interprétation de la dérivée",
+        "body": "La dérivée de $f$ en $a$ est la limite du taux d'accroissement $\\frac{f(a+h)-f(a)}h$ lorsque $h\\to0$, si cette limite existe. Elle mesure la variation instantanée de la fonction et donne le coefficient directeur de la tangente au graphe au point d'abscisse $a$."
+      },
+      {
+        "title": "Règles de calcul",
+        "body": "La dérivation est linéaire : $(af+bg)'=af'+bg'$. On utilise aussi $(fg)'=f'g+fg'$, $(f/g)'=(f'g-fg')/g^2$ lorsque $g\\ne0$, et la règle de chaîne $(f\\circ g)'=(f'\\circ g)g'$. Les domaines de dérivabilité doivent être vérifiés."
+      },
+      {
+        "title": "Théorèmes de Rolle et des accroissements finis",
+        "body": "Si une fonction est continue sur un segment et dérivable à l'intérieur, le théorème des accroissements finis relie la variation $f(b)-f(a)$ à une valeur de la dérivée. Le théorème de Rolle est le cas particulier où $f(a)=f(b)$."
+      },
+      {
+        "title": "Dérivée et variations",
+        "body": "Si $f'\\geq0$ sur un intervalle, alors $f$ y est croissante ; si $f'>0$, elle est strictement croissante. Un tableau de variations doit présenter le signe de la dérivée, les points critiques et les limites ou valeurs aux bornes."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Théorème des accroissements finis",
+        "statement": "Si $f$ est continue sur $[a,b]$ et dérivable sur $]a,b[$, alors il existe $c\\in]a,b[$ tel que $f(b)-f(a)=f'(c)(b-a)$.",
+        "proof": "Considérons la fonction affine $\\ell(x)=f(a)+\\frac{f(b)-f(a)}{b-a}(x-a)$ et posons $g=f-\\ell$. Alors $g$ est continue sur $[a,b]$, dérivable sur $]a,b[$ et $g(a)=g(b)=0$. Le théorème de Rolle donne un $c$ intérieur tel que $g'(c)=0$. Or $g'(c)=f'(c)-\\frac{f(b)-f(a)}{b-a}$, d'où la formule."
+      }
+    ],
+    "methods": [
+      "Pour étudier les variations, factoriser $f'$ et dresser son signe avant de conclure.",
+      "Pour une tangente en $a$, utiliser $y=f(a)+f'(a)(x-a)$.",
+      "Pour prouver une inégalité entre valeurs de f, envisager le théorème des accroissements finis sur le segment concerné."
+    ],
+    "commonErrors": [
+      "Confondre dérivée en un point et fonction dérivée.",
+      "Appliquer le théorème des accroissements finis sans continuité sur le segment et dérivabilité à l'intérieur.",
+      "Conclure à une stricte croissance à partir de $f'\\geq0$ sans information supplémentaire."
+    ]
+  },
+  "integrals": {
+    "lessonSections": [
+      {
+        "title": "Intégrale et aire algébrique",
+        "body": "Pour une fonction continue sur un segment, l'intégrale représente une aire algébrique : les portions situées sous l'axe des abscisses comptent négativement. L'intégrale est linéaire et additive par rapport aux intervalles."
+      },
+      {
+        "title": "Primitives et théorème fondamental",
+        "body": "Une primitive de $f$ sur un intervalle est une fonction $F$ telle que $F'=f$. Si $F$ est une primitive de $f$ continue sur $[a,b]$, alors $\\int_a^b f(x)\\,dx=F(b)-F(a)$. Deux primitives sur un intervalle connexe diffèrent d'une constante."
+      },
+      {
+        "title": "Techniques de calcul",
+        "body": "L'intégration par parties découle de la dérivée d'un produit : $\\int_a^b u v'=[uv]_a^b-\\int_a^b u'v$. Le changement de variable permet de transformer une intégrale en adaptant simultanément l'expression et les bornes."
+      },
+      {
+        "title": "Intégrales impropres",
+        "body": "Une intégrale sur un intervalle non borné ou avec une singularité est définie comme une limite d'intégrales sur des segments. Elle converge si cette limite est finie. Pour $\\int_1^{+\\infty}x^{-p}dx$, la convergence a lieu exactement pour $p>1$ ; pour $\\int_0^1x^\\alpha dx$, elle a lieu exactement pour $\\alpha>-1$."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Théorème fondamental de l'analyse",
+        "statement": "Si $f$ est continue sur $[a,b]$ et si $F$ est une primitive de $f$, alors $\\int_a^b f(x)\\,dx=F(b)-F(a)$.",
+        "proof": "La fonction $G(x)=\\int_a^x f(t)\\,dt$ est dérivable sur $]a,b[$ et vérifie $G'(x)=f(x)$ par le théorème fondamental. Comme $F'=f$, on a $(F-G)'=0$ ; la fonction $F-G$ est donc constante. En évaluant en $a$ et en $b$, on obtient $F(b)-F(a)=G(b)-G(a)=\\int_a^b f(t)dt$."
+      }
+    ],
+    "methods": [
+      "Avant de calculer, chercher une primitive et vérifier sa dérivée.",
+      "Pour une intégration par parties, choisir u dont la dérivée se simplifie et v' dont on connaît une primitive.",
+      "Pour une intégrale impropre, écrire explicitement la limite qui définit l'intégrale avant de calculer."
+    ],
+    "commonErrors": [
+      "Oublier de soustraire la valeur de la primitive à la borne inférieure.",
+      "Confondre aire géométrique et intégrale lorsque la fonction change de signe.",
+      "Traiter une intégrale impropre comme une intégrale ordinaire sans étudier la limite."
+    ]
+  },
+  "vector-spaces": {
+    "lessonSections": [
+      {
+        "title": "Espaces vectoriels et sous-espaces",
+        "body": "Un espace vectoriel est un ensemble muni d'une addition et d'une multiplication par les scalaires satisfaisant les axiomes usuels. Un sous-espace est une partie non vide stable par combinaison linéaire : si x,y appartiennent à F, alors $\\lambda x+\\mu y$ appartient à F pour tous scalaires."
+      },
+      {
+        "title": "Combinaisons linéaires et engendré",
+        "body": "Une famille engendre un espace si tout vecteur de cet espace est combinaison linéaire de ses éléments. Le sous-espace engendré par une famille est le plus petit sous-espace qui la contient. Décrire explicitement une combinaison linéaire est souvent le moyen le plus direct de prouver une inclusion."
+      },
+      {
+        "title": "Familles libres et liées",
+        "body": "Une famille $(v_1,\\ldots,v_n)$ est libre lorsque $\\lambda_1v_1+\\cdots+\\lambda_nv_n=0$ impose tous les coefficients nuls. Elle est liée lorsqu'il existe une relation non triviale. Une famille contenant le vecteur nul ou deux vecteurs proportionnels est automatiquement liée."
+      },
+      {
+        "title": "Noyaux, images et dimension",
+        "body": "Le noyau d'une application linéaire est un sous-espace de l'espace de départ et son image est un sous-espace de l'espace d'arrivée. En dimension finie, le théorème du rang relie la dimension du noyau et celle de l'image."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Critère de sous-espace vectoriel",
+        "statement": "Une partie non vide $F$ d'un espace vectoriel $E$ est un sous-espace si et seulement si, pour tous $x,y\\in F$ et tous scalaires $\\lambda,\\mu$, on a $\\lambda x+\\mu y\\in F$.",
+        "proof": "Si F est un sous-espace, sa stabilité par addition et multiplication scalaire donne immédiatement la stabilité par combinaison linéaire. Réciproquement, supposons F non vide et stable par combinaisons linéaires. En prenant $\\lambda=\\mu=0$, on obtient $0_E\\in F$. En prenant successivement $(\\lambda,\\mu)=(1,1)$ et $(\\lambda,\\mu)=(\\alpha,0)$, on obtient la stabilité par addition et multiplication scalaire. F est donc un sous-espace."
+      }
+    ],
+    "methods": [
+      "Pour prouver qu'un ensemble défini par des équations linéaires est un sous-espace, le reconnaître comme noyau d'une application linéaire.",
+      "Pour prouver qu'une famille est libre, partir d'une combinaison linéaire nulle et résoudre le système sur les coefficients.",
+      "Pour montrer qu'une famille engendre, écrire un vecteur arbitraire comme combinaison de ses éléments."
+    ],
+    "commonErrors": [
+      "Vérifier seulement la présence du vecteur nul sans prouver la stabilité.",
+      "Confondre famille libre et famille génératrice.",
+      "Conclure qu'une famille est une base sans vérifier à la fois liberté et génération."
+    ]
+  },
+  "basis": {
+    "lessonSections": [
+      {
+        "title": "Définition d'une base",
+        "body": "Une base d'un espace vectoriel est une famille à la fois libre et génératrice. Elle permet d'écrire chaque vecteur de manière unique comme combinaison linéaire des vecteurs de base."
+      },
+      {
+        "title": "Coordonnées dans une base",
+        "body": "Si $B=(e_1,\\ldots,e_n)$ est une base, tout vecteur x s'écrit de façon unique $x=x_1e_1+\\cdots+x_ne_n$. Les scalaires $(x_1,\\ldots,x_n)$ sont les coordonnées de x dans B."
+      },
+      {
+        "title": "Dimension",
+        "body": "Dans un espace vectoriel de dimension finie, toutes les bases ont le même nombre d'éléments. Ce nombre est la dimension. Dans un espace de dimension n, toute famille libre possède au plus n vecteurs et toute famille génératrice possède au moins n vecteurs."
+      },
+      {
+        "title": "Compléter et extraire une base",
+        "body": "Une famille libre peut être complétée en une base en ajoutant des vecteurs adaptés. Une famille génératrice peut être réduite en retirant les vecteurs redondants. En pratique, le pivot de Gauss permet de réaliser ces opérations dans les espaces de coordonnées."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Caractérisation d'une base en dimension n",
+        "statement": "Dans un espace vectoriel de dimension n, une famille de n vecteurs est une base si et seulement si elle est libre, et si et seulement si elle est génératrice.",
+        "proof": "Par le théorème de la dimension, une famille libre de n vecteurs dans un espace de dimension n est maximale et donc génératrice. Réciproquement, une famille génératrice de n vecteurs dans un espace de dimension n ne peut être liée, car on pourrait alors retirer un vecteur sans perdre la génération, ce qui contredirait le fait qu'une famille génératrice doit avoir au moins n éléments."
+      }
+    ],
+    "methods": [
+      "Pour tester une base de ℝⁿ, placer les vecteurs en colonnes d'une matrice et calculer son déterminant lorsque la matrice est carrée.",
+      "Pour trouver les coordonnées d'un vecteur, résoudre le système linéaire correspondant.",
+      "Pour déterminer une dimension, chercher une base explicite ou utiliser le théorème du rang."
+    ],
+    "commonErrors": [
+      "Croire qu'une famille de n vecteurs est automatiquement une base dans un espace de dimension n sans vérifier sa liberté ou sa génération.",
+      "Confondre coordonnées d'un vecteur et vecteur lui-même.",
+      "Oublier que la dimension est définie par le nombre d'éléments d'une base, pas par une présentation particulière."
+    ]
+  },
+  "linear-maps": {
+    "lessonSections": [
+      {
+        "title": "Définition et premières propriétés",
+        "body": "Une application $f:E\\to F$ est linéaire si elle respecte les combinaisons linéaires : $f(\\lambda x+\\mu y)=\\lambda f(x)+\\mu f(y)$. En particulier, $f(0_E)=0_F$ et $f(-x)=-f(x)$."
+      },
+      {
+        "title": "Noyau et image",
+        "body": "Le noyau $\\ker f=\\{x\\in E:f(x)=0\\}$ décrit les vecteurs envoyés sur zéro. L'image $\\operatorname{Im}f=\\{f(x):x\\in E\\}$ décrit les valeurs atteintes. Ce sont des sous-espaces vectoriels."
+      },
+      {
+        "title": "Injectivité et surjectivité",
+        "body": "Une application linéaire est injective si et seulement si son noyau est réduit au vecteur nul. Elle est surjective si son image est tout l'espace d'arrivée. En dimension finie, le théorème du rang permet de relier ces propriétés aux dimensions."
+      },
+      {
+        "title": "Matrice d'une application linéaire",
+        "body": "Une fois des bases choisies au départ et à l'arrivée, une application linéaire est représentée par une matrice. Les colonnes de cette matrice sont les coordonnées des images des vecteurs de la base de départ."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Théorème du rang",
+        "statement": "Si $f:E\\to F$ est linéaire et E est de dimension finie, alors $\\dim E=\\dim\\ker f+\\dim\\operatorname{Im}f$.",
+        "proof": "Choisissons une base $(e_1,\\ldots,e_k)$ du noyau et complétons-la en une base $(e_1,\\ldots,e_k,e_{k+1},\\ldots,e_n)$ de E. Les vecteurs $f(e_{k+1}),\\ldots,f(e_n)$ engendrent l'image, car tout x se décompose dans cette base et les premiers vecteurs ont une image nulle. Ils sont aussi libres : une combinaison nulle de leurs images signifie que la combinaison correspondante appartient au noyau, donc que ses coefficients sur les vecteurs complémentaires sont nuls. Ils forment une base de l'image, de cardinal n−k. Ainsi dim Im f=n−k et la formule suit."
+      }
+    ],
+    "methods": [
+      "Pour déterminer le noyau, résoudre le système $f(x)=0$.",
+      "Pour déterminer l'image, calculer les images d'une base et en extraire une famille génératrice puis une base.",
+      "Pour prouver l'injectivité, montrer que le noyau est réduit à {0}."
+    ],
+    "commonErrors": [
+      "Oublier de vérifier la linéarité avant d'utiliser les théorèmes sur noyau et image.",
+      "Confondre le noyau, sous-espace du départ, et l'image, sous-espace de l'arrivée.",
+      "Utiliser le théorème du rang sans vérifier que l'espace de départ est de dimension finie."
+    ]
+  },
+  "matrices": {
+    "lessonSections": [
+      {
+        "title": "Matrices et applications linéaires",
+        "body": "Une matrice encode les coefficients d'une application linéaire dans des bases fixées. Le produit matriciel correspond à la composition des applications. Il n'est généralement pas commutatif : AB et BA ne sont pas nécessairement égaux."
+      },
+      {
+        "title": "Opérations et systèmes",
+        "body": "L'addition et la multiplication par un scalaire se font coefficient par coefficient. Le produit AB est défini lorsque le nombre de colonnes de A égale le nombre de lignes de B. Résoudre $AX=b$ revient à résoudre un système linéaire."
+      },
+      {
+        "title": "Déterminant",
+        "body": "Le déterminant est défini pour les matrices carrées. Il change de signe lorsqu'on échange deux lignes, est multiplié par le facteur d'une ligne multipliée par un scalaire, et ne change pas lorsqu'on ajoute à une ligne un multiple d'une autre. Pour une matrice triangulaire, il est le produit des coefficients diagonaux."
+      },
+      {
+        "title": "Inversibilité",
+        "body": "Une matrice carrée est inversible si elle représente une application linéaire bijective. Pour une matrice 2×2, le déterminant donne un critère immédiat : elle est inversible si et seulement si son déterminant est non nul."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Critère du déterminant",
+        "statement": "Une matrice carrée A est inversible si et seulement si $\\det(A)\\ne0$.",
+        "proof": "Le déterminant est nul exactement lorsque les colonnes de A sont linéairement dépendantes. Cela équivaut à l'existence d'un vecteur non nul x tel que Ax=0, donc à un noyau non trivial. L'application linéaire associée n'est alors pas injective et ne peut être inversible. Réciproquement, si le déterminant est non nul, les colonnes sont libres ; en nombre égal à la dimension, elles forment une base, donc l'application est bijective et A est inversible."
+      }
+    ],
+    "methods": [
+      "Pour résoudre un système, utiliser l'élimination de Gauss plutôt que calculer explicitement une inverse sauf si cela est demandé.",
+      "Pour calculer un déterminant, exploiter les opérations élémentaires sur les lignes en notant leur effet sur le déterminant.",
+      "Vérifier les dimensions avant tout produit matriciel."
+    ],
+    "commonErrors": [
+      "Supposer que AB=BA.",
+      "Oublier qu'un déterminant n'est défini que pour une matrice carrée.",
+      "Modifier une ligne lors d'un calcul de déterminant sans suivre l'effet sur sa valeur."
+    ]
+  },
+  "eigenvalues": {
+    "lessonSections": [
+      {
+        "title": "Valeurs propres et vecteurs propres",
+        "body": "Un scalaire $\\lambda$ est une valeur propre de A s'il existe un vecteur non nul x tel que $Ax=\\lambda x$. Les vecteurs propres associés forment, avec le vecteur nul, le sous-espace propre $E_\\lambda=\\ker(A-\\lambda I)$."
+      },
+      {
+        "title": "Polynôme caractéristique",
+        "body": "Les valeurs propres sont les racines du polynôme caractéristique $\\chi_A(\\lambda)=\\det(A-\\lambda I)$ (ou de $\\det(\\lambda I-A)$ selon la convention). Il faut ensuite calculer chaque espace propre en résolvant $(A-\\lambda I)x=0$."
+      },
+      {
+        "title": "Diagonalisation",
+        "body": "Une matrice est diagonalisable lorsqu'il existe une base de vecteurs propres. Dans cette base, sa matrice est diagonale. Pour une matrice n×n, il faut donc disposer de n vecteurs propres linéairement indépendants."
+      },
+      {
+        "title": "Critères pratiques",
+        "body": "Des valeurs propres deux à deux distinctes fournissent des vecteurs propres linéairement indépendants. Si une valeur propre est multiple, il faut comparer la dimension de son espace propre à sa multiplicité algébrique. Une matrice symétrique réelle est toujours diagonalisable dans une base orthonormée."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Indépendance des vecteurs propres associés à des valeurs propres distinctes",
+        "statement": "Des vecteurs propres associés à des valeurs propres deux à deux distinctes sont linéairement indépendants.",
+        "proof": "On raisonne par récurrence sur le nombre de vecteurs. Le résultat est immédiat pour un seul vecteur propre. Supposons une relation $\\sum_{i=1}^n a_i v_i=0$, où les $v_i$ sont associés à des valeurs propres distinctes $\\lambda_i$. En appliquant A, puis en soustrayant $\\lambda_n$ fois la relation initiale, on obtient $\\sum_{i=1}^{n-1}a_i(\\lambda_i-\\lambda_n)v_i=0$. Par hypothèse de récurrence, chaque coefficient est nul. Comme $\\lambda_i\\ne\\lambda_n$, on a $a_i=0$ pour i<n, puis la relation initiale donne $a_n=0$."
+      }
+    ],
+    "methods": [
+      "Calculer le polynôme caractéristique, factoriser, puis résoudre chaque système propre séparément.",
+      "Pour conclure à la diagonalisabilité, compter des vecteurs propres indépendants et non seulement des valeurs propres distinctes.",
+      "Vérifier une diagonalisation en contrôlant $AP=PD$ et l'inversibilité de P."
+    ],
+    "commonErrors": [
+      "Confondre multiplicité algébrique et dimension de l'espace propre.",
+      "Chercher des vecteurs propres en résolvant $Ax=0$ au lieu de $(A-\\lambda I)x=0$.",
+      "Conclure qu'une matrice est diagonalisable parce que son polynôme caractéristique est scindé, sans vérifier les dimensions des espaces propres."
+    ]
   }
-};
-for (const t of topics) { const extra = courseEnrichments[t.id]; if (extra) Object.assign(t, extra); }
-for(const t of topics) if(!window.TOPICS.some(old=>old.id===t.id)) window.TOPICS.push(t);
+}
+for (const t of topics) {
+  const extra = courseEnrichments[t.id];
+  const existing = window.TOPICS.find(old => old.id === t.id);
+  if (existing) { if (extra) Object.assign(existing, extra); }
+  else window.TOPICS.push(t);
+}
 const addedExerciseSolutions = {
   "m4-62": [
     "Une période T>0 doit vérifier f(x+T)=f(x) pour tout x.",
