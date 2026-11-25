@@ -208,7 +208,7 @@ function renderTopic(id){
  $("#topicExercise").onclick=()=>{if(linkedExercise){go("exercises");openExercise(linkedExercise.id)}else toast("Aucun exercice n’est encore associé à cette notion.")};
  $("#topicTutor").onclick=()=>openTutorWithContext("Je travaille la notion « "+t.title+" ».\n\n"+t.summary+"\n\nAide-moi à comprendre la méthode avec un indice progressif, sans donner directement la solution.",{type:"course",topic:t.title,level,summary:t.summary});
  $("#topicReview").onclick=()=>scheduleReview(id,1);
- if(visual)$("#topicVisual").onclick=()=>{const entry=VISUAL_CATALOG.find(v=>v.id===visual);if(entry){activeVisualCategory=entry.category;activeVisualLevel=entry.level;go("visuals");openVisual(visual)}else{go("visuals")}};
+ if(visual)$("#topicVisual").onclick=()=>{const entry=VISUAL_CATALOG.find(v=>v.id===visual);if(entry){activeVisualCategory=entry.category;activeVisualLevel=entry.level;activeVisualChapter=entry.chapter;go("visuals");openVisual(visual)}else{go("visuals")}};
  typeset($("#courseDetail"));
 }
 function exerciseLevelOf(e){const t=topic(e.topic);const raw=t?.level==="Prépa"?"Prépa":(e.level||courseLevelOf(t||{}));return raw==="Prépa"?"Approfondissement":raw==="Lycée"?"Terminale":raw;}
