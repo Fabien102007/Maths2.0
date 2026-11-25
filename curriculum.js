@@ -21,6 +21,414 @@ const topics = [
 {id:"euclidean",title:"Espaces euclidiens et orthogonalité",category:"Algèbre",level:"L1",chapter:"Algèbre",summary:"Utiliser produit scalaire, orthogonalité, projections et bases orthonormées.",definitions:[["Produit scalaire","Un produit scalaire réel est bilinéaire, symétrique et défini positif."],["Orthogonalité","x et y sont orthogonaux lorsque ⟨x,y⟩=0."],["Norme associée","||x||=√⟨x,x⟩."]],properties:["Si x⊥y, ||x+y||²=||x||²+||y||².","Cauchy–Schwarz : |⟨x,y⟩|≤||x||||y||.","projᵤ(x)=⟨x,u⟩u/||u||² pour u≠0."],example:"(1,1) et (1,−1) sont orthogonaux car leur produit scalaire vaut 0.",exerciseId:"m4-86",prerequisites:["vector-spaces"]},
 {id:"series",title:"Séries numériques",category:"Analyse",level:"Prépa",chapter:"Analyse",summary:"Étudier la convergence des sommes infinies et maîtriser les séries de référence.",definitions:[["Série numérique","La série Σuₙ converge lorsque la suite de ses sommes partielles converge."],["Condition nécessaire","Si Σuₙ converge, alors uₙ tend vers 0."]],properties:["Une série géométrique de raison q converge si |q|<1.","La série de Riemann Σ1/nᵖ converge si et seulement si p>1.","La série harmonique Σ1/n diverge."],example:"Σ(1/3)ⁿ=1/(1−1/3)=3/2.",exerciseId:"m4-89",prerequisites:["limits"]}
 ];
+const courseEnrichments = {
+  "trigonometry": {
+    "lessonSections": [
+      {
+        "title": "Mesurer un angle : radians et cercle trigonométrique",
+        "body": "Le cercle trigonométrique est le cercle de centre O et de rayon 1, orienté dans le sens direct. Un angle en radians mesure la longueur algébrique de l'arc parcouru sur ce cercle. Un tour complet vaut $2\\pi$, un demi-tour vaut $\\pi$ et un quart de tour vaut $\\pi/2$. Les radians sont l'unité naturelle pour l'analyse."
+      },
+      {
+        "title": "Coordonnées et identités fondamentales",
+        "body": "Au réel $x$, on associe le point $M(x)=(\\cos x,\\sin x)$ du cercle unité. Son appartenance au cercle donne immédiatement $\\cos^2x+\\sin^2x=1$. Le cosinus est l'abscisse et le sinus l'ordonnée : cette lecture permet de retrouver les signes selon le quadrant et les valeurs remarquables."
+      },
+      {
+        "title": "Périodicité et symétries",
+        "body": "Les fonctions sinus et cosinus sont $2\\pi$-périodiques. On a $\\cos(-x)=\\cos x$ et $\\sin(-x)=-\\sin x$. Les formules $\\cos(\\pi-x)=-\\cos x$ et $\\sin(\\pi-x)=\\sin x$ permettent de ramener un angle à un angle de référence. Pour $a\\ne0$, la période fondamentale de $x\\mapsto\\cos(ax)$ ou $x\\mapsto\\sin(ax)$ est $2\\pi/|a|$."
+      },
+      {
+        "title": "Résoudre une équation trigonométrique",
+        "body": "Résoudre $\\cos x=c$ revient à chercher les points du cercle unité d'abscisse $c$. Si $c\\in[-1,1]$, les solutions s'écrivent $x=\\pm\\arccos(c)+2k\\pi$, avec $k\\in\\mathbb Z$. Pour $\\sin x=c$, on utilise les deux angles ayant l'ordonnée $c$. Il faut toujours intersecter l'ensemble des solutions avec l'intervalle demandé."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Identité fondamentale",
+        "statement": "Pour tout réel $x$, $\\cos^2x+\\sin^2x=1$. ",
+        "proof": "Le point $M(x)$ du cercle trigonométrique a pour coordonnées $(\\cos x,\\sin x)$. Le cercle unité est défini par $X^2+Y^2=1$. En remplaçant $X$ et $Y$ par les coordonnées de $M(x)$, on obtient l'identité."
+      }
+    ],
+    "methods": [
+      "Pour résoudre une équation sur un intervalle, trouver d'abord les solutions générales, puis sélectionner celles qui appartiennent à l'intervalle.",
+      "Pour simplifier une expression, utiliser l'identité fondamentale et les parités avant de développer."
+    ],
+    "commonErrors": [
+      "Confondre degrés et radians dans les formules d'analyse.",
+      "Oublier les solutions périodiques lorsqu'on résout une équation sur ℝ.",
+      "Confondre le sinus (ordonnée) et le cosinus (abscisse) sur le cercle."
+    ]
+  },
+  "taylor": {
+    "lessonSections": [
+      {
+        "title": "Pourquoi développer une fonction ?",
+        "body": "Un développement limité remplace localement une fonction par un polynôme plus simple. Près d'un point, ce polynôme permet de calculer des limites, comparer des fonctions ou étudier le signe d'une différence. Le terme de reste précise la qualité de l'approximation."
+      },
+      {
+        "title": "Formule de Taylor-Young",
+        "body": "Au voisinage de 0, si $f$ est suffisamment dérivable, son développement limité à l'ordre $n$ est $f(x)=\\sum_{k=0}^{n}\\frac{f^{(k)}(0)}{k!}x^k+o(x^n)$. Le symbole $o(x^n)$ signifie que le reste divisé par $x^n$ tend vers 0."
+      },
+      {
+        "title": "Développements usuels et opérations",
+        "body": "Les développements de référence sont $e^x=1+x+x^2/2+o(x^2)$, $\\sin x=x-x^3/6+o(x^3)$, $\\cos x=1-x^2/2+o(x^2)$ et $\\ln(1+x)=x-x^2/2+o(x^2)$. On peut additionner et multiplier des développements en contrôlant l'ordre du reste. Pour un quotient, il faut que le dénominateur ait un terme constant non nul, ou factoriser le premier terme non nul."
+      },
+      {
+        "title": "Équivalents et limites",
+        "body": "Si $f(x)=a x^p+o(x^p)$ avec $a\\ne0$, alors $f(x)\\sim a x^p$. Un équivalent permet de remplacer une fonction par une autre dans un produit ou un quotient, mais pas en général dans une somme : les termes dominants peuvent s'annuler. Dans ce cas, il faut pousser le développement à un ordre supérieur."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Formule de Taylor-Young en 0",
+        "statement": "Si $f$ est $n$ fois dérivable au voisinage de 0, alors $f(x)=\\sum_{k=0}^{n}\\frac{f^{(k)}(0)}{k!}x^k+o(x^n)$ lorsque $x\\to0$. ",
+        "proof": "La formule de Taylor avec reste de Peano exprime que l'écart entre $f$ et son polynôme de Taylor d'ordre $n$, divisé par $x^n$, tend vers 0. Les coefficients du polynôme sont imposés par les dérivées successives en 0 : le terme de degré $k$ est $f^{(k)}(0)x^k/k!$. Le reste est donc bien $o(x^n)$."
+      }
+    ],
+    "methods": [
+      "Pour obtenir un équivalent, repérer le premier terme non nul du développement après simplification.",
+      "Pour une différence de deux fonctions proches, développer jusqu'au premier ordre où les termes ne s'annulent plus.",
+      "Vérifier systématiquement l'ordre du reste après multiplication ou composition."
+    ],
+    "commonErrors": [
+      "Écrire un DL sans préciser le point et l'ordre.",
+      "Conserver un reste $o(x^n)$ après une opération qui exige un ordre supérieur.",
+      "Remplacer un terme dans une somme par un équivalent sans vérifier qu'il n'y a pas compensation."
+    ]
+  },
+  "compactness": {
+    "lessonSections": [
+      {
+        "title": "Compacité dans ℝ",
+        "body": "Dans la droite réelle, le théorème de Heine-Borel donne un critère particulièrement simple : une partie est compacte si et seulement si elle est fermée et bornée. Un segment $[a,b]$ est donc compact, contrairement à un intervalle ouvert ou à une demi-droite."
+      },
+      {
+        "title": "Compacité et suites",
+        "body": "Une caractérisation fondamentale est la compacité séquentielle : de toute suite d'éléments d'un compact, on peut extraire une sous-suite convergente dont la limite appartient encore au compact. Cette propriété empêche les suites de « s'échapper » du domaine."
+      },
+      {
+        "title": "Fonctions continues sur un compact",
+        "body": "L'image continue d'un compact est compacte. En particulier, si $K$ est compact et $f:K\\to\\mathbb R$ continue, alors $f(K)$ est fermé et borné. Si $K$ est non vide, $f$ atteint effectivement son minimum et son maximum."
+      },
+      {
+        "title": "Utiliser la compacité dans une preuve",
+        "body": "Pour prouver qu'une fonction est bornée ou atteint ses bornes, vérifier d'abord que le domaine est compact et que la fonction est continue. Pour montrer qu'un ensemble n'est pas compact dans ℝ, exhiber une absence de fermeture ou de bornitude ; une suite convergeant vers un point extérieur constitue souvent une preuve efficace."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Théorème des bornes atteintes",
+        "statement": "Toute fonction continue sur un compact non vide $K$ à valeurs dans $\\mathbb R$ est bornée et atteint son minimum et son maximum.",
+        "proof": "L'image $f(K)$ d'un compact par une application continue est compacte. Or toute partie compacte de $\\mathbb R$ est fermée et bornée. Elle est donc non vide, possède une borne inférieure et une borne supérieure, et comme elle est fermée ces deux bornes appartiennent à $f(K)$. Il existe ainsi des points de $K$ où le minimum et le maximum sont atteints."
+      }
+    ],
+    "methods": [
+      "Pour appliquer Heine-Borel dans ℝ, vérifier séparément la fermeture et la bornitude.",
+      "Pour prouver qu'un ensemble n'est pas fermé, construire une suite de cet ensemble qui converge vers un point extérieur."
+    ],
+    "commonErrors": [
+      "Confondre bornitude et compacité : un intervalle ouvert borné n'est pas compact.",
+      "Oublier l'hypothèse de continuité dans le théorème des bornes atteintes.",
+      "Oublier que le compact doit être non vide pour parler de minimum et de maximum atteints."
+    ]
+  },
+  "multivariable": {
+    "lessonSections": [
+      {
+        "title": "Fonctions de plusieurs variables",
+        "body": "Une fonction $f:D\\subset\\mathbb R^2\\to\\mathbb R$ associe un nombre à chaque point $(x,y)$ de son domaine. Son graphe est une surface dans l'espace. Les courbes de niveau $f(x,y)=c$ donnent une représentation plane de cette surface et permettent de visualiser ses variations."
+      },
+      {
+        "title": "Dérivées partielles",
+        "body": "La dérivée partielle par rapport à $x$ mesure la variation de $f$ lorsque $x$ varie et que $y$ est maintenu fixe. On la calcule en dérivant par rapport à $x$ comme si $y$ était une constante. On procède de même pour la dérivée partielle par rapport à $y$."
+      },
+      {
+        "title": "Gradient et approximation locale",
+        "body": "Lorsque les dérivées partielles existent, le gradient est $\\nabla f=(\\partial_x f,\\partial_y f)$. Si $f$ est différentiable, le gradient indique la direction de plus forte augmentation locale. La différentielle donne l'approximation affine $f(a+h,b+k)\\approx f(a,b)+\\partial_xf(a,b)h+\\partial_yf(a,b)k$."
+      },
+      {
+        "title": "Points critiques et extrema",
+        "body": "Un point intérieur où les dérivées partielles premières s'annulent est un point critique. Un point critique n'est pas nécessairement un extremum : il peut être un point selle. Pour classifier un point critique, on étudie souvent la matrice hessienne, composée des dérivées secondes, lorsque celles-ci existent."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Condition nécessaire au premier ordre",
+        "statement": "Si $f$ est différentiable et admet un extremum local en un point intérieur $a\\in\\mathbb R^2$, alors $\\nabla f(a)=0$.",
+        "proof": "Supposons que $a=(a_1,a_2)$ soit un extremum local. Pour chaque direction coordonnée, les fonctions d'une variable $g_1(t)=f(a_1+t,a_2)$ et $g_2(t)=f(a_1,a_2+t)$ admettent un extremum local en $t=0$. Par le théorème de Fermat en dimension 1, $g_1'(0)=g_2'(0)=0$. Ces dérivées sont précisément les dérivées partielles de $f$ en $a$. Le gradient est donc nul."
+      }
+    ],
+    "methods": [
+      "Pour calculer une dérivée partielle, garder toutes les autres variables constantes.",
+      "Pour chercher les points critiques, résoudre simultanément l'annulation de toutes les dérivées partielles premières.",
+      "Ne conclure à un extremum qu'après une étude complémentaire, par exemple avec la hessienne ou les variations."
+    ],
+    "commonErrors": [
+      "Croire que l'annulation du gradient suffit à prouver un extremum.",
+      "Oublier de préciser le domaine et de vérifier que le point est intérieur.",
+      "Confondre dérivabilité partielle et différentiabilité totale."
+    ]
+  },
+  "complex": {
+    "lessonSections": [
+      {
+        "title": "Forme algébrique",
+        "body": "Un nombre complexe s'écrit de manière unique $z=a+ib$, avec $a,b\\in\\mathbb R$ et $i^2=-1$. La partie réelle est $a$, la partie imaginaire est $b$. Les opérations se font en développant puis en remplaçant $i^2$ par $-1$."
+      },
+      {
+        "title": "Conjugué et module",
+        "body": "Le conjugué de $z=a+ib$ est $\\overline z=a-ib$. On a $z\\overline z=a^2+b^2=|z|^2$ et $|z|=\\sqrt{a^2+b^2}$. Le module est la distance du point d'affixe $z$ à l'origine."
+      },
+      {
+        "title": "Argument et forme trigonométrique",
+        "body": "Pour $z\\ne0$, il existe un angle $\\theta$ tel que $z=|z|(\\cos\\theta+i\\sin\\theta)$. Cet angle est un argument de $z$, défini modulo $2\\pi$. La formule d'Euler donne $e^{i\\theta}=\\cos\\theta+i\\sin\\theta$, d'où la forme exponentielle $z=re^{i\\theta}$."
+      },
+      {
+        "title": "Produits, quotients et puissances",
+        "body": "Les modules se multiplient : $|zw|=|z||w|$, et les arguments s'additionnent modulo $2\\pi$. Pour les quotients, les modules se divisent et les arguments se soustraient. La formule de De Moivre donne $(\\cos\\theta+i\\sin\\theta)^n=\\cos(n\\theta)+i\\sin(n\\theta)$ pour tout entier $n$."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Formule de De Moivre",
+        "statement": "Pour tout entier $n$ et tout réel $\\theta$, $(\\cos\\theta+i\\sin\\theta)^n=\\cos(n\\theta)+i\\sin(n\\theta)$.",
+        "proof": "Pour $n\\geq0$, la formule résulte de la formule d'Euler et de la propriété $e^{i\\theta}e^{i\\varphi}=e^{i(\\theta+\\varphi)}$. En effet, $(e^{i\\theta})^n=e^{in\\theta}$. En réécrivant avec la formule d'Euler, on obtient l'identité. Pour les entiers négatifs, on utilise que $e^{i\\theta}\\ne0$ et que son inverse est $e^{-i\\theta}$."
+      }
+    ],
+    "methods": [
+      "Pour calculer un module, utiliser $|a+ib|=\\sqrt{a^2+b^2}$.",
+      "Pour résoudre une équation de puissances complexes, passer en forme exponentielle et tenir compte de tous les arguments modulo $2\\pi$.",
+      "Vérifier les solutions en les remplaçant dans l'équation initiale."
+    ],
+    "commonErrors": [
+      "Confondre partie imaginaire et coefficient de i.",
+      "Oublier que l'argument est défini modulo $2\\pi$.",
+      "Diviser par un complexe sans vérifier qu'il est non nul."
+    ]
+  },
+  "polynomials": {
+    "lessonSections": [
+      {
+        "title": "Degré et opérations",
+        "body": "Un polynôme réel est une somme finie $P(X)=a_0+a_1X+\\cdots+a_nX^n$. Si $a_n\\ne0$, son degré est $n$. Le degré d'un produit de deux polynômes non nuls est la somme de leurs degrés."
+      },
+      {
+        "title": "Racines et factorisation",
+        "body": "Un réel $a$ est racine de $P$ lorsque $P(a)=0$. Le théorème du facteur affirme que cela équivaut à la divisibilité de $P$ par $X-a$. On peut donc factoriser successivement un polynôme en connaissant ses racines."
+      },
+      {
+        "title": "Division euclidienne et reste",
+        "body": "Pour tout polynôme $P$ et tout polynôme non nul $Q$, il existe un unique couple $(S,R)$ tel que $P=QS+R$ et $\\deg R<\\deg Q$. Lorsque $Q=X-a$, le reste est une constante égale à $P(a)$."
+      },
+      {
+        "title": "Multiplicité des racines",
+        "body": "La racine $a$ est de multiplicité $m$ si $(X-a)^m$ divise $P$ mais $(X-a)^{m+1}$ ne divise pas $P$. Un polynôme non nul de degré $n$ possède au plus $n$ racines distinctes, et la somme des multiplicités de ses racines réelles ne dépasse pas son degré."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Théorème du facteur",
+        "statement": "Pour tout polynôme $P\\in\\mathbb R[X]$ et tout réel $a$, $P(a)=0$ si et seulement s'il existe $Q\\in\\mathbb R[X]$ tel que $P(X)=(X-a)Q(X)$.",
+        "proof": "La division euclidienne de $P$ par $X-a$ donne $P(X)=(X-a)Q(X)+r$, où $r$ est constant. En évaluant en $a$, on obtient $P(a)=r$. Ainsi $P(a)=0$ équivaut à $r=0$, ce qui équivaut à la factorisation annoncée."
+      }
+    ],
+    "methods": [
+      "Pour factoriser un polynôme, tester des racines simples puis utiliser le théorème du facteur.",
+      "Pour trouver le reste de la division par $X-a$, calculer directement $P(a)$.",
+      "Après factorisation, vérifier le résultat par développement."
+    ],
+    "commonErrors": [
+      "Confondre racine et facteur sans justifier le théorème du facteur.",
+      "Oublier le coefficient dominant lors d'une factorisation.",
+      "Compter une racine multiple comme plusieurs racines distinctes."
+    ]
+  },
+  "linear-systems": {
+    "lessonSections": [
+      {
+        "title": "Écriture matricielle",
+        "body": "Un système linéaire de $m$ équations à $n$ inconnues s'écrit $AX=b$, où $A$ est la matrice des coefficients, $X$ le vecteur des inconnues et $b$ le second membre. Le système homogène correspond au cas $b=0$."
+      },
+      {
+        "title": "Opérations élémentaires et méthode de Gauss",
+        "body": "On peut échanger deux lignes, multiplier une ligne par un scalaire non nul ou ajouter à une ligne un multiple d'une autre. Ces opérations ne changent pas l'ensemble des solutions. La méthode du pivot de Gauss utilise ces opérations pour obtenir une forme échelonnée et lire les inconnues."
+      },
+      {
+        "title": "Nombre de solutions",
+        "body": "Un système peut être incompatible, avoir une solution unique ou une infinité de solutions. Une ligne de la forme $0= c$ avec $c\\ne0$ révèle une incompatibilité. Dans un système homogène, le vecteur nul est toujours solution."
+      },
+      {
+        "title": "Cas d'une matrice carrée inversible",
+        "body": "Si $A$ est carrée et $\\det(A)\\ne0$, elle est inversible et le système $AX=b$ possède une unique solution $X=A^{-1}b$. Si le déterminant est nul, on ne peut pas conclure directement : il faut étudier le rang ou effectuer l'élimination de Gauss."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Critère d'inversibilité",
+        "statement": "Pour une matrice carrée $A$, les propriétés suivantes sont équivalentes : $A$ est inversible, $\\det(A)\\ne0$, et pour tout second membre $b$, le système $AX=b$ admet une unique solution.",
+        "proof": "Si $A$ est inversible, l'équation $AX=b$ équivaut à $X=A^{-1}b$, ce qui donne une solution unique. Une matrice carrée est inversible si et seulement si son déterminant est non nul. Réciproquement, si le déterminant est nul, le noyau de l'application $X\\mapsto AX$ contient un vecteur non nul ; le système homogène possède alors au moins deux solutions, donc l'unicité échoue pour $b=0$."
+      }
+    ],
+    "methods": [
+      "Écrire la matrice augmentée $(A|b)$ avant de commencer l'élimination.",
+      "Annoncer chaque opération élémentaire et conserver les fractions exactes autant que possible.",
+      "Vérifier la solution finale en la substituant dans le système initial."
+    ],
+    "commonErrors": [
+      "Multiplier une ligne par zéro, opération qui n'est pas réversible.",
+      "Oublier d'appliquer une opération à toute la ligne, y compris au second membre.",
+      "Conclure qu'un déterminant nul signifie toujours aucune solution : il peut aussi y en avoir une infinité."
+    ]
+  },
+  "probability": {
+    "lessonSections": [
+      {
+        "title": "Univers et événements",
+        "body": "Une expérience aléatoire est décrite par un univers $\\Omega$. Un événement est une partie de cet univers. Une probabilité $P$ associe à chaque événement un nombre entre 0 et 1, avec $P(\\Omega)=1$ et l'additivité pour les événements incompatibles."
+      },
+      {
+        "title": "Conditionnement et indépendance",
+        "body": "Si $P(B)>0$, la probabilité de $A$ sachant $B$ est $P(A|B)=P(A\\cap B)/P(B)$. Les événements $A$ et $B$ sont indépendants lorsque $P(A\\cap B)=P(A)P(B)$. L'indépendance est une propriété différente de l'incompatibilité."
+      },
+      {
+        "title": "Formule des probabilités totales et Bayes",
+        "body": "Si $(B_i)$ forme une partition de l'univers avec $P(B_i)>0$, alors $P(A)=\\sum_i P(A|B_i)P(B_i)$. La formule de Bayes permet d'inverser le conditionnement : $P(B_j|A)=P(A|B_j)P(B_j)/P(A)$ lorsque $P(A)>0$."
+      },
+      {
+        "title": "Variables aléatoires",
+        "body": "Une variable aléatoire discrète associe une valeur numérique à chaque issue. Pour une variable finie, $E(X)=\\sum_x xP(X=x)$ et $V(X)=E(X^2)-E(X)^2$. Pour une Bernoulli de paramètre $p$, l'espérance vaut $p$ et la variance $p(1-p)$."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Formule des probabilités totales",
+        "statement": "Si $(B_1,\\ldots,B_n)$ est une partition de $\\Omega$ par des événements de probabilités non nulles, alors $P(A)=\\sum_{i=1}^nP(A|B_i)P(B_i)$.",
+        "proof": "Les événements $A\\cap B_i$ sont deux à deux disjoints et leur réunion est $A$, puisque les $B_i$ forment une partition de l'univers. Par additivité, $P(A)=\\sum_iP(A\\cap B_i)$. Par définition du conditionnement, $P(A\\cap B_i)=P(A|B_i)P(B_i)$. En remplaçant chaque terme, on obtient la formule."
+      }
+    ],
+    "methods": [
+      "Pour une probabilité conditionnelle, identifier clairement l'événement qui constitue la condition et vérifier que sa probabilité est non nulle.",
+      "Pour utiliser les probabilités totales, vérifier que les événements considérés forment bien une partition.",
+      "Distinguer indépendance et incompatibilité avant d'utiliser une formule."
+    ],
+    "commonErrors": [
+      "Inverser $P(A|B)$ et $P(B|A)$.",
+      "Utiliser une formule de conditionnement lorsque la probabilité de l'événement conditionnant est nulle.",
+      "Confondre événements incompatibles et événements indépendants."
+    ]
+  },
+  "differential-equations": {
+    "lessonSections": [
+      {
+        "title": "Qu'est-ce qu'une équation différentielle ?",
+        "body": "Une équation différentielle relie une fonction inconnue à une ou plusieurs de ses dérivées. Résoudre l'équation consiste à déterminer toutes les fonctions qui la vérifient sur un intervalle donné. Les constantes d'intégration apparaissent naturellement."
+      },
+      {
+        "title": "Équation homogène y'=ay",
+        "body": "Pour une constante réelle $a$, l'équation $y'=ay$ possède pour solutions $y(x)=Ce^{ax}$. On peut vérifier cette expression par dérivation. La constante $C$ est déterminée par une condition initiale lorsqu'elle est donnée."
+      },
+      {
+        "title": "Équation y'=g(x)",
+        "body": "L'équation $y'=g(x)$ se résout en cherchant une primitive de $g$. Si $G'=g$, toutes les solutions sur un intervalle sont $y=G+C$. Deux primitives sur un même intervalle connexe diffèrent d'une constante."
+      },
+      {
+        "title": "Condition initiale et unicité",
+        "body": "Une condition telle que $y(x_0)=y_0$ sélectionne une solution particulière parmi la famille générale. Pour $y'=ay$, elle impose $C=y_0e^{-ax_0}$. Il faut toujours remplacer la constante dans la solution générale et vérifier l'équation ainsi que la condition initiale."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Solutions de y'=ay",
+        "statement": "Les solutions réelles de $y'=ay$ sur un intervalle sont exactement les fonctions $y(x)=Ce^{ax}$, où $C$ est une constante réelle.",
+        "proof": "Si $y(x)=Ce^{ax}$, alors $y'(x)=aCe^{ax}=ay(x)$ : toute fonction de cette forme est solution. Réciproquement, si $y'=ay$, considérons $g(x)=e^{-ax}y(x)$. Alors $g'(x)=e^{-ax}(y'(x)-ay(x))=0$. Une fonction dérivable de dérivée nulle sur un intervalle est constante ; donc $g=C$, soit $y=Ce^{ax}$."
+      }
+    ],
+    "methods": [
+      "Pour une équation $y'=g(x)$, intégrer puis ajouter une constante arbitraire.",
+      "Pour $y'=ay$, reconnaître immédiatement la famille exponentielle et vérifier par dérivation.",
+      "Utiliser la condition initiale seulement après avoir écrit la solution générale."
+    ],
+    "commonErrors": [
+      "Oublier la constante d'intégration.",
+      "Donner une solution particulière alors que l'on demande toutes les solutions.",
+      "Ne pas vérifier la condition initiale après avoir déterminé la constante."
+    ]
+  },
+  "euclidean": {
+    "lessonSections": [
+      {
+        "title": "Produit scalaire et norme",
+        "body": "Un produit scalaire réel est une forme bilinéaire, symétrique et définie positive. Il permet de définir la norme associée par $\\|x\\|=\\sqrt{\\langle x,x\\rangle}$. Dans $\\mathbb R^n$ muni du produit scalaire usuel, on multiplie les coordonnées correspondantes puis on additionne."
+      },
+      {
+        "title": "Orthogonalité et Pythagore",
+        "body": "Deux vecteurs sont orthogonaux lorsque leur produit scalaire est nul. Pour deux vecteurs orthogonaux, l'identité de Pythagore donne $\\|x+y\\|^2=\\|x\\|^2+\\|y\\|^2$. Une famille orthogonale de vecteurs non nuls est automatiquement libre."
+      },
+      {
+        "title": "Inégalité de Cauchy-Schwarz et projection",
+        "body": "L'inégalité de Cauchy-Schwarz affirme $|\\langle x,y\\rangle|\\leq\\|x\\|\\|y\\|$, avec égalité si et seulement si les vecteurs sont liés. Pour $u\\ne0$, la projection de $v$ sur la droite dirigée par $u$ est $\\operatorname{proj}_u(v)=\\frac{\\langle v,u\\rangle}{\\|u\\|^2}u$."
+      },
+      {
+        "title": "Orthogonalisation de Gram-Schmidt",
+        "body": "À partir d'une famille libre, Gram-Schmidt construit une famille orthogonale engendrant les mêmes sous-espaces successifs. On retire à chaque nouveau vecteur ses projections sur les vecteurs orthogonaux déjà construits, puis on normalise pour obtenir une base orthonormée."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Inégalité de Cauchy-Schwarz",
+        "statement": "Pour tous vecteurs $x,y$ d'un espace préhilbertien réel, $|\\langle x,y\\rangle|\\leq\\|x\\|\\|y\\|$, avec égalité si et seulement si $x$ et $y$ sont liés.",
+        "proof": "Si $y=0$, l'inégalité est immédiate. Sinon, pour tout réel $t$, la positivité donne $0\\leq\\|x-ty\\|^2=\\|x\\|^2-2t\\langle x,y\\rangle+t^2\\|y\\|^2$. En choisissant $t=\\langle x,y\\rangle/\\|y\\|^2$, on obtient $\\langle x,y\\rangle^2\\leq\\|x\\|^2\\|y\\|^2$. L'égalité a lieu exactement lorsque $x-ty=0$ pour ce choix de $t$, c'est-à-dire lorsque les vecteurs sont liés."
+      }
+    ],
+    "methods": [
+      "Pour vérifier l'orthogonalité, calculer le produit scalaire et non seulement comparer les coordonnées.",
+      "Pour projeter, calculer séparément le numérateur $\\langle v,u\\rangle$ et le dénominateur $\\|u\\|^2$.",
+      "Dans Gram-Schmidt, soustraire toutes les projections sur les vecteurs orthogonaux déjà construits avant de normaliser."
+    ],
+    "commonErrors": [
+      "Oublier le carré dans le dénominateur de la formule de projection.",
+      "Normaliser avant d'avoir retiré les composantes parallèles précédentes.",
+      "Affirmer qu'une famille orthogonale est libre sans exclure les vecteurs nuls."
+    ]
+  },
+  "series": {
+    "lessonSections": [
+      {
+        "title": "Définition et sommes partielles",
+        "body": "Une série numérique $\\sum u_n$ est étudiée à travers ses sommes partielles $S_N=\\sum_{n=0}^N u_n$. La série converge si et seulement si la suite $(S_N)$ converge vers une limite finie. Sa somme est alors cette limite."
+      },
+      {
+        "title": "Condition nécessaire et séries de référence",
+        "body": "Si une série converge, son terme général tend nécessairement vers 0. La réciproque est fausse : la série harmonique $\\sum 1/n$ diverge. Les séries géométriques convergent si et seulement si la raison a un module strictement inférieur à 1."
+      },
+      {
+        "title": "Séries de Riemann et comparaisons",
+        "body": "La série de Riemann $\\sum_{n\\geq1}1/n^p$ converge exactement lorsque $p>1$. Pour des termes positifs, les comparaisons et les équivalents permettent de transférer la convergence ou la divergence, sous les hypothèses adaptées."
+      },
+      {
+        "title": "Critère intégral",
+        "body": "Si $f$ est positive, continue et décroissante à partir d'un certain rang, la série $\\sum f(n)$ et l'intégrale impropre $\\int f(x)\\,dx$ sont de même nature. Ce critère donne notamment le résultat sur les séries de Riemann."
+      }
+    ],
+    "theorems": [
+      {
+        "title": "Critère de Riemann",
+        "statement": "Pour $p\\in\\mathbb R$, la série $\\sum_{n=1}^{+\\infty}1/n^p$ converge si et seulement si $p>1$.",
+        "proof": "Si $p\\leq0$, le terme général ne tend pas vers 0, donc la série diverge. Si $p>0$, la fonction $x\\mapsto x^{-p}$ est positive, continue et décroissante sur $[1,+\\infty[$. Le critère intégral ramène la nature de la série à celle de $\\int_1^{+\\infty}x^{-p}\\,dx$. Pour $p\\ne1$, une primitive est $x^{1-p}/(1-p)$ ; l'intégrale converge exactement lorsque $p>1$. Pour $p=1$, elle diverge comme $\\ln x$. D'où le critère."
+      }
+    ],
+    "methods": [
+      "Commencer par vérifier si le terme général tend vers 0 : si ce n'est pas le cas, la série diverge immédiatement.",
+      "Pour une série positive, chercher une comparaison avec une série géométrique ou une série de Riemann.",
+      "N'utiliser le critère intégral qu'après avoir vérifié positivité, continuité et décroissance à partir d'un certain rang."
+    ],
+    "commonErrors": [
+      "Croire que $u_n\\to0$ suffit à assurer la convergence de la série.",
+      "Appliquer le critère intégral à une fonction qui n'est pas positive ou décroissante sans justification.",
+      "Oublier de traiter séparément le cas $p\\leq0$ dans la série de Riemann."
+    ]
+  }
+};
+for (const t of topics) { const extra = courseEnrichments[t.id]; if (extra) Object.assign(t, extra); }
 for(const t of topics) if(!window.TOPICS.some(old=>old.id===t.id)) window.TOPICS.push(t);
 const addedExerciseSolutions = {
   "m4-62": [
