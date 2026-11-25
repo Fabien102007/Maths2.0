@@ -5,7 +5,7 @@ const KEY="maths4_studio_v1";
 const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},cardReviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
 let reviewQualityByTopic={};
-let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeVisualCategory=null,activeVisualLevel=null,activeVisualId=null,activeMode="tutor",chatHistory=[],chatImage=null,activeTutorContext=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
+let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeVisualCategory=null,activeVisualLevel=null,activeVisualChapter=null,activeVisualId=null,activeMode="tutor",chatHistory=[],chatImage=null,activeTutorContext=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
 let progressSyncTimer=null;
 const save=()=>{state.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();if(window.Maths2Account?.sync){clearTimeout(progressSyncTimer);progressSyncTimer=setTimeout(()=>window.Maths2Account.sync(),1200);}};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -511,24 +511,35 @@ const VISUAL_CATALOG=[
  {id:"diagonalization",category:"Algèbre",level:"L1",title:"Diagonalisation : comprendre les matrices",desc:"Déterminant, polynôme caractéristique, vecteurs propres et matrices semblables.",chapter:"Matrices et diagonalisation"}
 ];
 function renderVisualLibrary(){
- const themes=$("#visualThemes"),levelsView=$("#visualLevelsView"),cardsView=$("#visualCardsView"),detail=$("#visualDetail");
- if(!themes||!levelsView||!cardsView||!detail)return;
- if(activeVisualId){themes.hidden=true;levelsView.hidden=true;cardsView.hidden=true;detail.hidden=false;return;}
+ const themes=$("#visualThemes"),levelsView=$("#visualLevelsView"),chaptersView=$("#visualCardsView"),visualizationsView=$("#visualizationsView"),detail=$("#visualDetail");
+ if(!themes||!levelsView||!chaptersView||!visualizationsView||!detail)return;
+ if(activeVisualId){themes.hidden=true;levelsView.hidden=true;chaptersView.hidden=true;visualizationsView.hidden=true;detail.hidden=false;return;}
  detail.hidden=true;
- if(!activeVisualCategory){themes.hidden=false;levelsView.hidden=true;cardsView.hidden=true;return;}
+ if(!activeVisualCategory){themes.hidden=false;levelsView.hidden=true;chaptersView.hidden=true;visualizationsView.hidden=true;return;}
  themes.hidden=true;
  if(!activeVisualLevel){
-  levelsView.hidden=false;cardsView.hidden=true;
+  levelsView.hidden=false;chaptersView.hidden=true;visualizationsView.hidden=true;
   const available=VISUAL_CATALOG.filter(v=>v.category===activeVisualCategory);
   $("#visualLevelList").innerHTML='<div class="course-level-intro"><b>Choisis ton niveau d’études</b><span>'+esc(activeVisualCategory)+'</span></div>'+VISUAL_LEVELS.filter(l=>available.some(v=>v.level===l.name)).map(l=>{
    const count=available.filter(v=>v.level===l.name).length;
-   return '<button type="button" class="course-theme-card course-level-card" data-visual-level="'+l.name+'"><span class="course-theme-symbol">'+l.icon+'</span><span><b>'+l.name+'</b><small>'+l.desc+'</small></span><i>'+count+' visualisation'+(count>1?'s':'')+' →</i></button>';
+   return '<button type="button" class="course-theme-card course-level-card" data-visual-level="'+l.name+'"><span class="course-theme-symbol">'+l.icon+'</span><span><b>'+l.name+'</b><small>'+l.desc+'</small></span><i>'+count+' thème'+(count>1?'s':'')+' →</i></button>';
   }).join("");
   return;
  }
- levelsView.hidden=true;cardsView.hidden=false;
- const entries=VISUAL_CATALOG.filter(v=>v.category===activeVisualCategory&&v.level===activeVisualLevel);
- $("#visualCards").innerHTML=entries.map(v=>'<button type="button" class="course-theme-card visual-card" data-visual-id="'+v.id+'"><span class="course-theme-symbol">'+(v.id==="diagonalization"?"λ":v.category==="Analyse"?"∫":"∑")+'</span><span><b>'+esc(v.title)+'</b><small>'+esc(v.desc)+'</small></span><i>Explorer →</i></button>').join("")||'<p class="subtle">Aucune visualisation disponible à ce niveau pour le moment.</p>';
+ levelsView.hidden=true;
+ if(!activeVisualChapter){
+  chaptersView.hidden=false;visualizationsView.hidden=true;
+  const entries=VISUAL_CATALOG.filter(v=>v.category===activeVisualCategory&&v.level===activeVisualLevel);
+  const chapters=[...new Set(entries.map(v=>v.chapter))];
+  $("#visualChapterList").innerHTML='<div class="course-level-intro"><b>Choisis un thème</b><span>'+esc(activeVisualCategory)+' · '+esc(activeVisualLevel)+'</span></div>'+chapters.map(chapter=>{
+   const count=entries.filter(v=>v.chapter===chapter).length;
+   return '<button type="button" class="course-item" data-visual-chapter="'+esc(chapter)+'"><span class="course-symbol">'+(activeVisualCategory==="Analyse"?"∫":"∑")+'</span><span><b>'+esc(chapter)+'</b><small>'+count+' visualisation'+(count>1?'s':'')+'</small></span><i>→</i></button>';
+  }).join("")||'<p class="subtle">Aucun thème disponible à ce niveau pour le moment.</p>';
+  return;
+ }
+ chaptersView.hidden=true;visualizationsView.hidden=false;
+ const entries=VISUAL_CATALOG.filter(v=>v.category===activeVisualCategory&&v.level===activeVisualLevel&&v.chapter===activeVisualChapter);
+ $("#visualCards").innerHTML='<div class="course-level-intro"><b>'+esc(activeVisualChapter)+'</b><span>'+esc(activeVisualCategory)+' · '+esc(activeVisualLevel)+'</span></div>'+entries.map(v=>'<button type="button" class="course-theme-card visual-card" data-visual-id="'+v.id+'"><span class="course-theme-symbol">'+(v.id==="diagonalization"?"λ":v.category==="Analyse"?"∫":"∑")+'</span><span><b>'+esc(v.title)+'</b><small>'+esc(v.desc)+'</small></span><i>Explorer →</i></button>').join("")||'<p class="subtle">Aucune visualisation disponible dans ce thème.</p>';
 }
 function openVisual(id){
  const entry=VISUAL_CATALOG.find(v=>v.id===id);if(!entry)return;
@@ -551,7 +562,7 @@ function closeVisualDetail(){
  activeVisualId=null;$("#visualDetail").hidden=true;$("#visualLibrary").hidden=false;renderVisualLibrary();
 }
 function showVisualCatalog(){
- activeVisualCategory=null;activeVisualLevel=null;activeVisualId=null;
+ activeVisualCategory=null;activeVisualLevel=null;activeVisualChapter=null;activeVisualId=null;
  $("#visualDetail").hidden=true;$("#visualLibrary").hidden=false;renderVisualLibrary();
 }
 
@@ -811,8 +822,9 @@ function init(){
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
  $("#clearChat").onclick=()=>{chatHistory=[];activeTutorContext=null;$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};
  $("#tutorImage").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>8*1024*1024){toast("Image limitée à 8 Mo.");return}try{chatImage=await resizeImage(f);$("#uploadName").textContent=f.name+" · prête"}catch{toast("Lecture de l'image impossible.")}};
- $("#visualBackThemes").onclick=()=>{activeVisualCategory=null;activeVisualLevel=null;renderVisualLibrary()};
- $("#visualBackLevels").onclick=()=>{activeVisualLevel=null;renderVisualLibrary()};
+ $("#visualBackThemes").onclick=()=>{activeVisualCategory=null;activeVisualLevel=null;activeVisualChapter=null;renderVisualLibrary()};
+ $("#visualBackLevels").onclick=()=>{activeVisualLevel=null;activeVisualChapter=null;renderVisualLibrary()};
+ $("#visualBackChapters").onclick=()=>{activeVisualChapter=null;renderVisualLibrary()};
  $("#visualBackCards").onclick=closeVisualDetail;
  const labSelect=$("#labType");if(labSelect){const seen=new Set();[...labSelect.options].forEach(option=>{if(seen.has(option.value))option.remove();else seen.add(option.value)});labType=labSelect.value||"derivative";}labSelect.onchange=()=>{labType=labSelect.value;labSetup()};$("#labSlider").oninput=()=>{if(labType==="surface3d")labRotationY=Number($("#labSlider").value)*Math.PI/180;drawLab()};$("#surfaceFunction").onchange=()=>{updateSurfaceMeta();typeset($("#labFormula"));renderLabGuide();drawLab()};$("#labAnimate").onclick=toggleComplexAnimation;initManimLibrary();
  const labCanvas=$("#labCanvas");labCanvas.addEventListener("pointerdown",e=>{if(labType!=="surface3d"&&labType!=="complex3d")return;labDragging={x:e.clientX,y:e.clientY};labCanvas.setPointerCapture(e.pointerId)});labCanvas.addEventListener("pointermove",e=>{if(!labDragging)return;const dx=e.clientX-labDragging.x,dy=e.clientY-labDragging.y;labDragging={x:e.clientX,y:e.clientY};labRotationY+=dx*.009;labRotationX=Math.max(.15,Math.min(1.45,labRotationX+dy*.007));if(labType==="surface3d")$("#labSlider").value=Math.round(labRotationY*180/Math.PI);drawLab()});["pointerup","pointercancel","lostpointercapture"].forEach(ev=>labCanvas.addEventListener(ev,()=>{labDragging=null}));
@@ -824,9 +836,11 @@ function init(){
 // Délégation globale pour les cartes Analyse / Algèbre.
 document.addEventListener("click",event=>{
  const visualCategory=event.target.closest("#visualThemes [data-visual-category]");
- if(visualCategory){activeVisualCategory=visualCategory.dataset.visualCategory;activeVisualLevel=null;activeVisualId=null;renderVisualLibrary();animateContent($("#visualLevelsView"));return;}
+ if(visualCategory){activeVisualCategory=visualCategory.dataset.visualCategory;activeVisualLevel=null;activeVisualChapter=null;activeVisualId=null;renderVisualLibrary();animateContent($("#visualLevelsView"));return;}
  const visualLevel=event.target.closest("[data-visual-level]");
- if(visualLevel){activeVisualLevel=visualLevel.dataset.visualLevel;activeVisualId=null;renderVisualLibrary();animateContent($("#visualCardsView"));return;}
+ if(visualLevel){activeVisualLevel=visualLevel.dataset.visualLevel;activeVisualChapter=null;activeVisualId=null;renderVisualLibrary();animateContent($("#visualCardsView"));return;}
+ const visualChapter=event.target.closest("[data-visual-chapter]");
+ if(visualChapter){activeVisualChapter=visualChapter.dataset.visualChapter;activeVisualId=null;renderVisualLibrary();animateContent($("#visualizationsView"));return;}
  const visualCard=event.target.closest("[data-visual-id]");
  if(visualCard){openVisual(visualCard.dataset.visualId);return;}
  const card=event.target.closest("#exerciseThemes [data-ex-category]");
