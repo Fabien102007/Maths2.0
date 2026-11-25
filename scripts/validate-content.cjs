@@ -29,6 +29,10 @@ for (const t of topics) {
   assert.ok(t.definitions?.length, "Définitions manquantes : " + t.id);
   assert.ok(t.properties?.length, "Propriétés manquantes : " + t.id);
   assert.ok(t.example, "Exemple manquant : " + t.id);
+  assert.ok(t.lessonSections?.length >= 3, "Cours insuffisamment structuré : " + t.id);
+  for (const section of t.lessonSections) {
+    assert.ok(section.title && section.body && section.body.trim().length >= 80, "Section de cours trop courte ou incomplète : " + t.id);
+  }
   assert.ok(t.methods?.length, "Méthodes manquantes : " + t.id);
   assert.ok(t.commonErrors?.length, "Erreurs classiques manquantes : " + t.id);
   assert.ok(t.theorems?.length, "Théorèmes manquants : " + t.id);
@@ -51,6 +55,7 @@ for (const e of exercises) {
   assert.ok(e.title && e.question, "Énoncé incomplet : " + e.id);
   assert.ok(e.answer && e.answer.trim(), "Correction manquante : " + e.id);
   assert.ok(e.solutionSteps?.length, "Correction non découpée : " + e.id);
+  assert.ok(e.solutionSteps.every(step => typeof step === "string" && step.trim().length >= 25), "Étape de correction vide ou trop courte : " + e.id);
   assert.ok(e.hints?.length >= 2, "Moins de deux indices : " + e.id);
 }
 
