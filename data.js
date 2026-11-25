@@ -921,6 +921,174 @@ window.EXERCISES = [
   }
 ];
 
+
+
+/* Corrections pédagogiques détaillées des exercices dont la première version était trop condensée. */
+const detailedExerciseSolutions = {
+  "m4-4": [
+    "Une fonction affine est de la forme x ↦ ax+b. Ici, f(x)=3x−2 est affine.",
+    "Les fonctions constantes et l'identité sont continues sur ℝ. Plus généralement, toute fonction affine est continue sur ℝ, car elle est combinaison linéaire de fonctions continues.",
+    "On peut aussi le vérifier directement : pour tout a réel, |f(x)−f(a)|=|3x−2−(3a−2)|=3|x−a|. Si l'on choisit δ=ε/3, alors |x−a|<δ entraîne |f(x)−f(a)|<ε.",
+    "Donc f est continue en tout réel a, et par conséquent sur ℝ."
+  ],
+  "m4-5": [
+    "On veut vérifier la continuité en 0. On a f(0)=|0|=0.",
+    "Pour tout x réel, |f(x)−f(0)|=||x|−0|=|x|.",
+    "Lorsque x tend vers 0, |x| tend vers 0. Ainsi f(x) tend vers f(0).",
+    "Par définition de la continuité, la fonction valeur absolue est continue en 0."
+  ],
+  "m4-7": [
+    "La fonction f(x)=x³−2x est un polynôme ; elle est donc dérivable sur ℝ.",
+    "On dérive terme à terme : (x³)'=3x² et (−2x)'=−2.",
+    "On obtient, pour tout réel x, f'(x)=3x²−2."
+  ],
+  "m4-8": [
+    "Pour une fonction dérivable en a, la tangente au point d'abscisse a a pour équation y=f(a)+f'(a)(x−a).",
+    "Ici f(x)=x², donc f'(x)=2x. À l'abscisse a=2, on trouve f(2)=4 et f'(2)=4.",
+    "En remplaçant dans la formule, y=4+4(x−2)=4x−4.",
+    "La tangente cherchée a donc pour équation y=4x−4."
+  ],
+  "m4-10": [
+    "La dérivée de sin est cos : (sin x)'=cos x.",
+    "Pour tout réel x, le cosinus appartient à l'intervalle [−1,1]. Par conséquent |cos x|≤1.",
+    "On peut donc choisir M=1. Cette constante est optimale puisque |cos 0|=1."
+  ],
+  "m4-13": [
+    "Posons g(x)=x³+x−1. C'est un polynôme, donc g est continue sur ℝ, en particulier sur [0,1].",
+    "Aux extrémités, g(0)=−1 et g(1)=1.",
+    "Le nombre 0 est compris entre g(0) et g(1). Le théorème des valeurs intermédiaires garantit donc l'existence d'un c dans [0,1] tel que g(c)=0.",
+    "Comme les valeurs aux extrémités sont non nulles, c appartient même à ]0,1[. L'équation possède au moins une solution dans [0,1]."
+  ],
+  "m4-14": [
+    "Une primitive de 2x est x², car (x²)'=2x.",
+    "Par le théorème fondamental de l'analyse, l'intégrale vaut la différence des valeurs de cette primitive aux bornes : [x²]₀².",
+    "On calcule 2²−0²=4. Ainsi l'intégrale vaut 4."
+  ],
+  "m4-15": [
+    "On cherche une primitive de 3x²+2x. Une primitive est F(x)=x³+x², puisque F'(x)=3x²+2x.",
+    "On applique la formule d'intégration sur [0,1] : l'intégrale vaut F(1)−F(0).",
+    "Or F(1)=1+1=2 et F(0)=0. La valeur de l'intégrale est donc 2."
+  ],
+  "m4-17": [
+    "Notons F={(x,0) : x∈ℝ}. Pour vérifier que F est un sous-espace vectoriel de ℝ², on contrôle qu'il contient le vecteur nul et qu'il est stable par combinaison linéaire.",
+    "Le vecteur nul appartient à F puisque (0,0)=(0,0).",
+    "Soient (x,0) et (y,0) dans F, et λ,μ réels. Alors λ(x,0)+μ(y,0)=(λx+μy,0), qui appartient encore à F.",
+    "Les deux propriétés sont vérifiées : F est un sous-espace vectoriel de ℝ². Géométriquement, c'est l'axe des abscisses."
+  ],
+  "m4-18": [
+    "Considérons l'application φ:ℝ³→ℝ définie par φ(x,y,z)=x−2y+z. Elle est linéaire, car elle est donnée par une combinaison linéaire des coordonnées.",
+    "L'ensemble demandé est exactement le noyau de φ : H=Ker(φ).",
+    "Or le noyau de toute application linéaire est un sous-espace vectoriel de l'espace de départ.",
+    "Donc H est un sous-espace vectoriel de ℝ³. On peut aussi écrire z=−x+2y, ce qui donne H=Vect((1,0,−1),(0,1,2))."
+  ],
+  "m4-19": [
+    "Une famille (v₁,v₂) est libre si la seule combinaison linéaire nulle est celle dont tous les coefficients sont nuls.",
+    "Supposons λ(1,0)+μ(0,1)=(0,0). En identifiant les coordonnées, on obtient le système λ=0 et μ=0.",
+    "La seule solution est donc λ=μ=0. La famille canonique ((1,0),(0,1)) est libre dans ℝ²."
+  ],
+  "m4-20": [
+    "Pour tester la liberté, cherchons une relation linéaire entre les deux vecteurs.",
+    "On remarque immédiatement que (2,2)=2(1,1). Le second vecteur est donc un multiple du premier.",
+    "La relation −2(1,1)+(2,2)=(0,0) est une relation linéaire non triviale.",
+    "La famille est liée. Elle ne peut donc pas être une base de ℝ²."
+  ],
+  "m4-21": [
+    "Une application f est linéaire si, pour tous u,v et tous scalaires λ,μ, elle vérifie f(λu+μv)=λf(u)+μf(v).",
+    "Posons u=(x₁,y₁) et v=(x₂,y₂). Alors λu+μv=(λx₁+μx₂, λy₁+μy₂).",
+    "En appliquant f, on obtient (2λx₁+2μx₂, 2λy₁+2μy₂), qui est égal à λ(2x₁,2y₁)+μ(2x₂,2y₂)=λf(u)+μf(v).",
+    "La propriété est vérifiée pour tous u,v,λ,μ : f est linéaire."
+  ],
+  "m4-22": [
+    "Le noyau est l'ensemble des vecteurs envoyés sur le vecteur nul. Il faut donc résoudre f(x,y)=(0,0).",
+    "Par définition de f, cela donne le système x+y=0 et x−y=0.",
+    "En additionnant les deux équations, on obtient 2x=0, donc x=0. La première équation donne alors y=0.",
+    "Le seul antécédent du vecteur nul est (0,0). Ainsi Ker(f)={(0,0)}."
+  ],
+  "m4-23": [
+    "Pour une matrice carrée d'ordre 2, le déterminant de ((a,b),(c,d)) vaut ad−bc.",
+    "Ici a=3, b=1, c=2 et d=4.",
+    "On calcule donc det(A)=3×4−1×2=12−2=10."
+  ],
+  "m4-25": [
+    "Notons X={(x,0):x∈ℝ} l'axe horizontal et Y={(0,y):y∈ℝ} l'axe vertical. Ces deux ensembles sont des sous-espaces de ℝ².",
+    "Tout vecteur (x,y) de ℝ² se décompose en (x,y)=(x,0)+(0,y), avec un premier terme dans X et un second dans Y. Donc X+Y=ℝ².",
+    "Si un vecteur appartient à X∩Y, il est de la forme (x,0)=(0,y). L'égalité des coordonnées impose x=0 et y=0.",
+    "Ainsi X∩Y={(0,0)}. La somme est donc directe et ℝ²=X⊕Y."
+  ],
+  "m4-26": [
+    "Le produit scalaire usuel de (a,b) et (c,d) est ac+bd.",
+    "Pour les vecteurs donnés, on obtient 1×3+2×(−1)=3−2.",
+    "Le produit scalaire vaut donc 1."
+  ],
+  "m4-27": [
+    "Le produit scalaire de (1,1) et (1,−1) vaut 1×1+1×(−1)=0. Les deux vecteurs sont donc orthogonaux.",
+    "Leur somme est (2,0), dont la norme au carré vaut 2²+0²=4.",
+    "Les normes au carré des deux vecteurs initiaux valent chacune 1²+1²=2. Leur somme vaut 2+2=4.",
+    "On retrouve bien le théorème de Pythagore : la norme au carré de la somme de deux vecteurs orthogonaux est la somme des carrés de leurs normes."
+  ],
+  "m4-29": [
+    "Le projeté orthogonal de v sur une droite vectorielle dirigée par un vecteur non nul u est donné par projᵤ(v)=(⟨v,u⟩/⟨u,u⟩)u.",
+    "Ici v=(2,1) et u=(1,0). On calcule ⟨v,u⟩=2 et ⟨u,u⟩=1.",
+    "Le projeté vaut donc 2(1,0)=(2,0). La composante orthogonale restante est (0,1)."
+  ],
+  "m4-30": [
+    "On commence par le premier vecteur : v₁=(1,0), qui est déjà unitaire. On pose donc e₁=(1,0).",
+    "On retire à v₂ sa projection sur e₁. Comme ⟨v₂,e₁⟩=1, on obtient w₂=v₂−⟨v₂,e₁⟩e₁=(1,2)−(1,0)=(0,2).",
+    "La norme de w₂ vaut 2. On normalise : e₂=w₂/‖w₂‖=(0,1).",
+    "Les vecteurs e₁ et e₂ sont unitaires et orthogonaux. La base orthonormée obtenue est ((1,0),(0,1))."
+  ],
+  "m4-31": [
+    "Le cosinus est 2π-périodique : cos(t+2π)=cos(t) pour tout réel t.",
+    "Pour f(x)=cos(4x), une période T positive vérifie 4T=2πk pour un entier k. La plus petite période strictement positive correspond à k=1.",
+    "On obtient T=2π/4=π/2. La période fondamentale est donc π/2."
+  ],
+  "m4-32": [
+    "On utilise la formule de Taylor-Young en 0 à l'ordre 2. Pour une fonction deux fois dérivable au voisinage de 0, le développement est f(0)+f'(0)x+f''(0)x²/2+o(x²).",
+    "Pour f(x)=eˣ, on a f(0)=1, f'(x)=eˣ et f''(x)=eˣ, donc f'(0)=f''(0)=1.",
+    "En remplaçant dans la formule, on obtient eˣ=1+x+x²/2+o(x²) lorsque x tend vers 0."
+  ],
+  "m4-34": [
+    "La matrice A est déjà diagonale : A=diag(2,3). Ses coefficients diagonaux sont donc ses valeurs propres.",
+    "Pour λ=2, le vecteur e₁=(1,0) vérifie Ae₁=2e₁. Pour λ=3, e₂=(0,1) vérifie Ae₂=3e₂.",
+    "Les vecteurs e₁ et e₂ forment la base canonique de ℝ², donc une base de vecteurs propres.",
+    "La matrice est déjà diagonale dans cette base ; elle est donc diagonalisée avec P=I et D=A."
+  ],
+  "m4-35": [
+    "Dans ℝ muni de sa topologie usuelle, le théorème de Heine-Borel affirme qu'un ensemble est compact si et seulement s'il est fermé et borné.",
+    "L'intervalle [0,1] est fermé : il contient ses deux extrémités et son complémentaire est ouvert.",
+    "Il est borné puisque tout x∈[0,1] vérifie |x|≤1.",
+    "Il est donc compact dans ℝ."
+  ],
+  "m4-37": [
+    "Considérons φ:ℝ³→ℝ définie par φ(x,y,z)=x−y+2z. Cette forme linéaire est non nulle, par exemple φ(1,0,0)=1.",
+    "L'ensemble H donné est Ker(φ). Le théorème du rang donne dim(Ker φ)+dim(Im φ)=3.",
+    "Comme φ est non nulle et à valeurs dans ℝ, son image est ℝ, de dimension 1.",
+    "Par conséquent dim(H)=3−1=2. H est un plan vectoriel de ℝ³."
+  ],
+  "m4-39": [
+    "L'inégalité triangulaire est l'une des propriétés fondamentales d'une norme.",
+    "Elle affirme que, pour tous vecteurs x et y de l'espace vectoriel, la norme de leur somme est inférieure ou égale à la somme de leurs normes : ‖x+y‖≤‖x‖+‖y‖.",
+    "Elle généralise l'inégalité triangulaire usuelle des longueurs et permet notamment de majorer la distance entre deux vecteurs."
+  ],
+  "m4-41": [
+    "Le théorème de Rolle exige trois conditions : continuité sur le segment, dérivabilité à l'intérieur et égalité des valeurs aux deux extrémités.",
+    "La fonction f(x)=x²−1 est polynomiale, donc continue sur [−1,1] et dérivable sur ]−1,1[.",
+    "On calcule f(−1)=0 et f(1)=0. Toutes les hypothèses de Rolle sont donc satisfaites.",
+    "Il existe c∈]−1,1[ tel que f'(c)=0. Or f'(x)=2x, donc 2c=0 et c=0."
+  ],
+  "m4-44": [
+    "On étudie la continuité en 0. La valeur en ce point est f(0)=0.",
+    "Pour x≠0, on a |f(x)−f(0)|=|x sin(1/x)|=|x|·|sin(1/x)|.",
+    "Comme |sin(1/x)|≤1, on obtient 0≤|f(x)−f(0)|≤|x|.",
+    "Or |x| tend vers 0 lorsque x tend vers 0. Par le théorème des gendarmes, f(x) tend vers f(0). La fonction est donc continue en 0, même si elle n'est pas dérivable en 0."
+  ]
+};
+for (const exercise of window.EXERCISES) {
+  if (!Array.isArray(exercise.solutionSteps) || exercise.solutionSteps.length === 0) {
+    exercise.solutionSteps = detailedExerciseSolutions[exercise.id] || [exercise.answer || "Correction à compléter."];
+  }
+}
+
 window.FLASHCARDS = [
 {topic:"limits",front:"Définition de la convergence d'une suite",back:"Pour tout ε>0, il existe N tel que n≥N entraîne |uₙ−ℓ|<ε."},
 {topic:"continuity",front:"Continuité en a",back:"f est continue en a si lim(x→a) f(x)=f(a)."},
