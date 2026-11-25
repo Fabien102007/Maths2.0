@@ -121,7 +121,26 @@ window.__mathJaxReady = new Promise(resolve => {
 
     <section class="view" id="view-visuals">
       <div class="page-intro"><div class="eyebrow">MATHÉMATIQUES EN MOUVEMENT</div><h1>Laboratoire visuel</h1><p>Des expériences interactives guidées pour comprendre les objets mathématiques, étape par étape. Change les paramètres, observe les phénomènes et relie l'image aux formules.</p></div>
+      <div class="visual-library" id="visualLibrary">
+        <div id="visualThemes" class="course-themes">
+          <button class="course-theme-card" type="button" data-visual-category="Analyse"><span class="course-theme-symbol">∫</span><span><b>Analyse</b><small>Suites, limites, continuité, dérivation, intégration et fonctions…</small></span><i>Explorer →</i></button>
+          <button class="course-theme-card" type="button" data-visual-category="Algèbre"><span class="course-theme-symbol">∑</span><span><b>Algèbre</b><small>Déterminants, espaces vectoriels, valeurs propres et diagonalisation…</small></span><i>Explorer →</i></button>
+        </div>
+        <div id="visualLevelsView" hidden>
+          <button class="course-back" id="visualBackThemes" type="button">← Analyse et Algèbre</button>
+          <div class="course-list" id="visualLevelList"></div>
+        </div>
+        <div id="visualCardsView" hidden>
+          <button class="course-back" id="visualBackLevels" type="button">← Choisir un niveau</button>
+          <div class="course-themes" id="visualCards"></div>
+        </div>
+      </div>
+      <div id="visualDetail" hidden>
+        <div class="visual-detail-top"><button class="course-back" id="visualBackCards" type="button">← Retour aux visualisations</button><div><div class="eyebrow" id="visualDetailMeta">LABORATOIRE VISUEL</div><h2 id="visualDetailTitle">Visualisation</h2></div></div>
+      </div>
 
+
+      <div id="diagSpecialLab" hidden>
       <section class="diag-lab panel" id="diagonalizationLab">
         <div class="diag-heading"><div><div class="eyebrow">FOCUS ALGÈBRE · COMPRENDRE EN PROFONDEUR</div><h2>La diagonalisation, rendue visible</h2><p>Trois expériences guidées. Modifie les paramètres, observe ce qui change et formule ce qui reste invariant.</p></div><span class="diag-pill">LABO INTERACTIF</span></div>
         <div class="diag-tabs" role="tablist" aria-label="Expériences sur la diagonalisation">
@@ -143,6 +162,8 @@ window.__mathJaxReady = new Promise(resolve => {
         <video class="diag-video" controls playsinline preload="metadata" poster="assets/icon.svg"><source src="assets/manim/diagonalization_journey.mp4" type="video/mp4"></video>
         <div class="diag-video-caption"><span>4K · 60 images/s · rythme volontairement lent</span><span>Conseil : commence à 0,75× et mets en pause après chaque étape.</span></div>
       </section>
+      </div>
+      <div id="genericVisualLab" hidden>
       <div class="lab-shell panel">
         <div class="lab-toolbar">
           <div class="lab-select-group"><label for="labType">Expérience mathématique</label><select id="labType"><optgroup label="Analyse"><option value="sequence" selected>Convergence d’une suite</option><option value="limit">Limite d’une fonction</option><option value="continuity">Continuité</option><option value="derivative">Dérivée : sécante et tangente</option><option value="integral">Intégrale et sommes de Riemann</option><option value="taylor">Développement limité de exp</option><option value="fourier">Série de Fourier</option></optgroup><optgroup label="Algèbre et géométrie"><option value="trig">Cercle trigonométrique</option><option value="injectivity">Injectivité</option><option value="determinant">Déterminant et aire</option><option value="schmidt">Gram–Schmidt</option><option value="eigen">Valeurs propres et directions</option></optgroup><optgroup label="Visualisations 3D"><option value="surface3d">Surfaces : fonctions de deux variables</option><option value="complex3d">Exponentielle complexe : hélice 3D</option></optgroup></select></div>
@@ -164,6 +185,7 @@ window.__mathJaxReady = new Promise(resolve => {
         <article class="panel"><span class="lab-insight-icon">↗</span><h3>Manipule</h3><p>Fais varier un paramètre à la fois pour identifier son effet sur l'objet mathématique.</p></article>
         <article class="panel"><span class="lab-insight-icon">◎</span><h3>Observe</h3><p>Repère les invariants, les limites, les symétries et les changements de comportement.</p></article>
         <article class="panel"><span class="lab-insight-icon">∴</span><h3>Formalise</h3><p>Relie ce que tu vois à une définition, une propriété ou une démonstration.</p></article>
+      </div>
       </div>
     </section>
 
