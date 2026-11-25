@@ -66,6 +66,7 @@ jobs:
           render_and_publish concepts RiemannIntegral riemann_integral
           render_and_publish concepts EpsilonNConvergence epsilon_n_convergence
           render_and_publish concepts GramSchmidtGeometry gram_schmidt_geometry
+          render_and_publish diagonalization DiagonalizationJourney diagonalization_journey
 
       - name: Publish rendered videos to Pages source
         run: |
