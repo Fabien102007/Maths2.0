@@ -599,3 +599,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .diag-manim{display:grid;grid-template-columns:1fr;gap:12px}.diag-manim>div>p{margin-bottom:0}.diag-video{width:100%;max-height:520px;background:#050a13;border:1px solid #293956;border-radius:13px}.diag-video-caption{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#91a2bd;font-size:10px}
 @media(max-width:850px){.diag-workspace{grid-template-columns:1fr}.diag-heading{display:block}.diag-pill{display:inline-block;margin-top:8px}.diag-controls{grid-template-columns:1fr 1.4fr 45px}}
 @media(max-width:520px){.diag-lab,.diag-manim{padding:15px}.diag-tabs{display:grid;grid-template-columns:1fr}.diag-tab{text-align:left}.diag-controls{grid-template-columns:1fr 44px}.diag-controls label{grid-column:1/-1}.diag-controls input{grid-column:1}.diag-controls strong{grid-column:2;grid-row:2}.diag-video-caption{display:grid}}
+
+
+/* Navigation du laboratoire visuel : catégories → niveaux → expériences */
+.visual-library{margin:8px 0 24px}
+#visualLevelsView,#visualCardsView{max-width:900px;margin:0 auto}
+#visualLevelList{max-width:820px;margin:0 auto}
+.visual-card{min-height:116px;padding:18px 20px}
+.visual-card b{font-size:16px;line-height:1.35}
+.visual-card i{font-size:12px;white-space:nowrap}
+.visual-detail-top{display:grid;gap:12px;margin:6px 0 18px}
+.visual-detail-top h2{font:750 25px Manrope;margin:5px 0 0}
+.visual-detail-top .course-back{justify-self:start}
+#visualLibrary[hidden],#visualDetail[hidden],#diagSpecialLab[hidden],#genericVisualLab[hidden]{display:none!important}
+#genericVisualLab .lab-toolbar .lab-select-group:first-child{display:none}
+#genericVisualLab .lab-toolbar{justify-content:flex-end}
+#genericVisualLab .lab-insight-grid{margin-top:16px}
+@media(max-width:800px){.visual-card{min-height:100px;padding:15px;gap:11px}.visual-card .course-theme-symbol{flex-basis:44px;height:44px;font-size:23px}.visual-card b{font-size:14px}.visual-card i{font-size:10px}}
