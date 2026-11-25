@@ -121,6 +121,28 @@ window.__mathJaxReady = new Promise(resolve => {
 
     <section class="view" id="view-visuals">
       <div class="page-intro"><div class="eyebrow">MATHÉMATIQUES EN MOUVEMENT</div><h1>Laboratoire visuel</h1><p>Des expériences interactives guidées pour comprendre les objets mathématiques, étape par étape. Change les paramètres, observe les phénomènes et relie l'image aux formules.</p></div>
+
+      <section class="diag-lab panel" id="diagonalizationLab">
+        <div class="diag-heading"><div><div class="eyebrow">FOCUS ALGÈBRE · COMPRENDRE EN PROFONDEUR</div><h2>La diagonalisation, rendue visible</h2><p>Trois expériences guidées. Modifie les paramètres, observe ce qui change et formule ce qui reste invariant.</p></div><span class="diag-pill">LABO INTERACTIF</span></div>
+        <div class="diag-tabs" role="tablist" aria-label="Expériences sur la diagonalisation">
+          <button class="diag-tab active" type="button" data-diag-tab="det">01 · Déterminant</button>
+          <button class="diag-tab" type="button" data-diag-tab="poly">02 · Polynôme caractéristique</button>
+          <button class="diag-tab" type="button" data-diag-tab="basis">03 · Matrices semblables</button>
+        </div>
+        <div class="diag-workspace">
+          <div class="diag-visual"><canvas id="diagCanvas" width="1000" height="520" aria-label="Visualisation interactive de la diagonalisation"></canvas><div class="diag-canvas-note" id="diagCanvasNote">La grille est transformée par une matrice : observe son aire orientée.</div></div>
+          <aside class="diag-explain"><div class="eyebrow" id="diagKicker">GÉOMÉTRIE DU DÉTERMINANT</div><h3 id="diagTitle">Le déterminant mesure le facteur d'aire</h3><p id="diagText">Une matrice transforme le carré unité en parallélogramme. Son aire vaut la valeur absolue du déterminant ; le signe indique l'orientation.</p><div class="diag-equation" id="diagEquation">det(A) = ad − bc</div><div class="diag-observation"><b>À retenir</b><span id="diagTakeaway">Si det(A)=0, le parallélogramme s'aplatit : les colonnes deviennent dépendantes et A n'est pas inversible.</span></div></aside>
+        </div>
+        <div class="diag-controls" id="diagControls">
+          <label for="diagSlider" id="diagSliderLabel">Coefficient de cisaillement</label><input id="diagSlider" type="range" min="-1.5" max="1.5" step="0.05" value="0.5"><strong id="diagSliderValue">0,50</strong>
+        </div>
+        <div class="diag-question" id="diagQuestion"><b>Question active</b><span>Que devient l'aire lorsque tu modifies le cisaillement ?</span></div>
+      </section>
+      <section class="diag-manim panel">
+        <div><div class="eyebrow">MANIM · FILM PÉDAGOGIQUE LENT</div><h2>De la transformation à la base propre</h2><p>Une animation progressive qui construit le raisonnement : action de A, directions propres, polynôme caractéristique, changement de base et diagonalisation.</p></div>
+        <video class="diag-video" controls playsinline preload="metadata" poster="assets/icon.svg"><source src="assets/manim/diagonalization_journey.mp4" type="video/mp4"></video>
+        <div class="diag-video-caption"><span>4K · 60 images/s · rythme volontairement lent</span><span>Conseil : commence à 0,75× et mets en pause après chaque étape.</span></div>
+      </section>
       <div class="lab-shell panel">
         <div class="lab-toolbar">
           <div class="lab-select-group"><label for="labType">Expérience mathématique</label><select id="labType"><optgroup label="Analyse"><option value="sequence" selected>Convergence d’une suite</option><option value="limit">Limite d’une fonction</option><option value="continuity">Continuité</option><option value="derivative">Dérivée : sécante et tangente</option><option value="integral">Intégrale et sommes de Riemann</option><option value="taylor">Développement limité de exp</option><option value="fourier">Série de Fourier</option></optgroup><optgroup label="Algèbre et géométrie"><option value="trig">Cercle trigonométrique</option><option value="injectivity">Injectivité</option><option value="determinant">Déterminant et aire</option><option value="schmidt">Gram–Schmidt</option><option value="eigen">Valeurs propres et directions</option></optgroup><optgroup label="Visualisations 3D"><option value="surface3d">Surfaces : fonctions de deux variables</option><option value="complex3d">Exponentielle complexe : hélice 3D</option></optgroup></select></div>
@@ -260,5 +282,6 @@ window.__mathJaxReady = new Promise(resolve => {
   <script defer src="curriculum.js?v=20261124-complexproof1"></script>
   <script defer src="app.js?v=20261124-premiumstudy1"></script>
   <script defer src="account.js?v=20261124-premiumgate1"></script>
+  <script defer src="diagonalisation.js?v=20261125-visual1"></script>
 </body>
 </html>
