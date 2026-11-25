@@ -90,7 +90,13 @@ const richText=value=>esc(value).replace(/^#{1,6}[ \t]+(.+)$/gm,'<h3 class="chat
 // Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
 const proofMarkup=value=>{
  const source=String(value??"").trim();
- const steps=source.split(/\n\s*\n/).flatMap(paragraph=>paragraph.trim().split(/(?<=[.!?])\s+(?=[A-ZÀ-ÖØ-Þ])/u).map(step=>step.trim()).filter(Boolean));
+ const paragraphs=source.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+ const steps=paragraphs.flatMap(paragraph=>{
+  const sentences=paragraph.split(/(?<=[.!?])\s+(?=[A-ZÀ-ÖØ-Þ])/u).map(s=>s.trim()).filter(Boolean);
+  const grouped=[];
+  for(let i=0;i<sentences.length;i+=3)grouped.push(sentences.slice(i,i+3).join(" "));
+  return grouped;
+ });
  if(!steps.length)return richText(source);
  return '<div class="proof-steps">'+steps.map((step,i)=>'<div class="proof-step"><span class="proof-step-index">'+String(i+1).padStart(2,"0")+'</span><div class="proof-step-content">'+richText(step)+'</div></div>').join("")+'</div>';
 };
