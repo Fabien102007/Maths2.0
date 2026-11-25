@@ -687,11 +687,12 @@ const courseEnrichments = {
     ]
   }
 }
+for (const [id, extra] of Object.entries(courseEnrichments)) {
+  const existing = window.TOPICS.find(old => old.id === id);
+  if (existing) Object.assign(existing, extra);
+}
 for (const t of topics) {
-  const extra = courseEnrichments[t.id];
-  const existing = window.TOPICS.find(old => old.id === t.id);
-  if (existing) { if (extra) Object.assign(existing, extra); }
-  else window.TOPICS.push(t);
+  if (!window.TOPICS.some(old => old.id === t.id)) window.TOPICS.push(t);
 }
 const addedExerciseSolutions = {
   "m4-62": [
