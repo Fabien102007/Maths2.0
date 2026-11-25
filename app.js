@@ -811,6 +811,9 @@ function init(){
  $("#sendChat").onclick=sendChat;$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat()}});
  $("#clearChat").onclick=()=>{chatHistory=[];activeTutorContext=null;$("#chat").innerHTML='<div class="chat-welcome"><span>✳</span><h3>Nouvelle discussion</h3><p>Sur quoi souhaites-tu travailler ?</p></div>'};
  $("#tutorImage").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>8*1024*1024){toast("Image limitée à 8 Mo.");return}try{chatImage=await resizeImage(f);$("#uploadName").textContent=f.name+" · prête"}catch{toast("Lecture de l'image impossible.")}};
+ $("#visualBackThemes").onclick=()=>{activeVisualCategory=null;activeVisualLevel=null;renderVisualLibrary()};
+ $("#visualBackLevels").onclick=()=>{activeVisualLevel=null;renderVisualLibrary()};
+ $("#visualBackCards").onclick=closeVisualDetail;
  const labSelect=$("#labType");if(labSelect){const seen=new Set();[...labSelect.options].forEach(option=>{if(seen.has(option.value))option.remove();else seen.add(option.value)});labType=labSelect.value||"derivative";}labSelect.onchange=()=>{labType=labSelect.value;labSetup()};$("#labSlider").oninput=()=>{if(labType==="surface3d")labRotationY=Number($("#labSlider").value)*Math.PI/180;drawLab()};$("#surfaceFunction").onchange=()=>{updateSurfaceMeta();typeset($("#labFormula"));renderLabGuide();drawLab()};$("#labAnimate").onclick=toggleComplexAnimation;initManimLibrary();
  const labCanvas=$("#labCanvas");labCanvas.addEventListener("pointerdown",e=>{if(labType!=="surface3d"&&labType!=="complex3d")return;labDragging={x:e.clientX,y:e.clientY};labCanvas.setPointerCapture(e.pointerId)});labCanvas.addEventListener("pointermove",e=>{if(!labDragging)return;const dx=e.clientX-labDragging.x,dy=e.clientY-labDragging.y;labDragging={x:e.clientX,y:e.clientY};labRotationY+=dx*.009;labRotationX=Math.max(.15,Math.min(1.45,labRotationX+dy*.007));if(labType==="surface3d")$("#labSlider").value=Math.round(labRotationY*180/Math.PI);drawLab()});["pointerup","pointercancel","lostpointercapture"].forEach(ev=>labCanvas.addEventListener(ev,()=>{labDragging=null}));
  window.addEventListener("resize",()=>{if($("#view-visuals")?.classList.contains("active"))drawLab()});
@@ -820,6 +823,12 @@ function init(){
 }
 // Délégation globale pour les cartes Analyse / Algèbre.
 document.addEventListener("click",event=>{
+ const visualCategory=event.target.closest("#visualThemes [data-visual-category]");
+ if(visualCategory){activeVisualCategory=visualCategory.dataset.visualCategory;activeVisualLevel=null;activeVisualId=null;renderVisualLibrary();animateContent($("#visualLevelsView"));return;}
+ const visualLevel=event.target.closest("[data-visual-level]");
+ if(visualLevel){activeVisualLevel=visualLevel.dataset.visualLevel;activeVisualId=null;renderVisualLibrary();animateContent($("#visualCardsView"));return;}
+ const visualCard=event.target.closest("[data-visual-id]");
+ if(visualCard){openVisual(visualCard.dataset.visualId);return;}
  const card=event.target.closest("#exerciseThemes [data-ex-category]");
  if(!card)return;
  activeExerciseCategory=card.dataset.exCategory;
