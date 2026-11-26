@@ -231,10 +231,18 @@ window.__mathJaxReady = new Promise(resolve => {
     </section>
 
     <section class="view" id="view-review">
-      <div class="page-intro"><div class="eyebrow">MÉMORISATION ACTIVE</div><h1>Révisions espacées</h1><p>Revois les notions avant de les oublier. Le calendrier s'adapte à la qualité de ton rappel.</p></div>
-      <div class="review-layout"><article class="panel review-main" id="reviewCard"><div class="empty-state"><span>⟳</span><h3>Prêt à consolider ?</h3><p>Les notions à réviser apparaîtront ici.</p><button class="btn primary" id="startReview">Commencer les révisions</button></div></article><aside class="panel review-side"><div class="eyebrow">TON SYSTÈME DE RÉVISION</div><h3>Un rappel actif</h3><p>Essaie de retrouver la définition ou la propriété avant de retourner la carte.</p><div class="review-intervals"><span>Difficile <b>1 jour</b></span><span>Moyen <b>progressif</b></span><span>Facile <b>progressif</b></span></div></aside></div>
+      <div class="page-intro"><div class="eyebrow">ENTRAÎNEMENT ET MÉMORISATION</div><h1>Révisions</h1><p>Choisis un domaine, puis ton niveau. Travaille tes automatismes ou consolide les définitions et résultats essentiels.</p></div>
+      <div id="reviewThemes" class="course-themes">
+        <button class="course-theme-card" type="button" data-review-category="Analyse"><span class="course-theme-symbol">∫</span><span><b>Analyse</b><small>Limites, continuité, dérivation, intégration, suites et séries…</small></span><i>→</i></button>
+        <button class="course-theme-card" type="button" data-review-category="Algèbre"><span class="course-theme-symbol">∑</span><span><b>Algèbre</b><small>Espaces vectoriels, matrices, applications linéaires, complexes…</small></span><i>→</i></button>
+      </div>
+      <div id="reviewTopicsView" hidden>
+        <button class="course-back" id="reviewBackThemes">← Analyse et Algèbre</button>
+        <div class="course-list" id="reviewLevelList"></div>
+        <div id="reviewModeList" class="course-themes" hidden></div>
+      </div>
+      <div class="review-layout" id="reviewSession" hidden><article class="panel review-main" id="reviewCard"></article><aside class="panel review-side"><div class="eyebrow">TA SÉANCE</div><h3>Travail actif</h3><p>Essaie de répondre sans regarder la correction. Évalue ensuite honnêtement ton niveau pour consolider ce qui reste fragile.</p><div class="review-intervals"><span>Automatismes <b>Réponse rapide</b></span><span>Mémorisation <b>Répétition espacée</b></span></div><button class="btn ghost" id="reviewBackModes">← Changer de mode</button></aside></div>
     </section>
-
     <section class="view" id="view-progress">
       <div class="page-intro"><div class="eyebrow">MESURE DE LA MAÎTRISE</div><h1>Ta progression</h1><p>La maîtrise se construit par la compréhension, l'application et la capacité à raisonner seul.</p></div>
       <div class="progress-grid"><article class="panel"><div class="eyebrow">VUE GLOBALE</div><div class="big-progress" id="bigProgress">0%</div><div class="progress-track"><span id="bigProgressBar"></span></div><p class="subtle">Notions validées après plusieurs réussites indépendantes.</p></article><article class="panel"><div class="eyebrow">ACTIVITÉ</div><div class="activity-stats"><div><b id="pSolved">0</b><small>Exercices réussis</small></div><div><b id="pSessions">0</b><small>Séances terminées</small></div><div><b id="pReviews">0</b><small>Révisions effectuées</small></div></div></article></div>
