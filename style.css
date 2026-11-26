@@ -645,3 +645,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .lesson-method{padding:14px 0}
 .lesson-section-content{min-width:0;width:100%}
 .lesson-prose{overflow-wrap:anywhere;word-break:normal}
+
+/* MathEvo — correction des automatismes : conteneur centré et contenu contenu dans la carte. */
+#view-review #reviewCard{min-width:0;max-width:100%;overflow:hidden}
+#view-review #reviewCard .review-auto-solution{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin:16px auto 14px;padding:0!important;overflow:hidden}
+#view-review #reviewCard .review-auto-solution .solution-heading{width:100%;box-sizing:border-box}
+#view-review #reviewCard .review-auto-solution .solution-content{width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:16px clamp(12px,3vw,20px) 8px;overflow-wrap:anywhere;word-break:normal;text-align:left}
+#view-review #reviewCard .review-auto-solution .solution-content p{margin:0 0 13px;line-height:1.85}
+#view-review #reviewCard .review-auto-solution mjx-container{max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important}
+#view-review #reviewCard .review-auto-solution mjx-container[display="true"]{display:block;max-width:100%!important;margin:12px auto!important;text-align:center;overflow-x:auto!important}
+#view-review #reviewCard .question-box{max-width:100%;min-width:0;box-sizing:border-box;overflow-wrap:anywhere}
+@media(max-width:560px){
+ #view-review #reviewCard{padding:16px;min-width:0}
+ #view-review #reviewCard .review-auto-solution .solution-content{padding:13px 12px 6px;font-size:12px}
+}
