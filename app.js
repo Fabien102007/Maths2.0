@@ -5,7 +5,7 @@ const KEY="maths4_studio_v1";
 const blank=()=>({mastered:[],solved:[],attempts:{},reviews:{},cardReviews:{},drafts:{},sessions:0,reviewCount:0,lastDay:"",streak:0,});
 let state=(()=>{try{return {...blank(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return blank()}})();
 let reviewQualityByTopic={};
-let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeVisualCategory=null,activeVisualLevel=null,activeVisualChapter=null,activeVisualId=null,activeMode="tutor",chatHistory=[],chatImage=null,activeTutorContext=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false;
+let activeTopic=null,activeCourseCategory=null,activeCourseLevel=null,activeExercise=null,activeExerciseCategory=null,activeExerciseLevel=null,activeExerciseTopic=null,activeExerciseDifficulty=null,activeVisualCategory=null,activeVisualLevel=null,activeVisualChapter=null,activeVisualId=null,activeMode="tutor",chatHistory=[],chatImage=null,activeTutorContext=null,reviewQueue=[],reviewIndex=0,reviewFlipped=false,activeReviewCategory=null,activeReviewLevel=null,activeReviewMode=null;
 let progressSyncTimer=null;
 const save=()=>{state.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(state));renderDashboard();if(window.Maths2Account?.sync){clearTimeout(progressSyncTimer);progressSyncTimer=setTimeout(()=>window.Maths2Account.sync(),1200);}};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -86,7 +86,7 @@ const typesetExercise=el=>{
   return mj.typesetPromise([el]);
  }).catch(error=>console.error("Erreur MathJax dans un exercice :",error));
 };
-const richText=value=>esc(value).replace(/^#{1,6}[ \t]+(.+)$/gm,'<h3 class="chat-response-heading">$1</h3>').replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g," ");
+const richText=value=>esc(value).replace(/^#{1,6}[ \t]+(.+)$/gm,'<h3 class="chat-response-heading">$1</h3>').replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g,"<br>");
 // Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
 const proofMarkup=value=>{
  const source=String(value??"").trim();
@@ -133,7 +133,7 @@ function animateContent(el){
  el.classList.add("content-enter");
 }
 function closeMobileSidebar(){const sidebar=$("#sidebar"),backdrop=$("#sidebarBackdrop");sidebar?.classList.remove("open");backdrop?.classList.remove("visible");document.body.classList.remove("sidebar-open");}
-function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",presentation:"Découvrir MathEvo",review:"Révisions",progress:"Progression"})[view]||view;closeMobileSidebar();if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals"){renderVisualLibrary();drawVisuals();}if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
+function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",presentation:"Découvrir MathEvo",review:"Révisions",progress:"Progression"})[view]||view;closeMobileSidebar();if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals"){renderVisualLibrary();drawVisuals();}if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review"){activeReviewCategory=null;activeReviewLevel=null;renderReviewStart();}window.scrollTo({top:0,behavior:"smooth"})}
 function renderDashboard(){
  const profile=(()=>{try{return JSON.parse(localStorage.getItem('maths2_profile_v1')||'{}')}catch{return {}}})();
  const firstName=String(profile.firstName||'').trim();
@@ -336,57 +336,85 @@ function scheduleCardReview(card,quality){
 function fallbackReviewCard(t){
  return {topic:t.id,front:t.title,back:t.definitions?.[0]?.[1]||t.summary||"Revois les idées essentielles de ce chapitre."};
 }
+function reviewTopics(){return TOPICS.filter(t=>(!activeReviewCategory||t.category===activeReviewCategory)&&(!activeReviewLevel||courseLevelOf(t)===activeReviewLevel));}
+function reviewLevelOptions(){return [{name:"Terminale",desc:"Lycée · Spécialité mathématiques",icon:"🎓"},{name:"L1",desc:"Université · Première année de licence",icon:"∑"},{name:"L2",desc:"Université · Deuxième année de licence",icon:"∂"},{name:"Approfondissement",desc:"Notions de niveau prépa et prolongements",icon:"↗"}].filter(l=>TOPICS.some(t=>t.category===activeReviewCategory&&courseLevelOf(t)===l.name));}
 function renderReviewStart(){
- state.cardReviews=state.cardReviews||{};
- const dueCardList=FLASHCARDS.filter(card=>state.cardReviews[reviewCardKey(card)]?.due<=Date.now());
- const dueCards=dueCardList.length;
- const coveredTopics=new Set(dueCardList.map(card=>card.topic));
- const due=dueTopics().filter(t=>!coveredTopics.has(t.id)).length;
- const total=dueCards+due;
- $("#reviewCard").innerHTML=`<div class="eyebrow">RÉPÉTITION ESPACÉE</div><h2>${total?total+" élément(s) à revoir":"Aucune révision en retard"}</h2><p>${total?dueCards+" carte(s) et "+due+" notion(s) en attente. Commence par retrouver les idées essentielles avant de retourner les cartes.":"Lance une session libre pour découvrir des cartes non encore révisées et entretenir tes acquis."}</p><button class="btn primary" id="startReview">${total?"Démarrer les révisions →":"Lancer une session libre →"}</button>`;
- $("#startReview").onclick=startReview;
+ activeReviewMode=null;reviewQueue=[];reviewIndex=0;reviewFlipped=false;
+ $("#reviewThemes").hidden=!!activeReviewCategory;
+ $("#reviewTopicsView").hidden=!activeReviewCategory;
+ $("#reviewLevelList").hidden=!!activeReviewLevel;
+ $("#reviewModeList").hidden=!activeReviewLevel;
+ $("#reviewSession").hidden=true;
+ if(!activeReviewCategory)return;
+ if(!activeReviewLevel){
+  $("#reviewLevelList").innerHTML='<div class="course-level-intro"><b>Choisis ton niveau d’études</b><span>'+esc(activeReviewCategory)+'</span></div>'+reviewLevelOptions().map(l=>{
+   const count=TOPICS.filter(t=>t.category===activeReviewCategory&&courseLevelOf(t)===l.name).length;
+   return '<button type="button" class="course-theme-card course-level-card" data-review-level="'+l.name+'"><span class="course-theme-symbol">'+l.icon+'</span><span><b>'+l.name+'</b><small>'+l.desc+'</small></span><i>'+count+' notions →</i></button>';
+  }).join("");
+  $$("#reviewLevelList [data-review-level]").forEach(b=>b.onclick=()=>{activeReviewLevel=b.dataset.reviewLevel;renderReviewStart();animateContent($("#reviewModeList"));});
+  return;
+ }
+ const ids=new Set(reviewTopics().map(t=>t.id));
+ const cardCount=FLASHCARDS.filter(c=>ids.has(c.topic)).length;
+ const exerciseCount=EXERCISES.filter(e=>ids.has(e.topic)&&e.difficulty!=="Avancé").length;
+ $("#reviewModeList").innerHTML=
+  '<button type="button" class="course-theme-card review-mode-card" data-review-mode="automatismes"><span class="course-theme-symbol">⚡</span><span><b>Automatismes</b><small>Questions courtes, calculs et réflexes à acquérir. Réponds sans aide, puis vérifie.</small></span><i>'+exerciseCount+' questions →</i></button>'+
+  '<button type="button" class="course-theme-card review-mode-card" data-review-mode="memorisation"><span class="course-theme-symbol">⟳</span><span><b>Mémorisation</b><small>Définitions, propriétés et résultats à retrouver de mémoire avec répétition espacée.</small></span><i>'+cardCount+' cartes →</i></button>';
+ $$("#reviewModeList [data-review-mode]").forEach(b=>b.onclick=()=>startReviewMode(b.dataset.reviewMode));
+}
+function startReviewMode(mode){
+ activeReviewMode=mode;
+ $("#reviewThemes").hidden=true;$("#reviewTopicsView").hidden=true;$("#reviewSession").hidden=false;
+ if(mode==="memorisation")startReview();else startAutomatismReview();
 }
 function startReview(){
  state.cardReviews=state.cardReviews||{};
- const now=Date.now(),due=dueTopics().map(t=>t.id),seen=new Set(),pool=[];
+ const ids=new Set(reviewTopics().map(t=>t.id)),now=Date.now(),seen=new Set(),pool=[];
  const add=card=>{const key=reviewCardKey(card);if(!seen.has(key)){seen.add(key);pool.push(card)}};
- FLASHCARDS.filter(card=>state.cardReviews[reviewCardKey(card)]?.due<=now).forEach(add);
- if(due.length){
-  FLASHCARDS.filter(card=>due.includes(card.topic)).forEach(add);
-  due.forEach(id=>{if(!FLASHCARDS.some(card=>card.topic===id)) {const t=topic(id);if(t)add(fallbackReviewCard(t));}});
- }
- if(!pool.length){
-  FLASHCARDS.filter(card=>!state.cardReviews[reviewCardKey(card)]).forEach(add);
- }
- if(!pool.length){
-  FLASHCARDS.slice().sort((a,b)=>(state.cardReviews[reviewCardKey(a)]?.due||0)-(state.cardReviews[reviewCardKey(b)]?.due||0)).forEach(add);
- }
- if(!pool.length)TOPICS.forEach(t=>add(fallbackReviewCard(t)));
- const sessionSize=15;
- reviewQueue=pool.slice(0,sessionSize).map(card=>({card,topic:card.topic,key:reviewCardKey(card)}));
+ FLASHCARDS.filter(card=>ids.has(card.topic)&&state.cardReviews[reviewCardKey(card)]?.due<=now).forEach(add);
+ if(!pool.length)FLASHCARDS.filter(card=>ids.has(card.topic)&&!state.cardReviews[reviewCardKey(card)]).forEach(add);
+ if(!pool.length)FLASHCARDS.filter(card=>ids.has(card.topic)).sort((a,b)=>(state.cardReviews[reviewCardKey(a)]?.due||0)-(state.cardReviews[reviewCardKey(b)]?.due||0)).forEach(add);
+ if(!pool.length)reviewTopics().forEach(t=>add(fallbackReviewCard(t)));
+ reviewQueue=pool.slice(0,15).map(card=>({card,topic:card.topic,key:reviewCardKey(card)}));
  reviewIndex=0;reviewFlipped=false;
- if(!reviewQueue.length){renderReviewStart();return;}
+ if(!reviewQueue.length){toast("Aucune carte disponible pour ce niveau.");renderReviewStart();return;}
  renderReviewCard();
+}
+function startAutomatismReview(){
+ const ids=new Set(reviewTopics().map(t=>t.id));
+ const pool=EXERCISES.filter(e=>ids.has(e.topic)&&e.difficulty!=="Avancé");
+ reviewQueue=pool.slice().sort((a,b)=>({Facile:0,"Intermédiaire":1}[a.difficulty]??2)-({Facile:0,"Intermédiaire":1}[b.difficulty]??2)).slice(0,15).map(exercise=>({exercise,topic:exercise.topic}));
+ reviewIndex=0;reviewFlipped=false;
+ if(!reviewQueue.length){toast("Aucune question d’automatisme disponible à ce niveau.");renderReviewStart();return;}
+ renderAutomatismCard();
+}
+function renderAutomatismCard(){
+ const entry=reviewQueue[reviewIndex];
+ if(!entry){state.sessions++;save();toast("Séance d’automatismes terminée.");renderReviewStart();return;}
+ const e=entry.exercise,t=topic(entry.topic);
+ $("#reviewCard").innerHTML='<div class="review-counter">AUTOMATISMES · QUESTION '+(reviewIndex+1)+' / '+reviewQueue.length+' · '+esc(t?.title||"")+'</div><div class="question-box">'+exerciseRichText(e.question)+'</div><button class="btn primary" id="showAutoAnswer">Afficher la correction</button><div class="solution-box" id="autoAnswer" hidden><b>Correction</b><div>'+exerciseRichText(e.answer||"Correction à compléter.")+'</div></div><p class="subtle center" id="autoPrompt">Cherche la réponse mentalement ou sur une feuille avant de révéler la correction.</p><div class="review-rating" id="autoRating" hidden><button data-quality="1">À retravailler</button><button data-quality="2">Presque acquis</button><button data-quality="3">Acquis</button></div>';
+ $("#showAutoAnswer").onclick=()=>{$("#autoAnswer").hidden=false;$("#autoRating").hidden=false;$("#showAutoAnswer").hidden=true;$("#autoPrompt").textContent="Évalue honnêtement ta maîtrise pour adapter les prochaines révisions.";typeset($("#reviewCard"));};
+ $$("#reviewCard [data-quality]").forEach(b=>b.onclick=()=>{const quality=+b.dataset.quality;scheduleReview(entry.topic,quality,false);state.reviewCount++;reviewIndex++;save();renderAutomatismCard();});
+ typeset($("#reviewCard"));
 }
 function renderReviewCard(){
  const entry=reviewQueue[reviewIndex];
- if(!entry){renderReviewStart();return;}
+ if(!entry){state.sessions++;save();toast("Session de mémorisation terminée.");renderReviewStart();return;}
  const card=entry.card||entry,t=topic(entry.topic||card.topic);
  if(!t){renderReviewStart();return;}
- $("#reviewCard").innerHTML=`<div class="review-counter">CARTE ${reviewIndex+1} / ${reviewQueue.length} · ${esc(t.title)}</div><button class="flashcard" id="flipCard" type="button" aria-label="Retourner la carte"><span class="flashcard-inner"><span class="flashcard-face flashcard-front"><small>RAPPEL ACTIF</small><strong>${esc(card.front||t.title)}</strong><span>Clique pour retourner la carte</span></span><span class="flashcard-face flashcard-back"><small>RÉPONSE</small><strong>${esc(card.back||t.summary||"Réponse à compléter.")}</strong><span>Clique pour revoir la question</span></span></span></button><p class="subtle center flashcard-prompt">${reviewFlipped?"Voici la réponse. Évalue ton rappel.":"Essaie de retrouver la réponse avant de retourner la carte."}</p><div class="review-rating" ${reviewFlipped?"":"hidden"}><button data-quality="1">Difficile</button><button data-quality="2">Moyen</button><button data-quality="3">Facile</button></div>`;
+ $("#reviewCard").innerHTML='<div class="review-counter">MÉMORISATION · CARTE '+(reviewIndex+1)+' / '+reviewQueue.length+' · '+esc(t.title)+'</div><button class="flashcard" id="flipCard" type="button" aria-label="Retourner la carte"><span class="flashcard-inner"><span class="flashcard-face flashcard-front"><small>RAPPEL ACTIF</small><strong>'+esc(card.front||t.title)+'</strong><span>Clique pour retourner la carte</span></span><span class="flashcard-face flashcard-back"><small>RÉPONSE</small><strong>'+esc(card.back||t.summary||"Réponse à compléter.")+'</strong><span>Clique pour revoir la question</span></span></span></button><p class="subtle center flashcard-prompt">Essaie de retrouver la réponse avant de retourner la carte.</p><div class="review-rating" '+(reviewFlipped?"":"hidden")+'><button data-quality="1">Difficile</button><button data-quality="2">Moyen</button><button data-quality="3">Facile</button></div>';
  const flip=$("#flipCard");
  if(reviewFlipped)flip.classList.add("flipped");
  flip.onclick=()=>{reviewFlipped=!reviewFlipped;flip.classList.toggle("flipped",reviewFlipped);$("#reviewCard .review-rating").hidden=!reviewFlipped;$("#reviewCard .flashcard-prompt").textContent=reviewFlipped?"Voici la réponse. Évalue ton rappel.":"Essaie de retrouver la réponse avant de retourner la carte.";typeset($("#reviewCard"));};
  $$("#reviewCard [data-quality]").forEach(b=>b.onclick=()=>{
-  const quality=+b.dataset.quality;
-  scheduleCardReview(card,quality);
-  scheduleReview(entry.topic||card.topic,quality,false);
+  const quality=+b.dataset.quality;scheduleCardReview(card,quality);scheduleReview(entry.topic||card.topic,quality,false);
   state.reviewCount++;reviewIndex++;reviewFlipped=false;save();
-  if(reviewIndex>=reviewQueue.length){state.sessions++;save();renderReviewStart();toast("Session de révision terminée.");}
+  if(reviewIndex>=reviewQueue.length){state.sessions++;save();toast("Session de mémorisation terminée.");renderReviewStart();}
   else renderReviewCard();
  });
  typeset($("#reviewCard"));
 }
+
 function renderTutorMessage(text,role){
  const div=document.createElement("div");div.className="chat-message "+role;
  const avatar=document.createElement("span");avatar.className="chat-message-avatar";avatar.textContent=role==="user"?"T":"✳";
@@ -805,6 +833,9 @@ function init(){
  $$("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));$$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
  $("#mobileMenu").onclick=()=>{const opening=!$("#sidebar").classList.contains("open");if(opening){$("#sidebar").classList.add("open");$("#sidebarBackdrop").classList.add("visible");document.body.classList.add("sidebar-open");}else closeMobileSidebar();};
  $("#sidebarBackdrop").onclick=closeMobileSidebar;
+ $("[data-review-category]").forEach(b=>b.onclick=()=>{activeReviewCategory=b.dataset.reviewCategory;activeReviewLevel=null;renderReviewStart();animateContent($("#reviewTopicsView"));});
+ $("#reviewBackThemes").onclick=()=>{activeReviewCategory=null;activeReviewLevel=null;renderReviewStart();};
+ $("#reviewBackModes").onclick=()=>renderReviewStart();
  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMobileSidebar();});
  $("#resetData").onclick=()=>{if(confirm("Effacer toute la progression locale de MathEvo ?")){state=blank();save();go("home");toast("Progression réinitialisée.")}};
  $("#exportData").onclick=()=>{
