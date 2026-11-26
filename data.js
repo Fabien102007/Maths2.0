@@ -65,13 +65,8 @@ window.EXERCISES = [
       "Les fonctions affines sont continues."
     ],
     "answer": "f est affine, donc continue sur ℝ.",
-    "solutionSteps": [
-      "**Choisir deux points quelconques.** Soient $a,b\\in I$. Pour établir que $f$ est constante sur $I$, il suffit de prouver que $f(a)=f(b)$ pour ces deux points arbitraires. Si $a=b$, l’égalité est immédiate. Supposons donc, sans perte de généralité, que $a<b$.",
-      "**Vérifier les hypothèses du théorème des accroissements finis.** Puisque $I$ est un intervalle et que $a,b\\in I$, le segment $[a,b]$ est inclus dans $I$. La dérivabilité de $f$ sur $I$ entraîne sa continuité sur $[a,b]$ et sa dérivabilité sur $]a,b[$. Le théorème des accroissements finis est donc applicable.",
-      "**Appliquer le théorème.** Il existe $c\\in]a,b[$ tel que $\\displaystyle f(b)-f(a)=f'(c)(b-a)$. Or l’hypothèse donne $f'(x)=0$ pour tout $x\\in I$, et en particulier $f'(c)=0$. Ainsi $\\displaystyle f(b)-f(a)=0\\times(b-a)=0$.",
-      "**Conclure avec la définition d’une fonction constante.** On obtient $f(a)=f(b)$. Cette égalité étant vraie pour tous les points $a,b\\in I$, la fonction prend la même valeur en tous les points de $I$. Par conséquent, $\\boxed{f\\text{ est constante sur }I}$. "
-    ],
-    "check": "Le point essentiel est de choisir deux points arbitraires, puis de vérifier explicitement les hypothèses du théorème des accroissements finis avant de l’appliquer."
+    "solutionSteps": [],
+    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question.""
   },
   {
     "id": "m4-5",
@@ -643,8 +638,13 @@ window.EXERCISES = [
       "Appliquer le théorème des accroissements finis entre deux points."
     ],
     "answer": "Soient $a,b\\in I$ avec $a<b$. L'intervalle $I$ étant un intervalle, $[a,b]\\subset I$. La fonction $f$ est dérivable sur $I$, donc continue sur $[a,b]$ et dérivable sur $]a,b[$. Le théorème des accroissements finis s'applique : il existe $c\\in]a,b[$ tel que\n\\[\nf(b)-f(a)=f'(c)(b-a).\n\\]\nOr $f'(c)=0$ par hypothèse, donc $f(b)-f(a)=0$, c'est-à-dire $f(a)=f(b)$. Cette égalité vaut pour tous $a<b$ dans $I$ ; ainsi toutes les valeurs de $f$ sont égales et\n\\[\n\\boxed{f\\text{ est constante sur }I.}\n\\]",
-    "solutionSteps": [],
-    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
+    "solutionSteps": [
+      "**Choisir deux points quelconques.** Soient $a,b\\in I$. Pour établir que $f$ est constante sur $I$, il suffit de prouver que $f(a)=f(b)$ pour ces deux points arbitraires. Si $a=b$, l’égalité est immédiate. Supposons donc $a<b$.",
+      "**Vérifier les hypothèses du théorème des accroissements finis.** Puisque $I$ est un intervalle et que $a,b\\in I$, le segment $[a,b]$ est inclus dans $I$. La dérivabilité de $f$ sur $I$ entraîne sa continuité sur $[a,b]$ et sa dérivabilité sur $]a,b[$. Le théorème des accroissements finis est donc applicable.",
+      "**Appliquer le théorème.** Il existe $c\\in]a,b[$ tel que $f(b)-f(a)=f\'(c)(b-a)$. Or l’hypothèse donne $f\'(x)=0$ pour tout $x\\in I$, donc $f\'(c)=0$. Ainsi $f(b)-f(a)=0$.",
+      "**Conclure.** On obtient $f(a)=f(b)$. Cette égalité étant vraie pour tous les points $a,b\\in I$, la fonction prend la même valeur en tous les points de $I$. Par conséquent, $\\boxed{f\\text{ est constante sur }I}$."
+    ],
+    "check": "Le point essentiel est de choisir deux points arbitraires, puis de vérifier explicitement les hypothèses du théorème des accroissements finis avant de l’appliquer."
   },
   {
     "id": "m4-46",
