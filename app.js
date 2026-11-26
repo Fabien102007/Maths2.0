@@ -833,7 +833,7 @@ function init(){
  $$("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));$$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
  $("#mobileMenu").onclick=()=>{const opening=!$("#sidebar").classList.contains("open");if(opening){$("#sidebar").classList.add("open");$("#sidebarBackdrop").classList.add("visible");document.body.classList.add("sidebar-open");}else closeMobileSidebar();};
  $("#sidebarBackdrop").onclick=closeMobileSidebar;
- $("[data-review-category]").forEach(b=>b.onclick=()=>{activeReviewCategory=b.dataset.reviewCategory;activeReviewLevel=null;renderReviewStart();animateContent($("#reviewTopicsView"));});
+ $$("[data-review-category]").forEach(b=>b.onclick=()=>{activeReviewCategory=b.dataset.reviewCategory;activeReviewLevel=null;renderReviewStart();animateContent($("#reviewTopicsView"));});
  $("#reviewBackThemes").onclick=()=>{activeReviewCategory=null;activeReviewLevel=null;renderReviewStart();};
  $("#reviewBackModes").onclick=()=>renderReviewStart();
  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMobileSidebar();});
