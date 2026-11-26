@@ -87,6 +87,17 @@ const typesetExercise=el=>{
  }).catch(error=>console.error("Erreur MathJax dans un exercice :",error));
 };
 const richText=value=>esc(value).replace(/^#{1,6}[ \t]+(.+)$/gm,'<h3 class="chat-response-heading">$1</h3>').replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n{2,}/g,"</p><p>").replace(/\n/g,"<br>");
+const lessonText=value=>{
+ const inline=part=>esc(part).replace(/\*\*(.+?)\*\*/gs,"<strong>$1</strong>").replace(/\n/g,"<br>");
+ const blocks=String(value??"").trim().split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);
+ return blocks.map(block=>{
+  const heading=block.match(/^#{1,4}\s+(.+)$/);
+  if(heading)return '<h4 class="lesson-inline-heading">'+inline(heading[1])+'</h4>';
+  const lines=block.split("\n");
+  if(lines.every(line=>/^\s*[-•]\s+/.test(line)))return '<ul>'+lines.map(line=>'<li>'+inline(line.replace(/^\s*[-•]\s+/,""))+'</li>').join("")+'</ul>';
+  return '<p>'+inline(block)+'</p>';
+ }).join("");
+};
 // Les formules brutes sont converties après insertion dans le DOM par mathifyTextNodes.
 const proofMarkup=value=>{
  const source=String(value??"").trim();
@@ -204,14 +215,14 @@ function renderTopic(id){
  const outline=[["course-definitions","Définitions"],["course-properties","Propriétés"],...(theorems?[["course-theorems","Démonstrations"]]:[]),["course-example","Exemple"],...(methods?[["course-methods","Méthodes"]]:[])];
  const outlineMarkup=outline.map(([target,label],i)=>`<button type="button" class="course-outline-link" data-course-anchor="${target}"><span>${String(i+1).padStart(2,"0")}</span>${label}</button>`).join("");
  const lessonMarkup=Array.isArray(t.lessonSections)?t.lessonSections.map((section,i)=>{
-  const definitions=(section.definitions||[]).map(index=>{const d=t.definitions[index];return d?'<div class="lesson-definition"><span>Définition</span><b>'+esc(d[0])+'</b><div>'+richText(d[1])+'</div></div>':"";}).join("");
-  const properties=(section.properties||[]).map(index=>{const p=t.properties[index];return p?'<div class="lesson-rule"><span>À retenir</span><div>'+richText(p)+'</div></div>':"";}).join("");
+  const definitions=(section.definitions||[]).map(index=>{const d=t.definitions[index];return d?'<div class="lesson-definition"><span>Définition</span><b>'+esc(d[0])+'</b><div>'+lessonText(d[1])+'</div></div>':"";}).join("");
+  const properties=(section.properties||[]).map(index=>{const p=t.properties[index];return p?'<div class="lesson-rule"><span>À retenir</span><div>'+lessonText(p)+'</div></div>':"";}).join("");
   const theorem=(t.theorems||[])[section.theorem];
-  const theoremMarkup=theorem?'<div class="theorem-card"><b>'+esc(theorem.title)+'</b><div class="theorem-statement">'+richText(theorem.statement)+'</div><details><summary>Comprendre la démonstration</summary><div class="theorem-proof">'+proofMarkup(theorem.proof)+'</div></details></div>':"";
-  return '<section class="lesson-section"><div class="lesson-section-content"><h3>'+esc(section.title)+'</h3><div class="lesson-prose">'+richText(section.body)+'</div>'+definitions+properties+theoremMarkup+'</div></section>';
+  const theoremMarkup=theorem?'<div class="theorem-card"><b>'+esc(theorem.title)+'</b><div class="theorem-statement">'+lessonText(theorem.statement)+'</div><details><summary>Comprendre la démonstration</summary><div class="theorem-proof">'+proofMarkup(theorem.proof)+'</div></details></div>':"";
+  return '<section class="lesson-section"><div class="lesson-section-content"><h3>'+esc(section.title)+'</h3><div class="lesson-prose">'+lessonText(section.body)+'</div>'+definitions+properties+theoremMarkup+'</div></section>';
  }).join(""):"";
- const lessonMethods=methods?'<aside class="lesson-summary"><h3>Une méthode à retenir</h3>'+(t.methods||[]).map((x,i)=>'<div class="lesson-method"><div>'+richText(x)+'</div></div>').join("")+'</aside>':"";
- const lessonErrors=errors?'<aside class="lesson-warning"><b>Points de vigilance</b>'+(t.commonErrors||[]).map(x=>'<div>'+richText(x)+'</div>').join("")+'</aside>':"";
+ const lessonMethods=methods?'<aside class="lesson-summary"><h3>Une méthode à retenir</h3>'+(t.methods||[]).map((x,i)=>'<div class="lesson-method"><div>'+lessonText(x)+'</div></div>').join("")+'</aside>':"";
+ const lessonErrors=errors?'<aside class="lesson-warning"><b>Points de vigilance</b>'+(t.commonErrors||[]).map(x=>'<div>'+lessonText(x)+'</div>').join("")+'</aside>':"";
  const prerequisiteMarkup=prerequisites.length?`<div class="course-prerequisites"><b>À connaître avant ce chapitre</b><div>${prerequisites.map(p=>`<button type="button" data-prerequisite="${p.id}">${esc(p.title)} <span>↗</span></button>`).join("")}</div></div>`:"";
  $("#courseDetail").innerHTML = '<button type="button" class="course-back course-back-list" id="courseBackList">← Retour à la liste des cours</button><div class="detail-top"><span class="tag">'+esc(t.category)+' · '+esc(level)+'</span>'+(mastered(id)?'<span class="mastered-label">✓ Maîtrisée</span>':'')+'</div><h2>'+esc(t.title)+'</h2><p class="lead">'+esc(t.summary)+'</p><p class="course-meta">'+esc(t.chapter||t.category)+' · '+esc(level)+' · '+EXERCISES.filter(e=>e.topic===id).length+' exercice(s)</p>'+
  (Array.isArray(t.lessonSections)?'<div class="lesson-reading-note">Cours structuré · Suis les idées dans l’ordre</div>'+lessonMarkup+lessonMethods+lessonErrors:
