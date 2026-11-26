@@ -76,3 +76,13 @@ A recent independent failure can downgrade the status. The engine must never lab
 ## Validation before integration
 
 Run a small supervised pilot with L1 students. Compare pre-test and post-test on the same competency map, include delayed retention and transfer questions, and collect learner feedback. Do not claim that MathEvo outperforms teachers until a fair comparison supports that claim.
+
+## Run the initial tests
+
+With Node.js installed, run from the repository root:
+
+```bash
+node adaptive-engine/tests.js
+```
+
+The tests are included in the repository; they have not yet been executed in the deployed GitHub Pages application. The current engine is a standalone prototype and is not wired into the production UI.
