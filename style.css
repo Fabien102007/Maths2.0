@@ -518,7 +518,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .lesson-warning>b{display:block;margin-bottom:10px;color:#e9c88e;font-size:12px}
 .lesson-warning>div{padding:7px 0;border-top:1px solid rgba(226,178,104,.12);color:#c9c7c0;font-size:11px;line-height:1.75}
 @media(max-width:560px){
- .lesson-section{grid-template-columns:25px minmax(0,1fr);gap:10px;margin-bottom:23px;padding-bottom:22px}
+ .lesson-section{grid-template-columns:minmax(0,1fr);gap:0;margin-bottom:23px;padding-bottom:22px}
  .course-detail .lesson-section-content h3{font-size:17px}
  .lesson-prose{font-size:13px;line-height:1.9}
  .lesson-definition{padding:14px}
