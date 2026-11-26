@@ -630,3 +630,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* Menu mobile : clic sur la zone extérieure pour fermer le panneau. */
 .sidebar-backdrop{display:none}
 @media(max-width:800px){.sidebar-backdrop{display:block;position:fixed;inset:0;z-index:9;border:0;padding:0;background:rgba(3,8,18,.58);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,visibility .25s ease}.sidebar-backdrop.visible{opacity:1;visibility:visible;pointer-events:auto}.sidebar{z-index:10;will-change:transform}}
+
+/* Révisions : navigation par domaine, niveau et mode. */
+#reviewModeList{margin-top:14px}
+.review-mode-card{min-height:132px}
+#reviewSession[hidden],#reviewThemes[hidden],#reviewTopicsView[hidden],#reviewLevelList[hidden],#reviewModeList[hidden]{display:none!important}
+#reviewCard .question-box{line-height:1.9}
+#reviewCard .solution-box{line-height:1.9}
