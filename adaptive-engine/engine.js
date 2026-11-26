@@ -52,7 +52,7 @@
   }
 
   function getEvidence(profile, competencyId) {
-    const attempts = profile.attempts.filter(item => item.competencyId === competencyId);
+    const attempts = profile.attempts.filter(item => item.competencyId === competencyId).slice().sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
     const correct = attempts.filter(item => item.correct);
     const independentCorrect = correct.filter(item => item.independent);
     const transferCorrect = correct.filter(item => item.transfer);
