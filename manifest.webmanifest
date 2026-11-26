@@ -1,6 +1,6 @@
 {
-  "name": "Mathevo — Maths Workspace",
-  "short_name": "Mathevo",
+  "name": "MathEvo — Maths Workspace",
+  "short_name": "MathEvo",
   "start_url": "./app.html",
   "display": "standalone",
   "background_color": "#0b1020",
