@@ -82,7 +82,8 @@
          planStatus.textContent="Premium actif"+(end&&!Number.isNaN(end.getTime())?" · prochaine échéance le "+end.toLocaleDateString("fr-FR"):"");
        }else planStatus.textContent="Offre gratuite · aucun abonnement actif";
      }
-     upgradeButtons.forEach(button=>{button.disabled=!billingReady||premiumActive||!!subscriptionError;});
+     // Le Worker vérifie lui-même les abonnements déjà actifs lors du checkout. Une panne ponctuelle de lecture du statut ne doit pas bloquer le bouton d'achat.
+     upgradeButtons.forEach(button=>{button.disabled=!billingReady||premiumActive;});
      const monthly=document.getElementById("accountUpgrade");if(monthly)monthly.textContent=premiumActive?"Abonnement Premium actif":"Choisir le mensuel · 5,99 €/mois";
      const annual=document.getElementById("accountUpgradeAnnual");if(annual)annual.textContent=premiumActive?"Abonnement Premium actif":"Choisir l'annuel · 49,99 €/an";
      const previewMonthly=document.getElementById("accountUpgradePreview");if(previewMonthly)previewMonthly.textContent=premiumActive?"Abonnement Premium actif":"Choisir le mensuel · 5,99 €/mois";
@@ -201,4 +202,5 @@
    const signIn=document.getElementById("accountSignIn");
    if(signIn)signIn.disabled=true;
  }
+ if(location.hash==="#account")showAccount();
 })();
