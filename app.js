@@ -132,7 +132,8 @@ function animateContent(el){
  void el.offsetWidth;
  el.classList.add("content-enter");
 }
-function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",presentation:"Découvrir Mathevo",review:"Révisions",progress:"Progression"})[view]||view;$("#sidebar").classList.remove("open");if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals"){renderVisualLibrary();drawVisuals();}if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
+function closeMobileSidebar(){const sidebar=$("#sidebar"),backdrop=$("#sidebarBackdrop");sidebar?.classList.remove("open");backdrop?.classList.remove("visible");document.body.classList.remove("sidebar-open");}
+function go(view){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));$$(".nav-link").forEach(b=>b.classList.toggle("active",b.dataset.view===view));$("#crumb").textContent=({home:"Vue d'ensemble",courses:"Cours",exercises:"Exercices",tutor:"Tuteur IA",visuals:"Laboratoire visuel",animations:"Animations Manim",presentation:"Découvrir MathEvo",review:"Révisions",progress:"Progression"})[view]||view;closeMobileSidebar();if(view==="courses")renderCourses();if(view==="exercises")renderExercises();if(view==="progress")renderProgress();if(view==="visuals"){renderVisualLibrary();drawVisuals();}if(view==="animations")initManimLibrary();if(view!=="animations"){const video=$("#manimVideo");if(video)video.pause()}if(view==="review")renderReviewStart();window.scrollTo({top:0,behavior:"smooth"})}
 function renderDashboard(){
  const profile=(()=>{try{return JSON.parse(localStorage.getItem('maths2_profile_v1')||'{}')}catch{return {}}})();
  const firstName=String(profile.firstName||'').trim();
@@ -258,7 +259,7 @@ function renderExercises(){
   levelList.hidden=true;detail.hidden=false;topicsView.classList.add("exercise-level-selected");
   $(".exercise-layout").classList.remove("exercise-open");
   $("#exerciseTopicHeading").textContent=activeExerciseCategory+" · "+activeExerciseLevel+" · Avancé";
-  $("#exerciseList").innerHTML='<div class="empty-state"><span>✦</span><h3>Collections avancées réservées à Premium</h3><p>Débloque les exercices les plus exigeants et les collections approfondies avec Mathevo Premium.</p><button class="btn primary" id="premiumUnlock" type="button">Découvrir Premium</button></div>';
+  $("#exerciseList").innerHTML='<div class="empty-state"><span>✦</span><h3>Collections avancées réservées à Premium</h3><p>Débloque les exercices les plus exigeants et les collections approfondies avec MathEvo Premium.</p><button class="btn primary" id="premiumUnlock" type="button">Découvrir Premium</button></div>';
   $("#exerciseDetail").innerHTML='<div class="empty-state"><h3>Approfondis tes méthodes</h3><p>Les exercices avancés sont inclus dans l’offre Premium.</p></div>';
   $("#premiumUnlock").onclick=()=>$("#accountOpen")?.click();
   return;
@@ -802,10 +803,12 @@ function init(){
   if(window.__maths20InitDone)return;
   window.__maths20InitDone=true;
  $$("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));$$("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
- $("#mobileMenu").onclick=()=>$("#sidebar").classList.toggle("open");
- $("#resetData").onclick=()=>{if(confirm("Effacer toute la progression locale de Mathevo ?")){state=blank();save();go("home");toast("Progression réinitialisée.")}};
+ $("#mobileMenu").onclick=()=>{const opening=!$("#sidebar").classList.contains("open");if(opening){$("#sidebar").classList.add("open");$("#sidebarBackdrop").classList.add("visible");document.body.classList.add("sidebar-open");}else closeMobileSidebar();};
+ $("#sidebarBackdrop").onclick=closeMobileSidebar;
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMobileSidebar();});
+ $("#resetData").onclick=()=>{if(confirm("Effacer toute la progression locale de MathEvo ?")){state=blank();save();go("home");toast("Progression réinitialisée.")}};
  $("#exportData").onclick=()=>{
-  const payload={app:"Mathevo",version:1,exportedAt:new Date().toISOString(),state};
+  const payload={app:"MathEvo",version:1,exportedAt:new Date().toISOString(),state};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob),a=document.createElement("a");
   a.href=url;a.download="mathevo-sauvegarde-"+new Date().toISOString().slice(0,10)+".json";
