@@ -66,7 +66,7 @@ window.EXERCISES = [
     ],
     "answer": "f est affine, donc continue sur ℝ.",
     "solutionSteps": [],
-    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question.""
+    "check": "Relis chaque implication, vérifie les hypothèses utilisées et assure-toi que la conclusion répond exactement à la question."
   },
   {
     "id": "m4-5",
