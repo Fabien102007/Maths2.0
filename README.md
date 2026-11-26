@@ -1,7 +1,7 @@
-# Mathevo — Learning Studio
+# MathEvo — Learning Studio
 
 ## Présentation
-Mathevo est une application web progressive (PWA) en français pour apprendre, pratiquer et visualiser les mathématiques du lycée à l'université.
+MathEvo est une application web progressive (PWA) en français pour apprendre, pratiquer et visualiser les mathématiques du lycée à l'université.
 
 - La racine du site (\`index.html\`) présente le produit.
 - \`app.html\` ouvre directement l'espace de travail.
